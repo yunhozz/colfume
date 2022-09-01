@@ -39,7 +39,7 @@ public class JwtProvider {
 
     public TokenResponseDto createTokenDto(String email, Set<MemberAuthority> memberAuthorities) {
         List<String> roles = memberAuthorities.stream()
-                .map(memberAuthority -> memberAuthority.getAuthority().getAuth()).toList();
+                .map(memberAuthority -> memberAuthority.getAuthority().getRole()).toList();
         Claims claims = Jwts.claims().setSubject(email);
         claims.put(ROLES, roles);
         Date now = new Date();

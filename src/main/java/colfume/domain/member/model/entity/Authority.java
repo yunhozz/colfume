@@ -13,9 +13,9 @@ import javax.persistence.Id;
 public class Authority {
 
     @Id
-    private String auth; // ROLE_ADMIN, ROLE_USER
+    private String role; // ROLE_ADMIN, ROLE_USER
 
-    public Authority(String auth) {
-        this.auth = auth;
+    public Authority(String role) {
+        this.role = role;
     }
 }

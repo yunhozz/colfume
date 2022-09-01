@@ -16,7 +16,7 @@ public class UserDetailsImpl implements UserDetails {
     private final String email;
     private final String password;
     private final String name;
-    private final List<MemberAuthority> memberAuthorities;
+    private final Set<MemberAuthority> memberAuthorities;
 
     public UserDetailsImpl(Member member) {
         id = member.getId();
@@ -29,7 +29,7 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> roles = memberAuthorities.stream()
-                .map(memberAuthority -> memberAuthority.getAuthority().getAuth()).toList();
+                .map(memberAuthority -> memberAuthority.getAuthority().getRole()).toList();
         Set<GrantedAuthority> authorities = new HashSet<>();
         roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
 
