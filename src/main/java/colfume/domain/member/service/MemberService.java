@@ -9,6 +9,7 @@ import colfume.domain.member.model.repository.MemberRepository;
 import colfume.dto.TokenResponseDto;
 import colfume.enums.ErrorCode;
 import colfume.exception.EmailDuplicateException;
+import colfume.exception.EmailNotFoundException;
 import colfume.exception.MemberNotFoundException;
 import colfume.exception.PasswordMismatchException;
 import colfume.util.JwtProvider;
@@ -38,9 +39,9 @@ public class MemberService {
             throw new EmailDuplicateException(ErrorCode.EMAIL_DUPLICATE);
         }
         Member member = Member.builder()
-                .email(memberRequestDto.getEmail())
-                .password(encoder.encode(memberRequestDto.getPassword()))
-                .name(memberRequestDto.getName())
+                .email(memberDto.getEmail())
+                .password(encoder.encode(memberDto.getPassword()))
+                .name(memberDto.getName())
                 .build();
 
         Authority role_user = authorityRepository.getReferenceById("ROLE_USER");
@@ -49,13 +50,13 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
-    public TokenResponseDto login(LoginRequestDto loginRequestDto) {
-        Member member = memberRepository.findByEmail(loginRequestDto.getEmail())
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (!encoder.matches(loginRequestDto.getPassword(), member.getPassword())) {
+    public TokenResponseDto login(LoginRequestDto loginDto) {
+        Member member = memberRepository.findByEmail(loginDto.getEmail())
+                .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
+        if (!encoder.matches(loginDto.getPassword(), member.getPassword())) {
             throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
         }
-        return jwtProvider.createTokenDto(loginRequestDto.getEmail(), member.getMemberAuthorities());
+        return jwtProvider.createTokenDto(loginDto.getEmail(), member.getMemberAuthorities());
     }
 
     @Transactional(readOnly = true)
