@@ -33,8 +33,8 @@ public class MemberService {
     private final JwtProvider jwtProvider;
     private final BCryptPasswordEncoder encoder;
 
-    public Long join(MemberRequestDto memberRequestDto) {
-        if (memberRepository.findAll().stream().anyMatch(m -> m.getEmail().equals(memberRequestDto.getEmail()))) {
+    public Long join(MemberRequestDto memberDto) {
+        if (memberRepository.findAll().stream().anyMatch(m -> m.getEmail().equals(memberDto.getEmail()))) {
             throw new EmailDuplicateException(ErrorCode.EMAIL_DUPLICATE);
         }
         Member member = Member.builder()

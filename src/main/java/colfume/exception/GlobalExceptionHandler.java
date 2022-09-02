@@ -84,4 +84,20 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
     }
+
+    @ExceptionHandler(PerfumeNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handlePerfumeNotFoundException(PerfumeNotFoundException e) {
+        log.error("handlePerfumeNotFoundException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
+    }
+
+    @ExceptionHandler(NotificationNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleNotificationNotFoundException(NotificationNotFoundException e) {
+        log.error("handleNotificationNotFoundException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
+    }
 }
