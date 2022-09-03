@@ -100,4 +100,12 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
     }
+
+    @ExceptionHandler(NotificationSendFailException.class)
+    public ResponseEntity<ErrorResponseDto> handleNotificationSendFailException(NotificationSendFailException e) {
+        log.error("handleNotificationSendFailException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
+    }
 }

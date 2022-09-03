@@ -21,7 +21,8 @@ public enum ErrorCode {
     PERFUME_NOT_FOUND(400, "PERFUME-ERR-400", "찾으려는 향수가 존재하지 않습니다."),
 
     // notification
-    NOTIFICATION_NOT_FOUND(400, "NOTIFICATION-ERR-400", "찾으려는 알림이 존재하지 않습니다.");
+    NOTIFICATION_NOT_FOUND(400, "NOTIFICATION-ERR-400", "찾으려는 알림이 존재하지 않습니다."),
+    NOTIFICATION_SEND_FAIL(400, "NOTIFICATION-ERR-400", "알림 전송에 실패했습니다.");
 
     private final int status;
     private final String code;
