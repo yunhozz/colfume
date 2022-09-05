@@ -69,7 +69,7 @@ class MemberServiceTest {
         LoginRequestDto loginDto = new LoginRequestDto("email@gmail.com", "123");
 
         //when
-        TokenResponseDto result = memberService.login(loginDto);
+        TokenResponseDto result = memberService.login(loginDto.getEmail(), loginDto.getPassword());
 
         //then
         assertThat(result).isNotNull();
@@ -83,7 +83,7 @@ class MemberServiceTest {
 
         //when
         try {
-            memberService.login(loginDto);
+            memberService.login(loginDto.getEmail(), loginDto.getPassword());
         } catch (EmailNotFoundException e) {
             assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMAIL_NOT_FOUND);
         }
@@ -96,7 +96,7 @@ class MemberServiceTest {
 
         //when
         try {
-            memberService.login(loginDto);
+            memberService.login(loginDto.getEmail(), loginDto.getPassword());
         } catch (PasswordMismatchException e) {
             assertThat(e.getErrorCode()).isEqualTo(ErrorCode.PASSWORD_MISMATCH);
         }
