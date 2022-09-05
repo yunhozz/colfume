@@ -49,15 +49,15 @@ public class NotificationService {
         return emitter;
     }
 
-    public Long sendNotification(NotificationRequestDto notificationDto, Long senderId, Long receiverId) {
+    public Long sendNotification(NotificationRequestDto notificationRequestDto, Long senderId, Long receiverId) {
         Member sender = memberRepository.getReferenceById(senderId);
         Member receiver = memberRepository.findById(receiverId)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
         Notification notification = Notification.builder()
                 .sender(sender)
                 .receiver(receiver)
-                .message(notificationDto.getMessage())
-                .redirectUrl(notificationDto.getRedirectUrl())
+                .message(notificationRequestDto.getMessage())
+                .redirectUrl(notificationRequestDto.getRedirectUrl())
                 .build();
 
         Map<String, SseEmitter> emitters = emitterRepository.findEmittersWithUserId(String.valueOf(receiverId));

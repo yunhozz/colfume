@@ -22,29 +22,29 @@ public class PerfumeService {
 
     private final PerfumeRepository perfumeRepository;
 
-    public Long createPerfume(PerfumeRequestDto perfumeDto, List<String> tags) {
+    public Long createPerfume(PerfumeRequestDto perfumeRequestDto, List<String> tags) {
         List<Hashtag> hashtags = new ArrayList<>();
         tags.forEach(tag -> hashtags.add(new Hashtag(tag)));
 
         Perfume perfume = Perfume.create(
-                perfumeDto.getName(),
-                perfumeDto.getVolume(),
-                perfumeDto.getPrice(),
-                perfumeDto.getColors(),
-                perfumeDto.getMoods(),
-                perfumeDto.getStyles(),
-                perfumeDto.getNotes(),
-                perfumeDto.getDescription(),
-                perfumeDto.getImageUrl(),
+                perfumeRequestDto.getName(),
+                perfumeRequestDto.getVolume(),
+                perfumeRequestDto.getPrice(),
+                perfumeRequestDto.getColors(),
+                perfumeRequestDto.getMoods(),
+                perfumeRequestDto.getStyles(),
+                perfumeRequestDto.getNotes(),
+                perfumeRequestDto.getDescription(),
+                perfumeRequestDto.getImageUrl(),
                 hashtags
         );
 
         return perfumeRepository.save(perfume).getId(); // auto persist : hashtag
     }
 
-    public void updateInfo(Long perfumeId, UpdateInfoRequestDto updateInfoDto) {
+    public void updateInfo(Long perfumeId, String name, int price, String description) {
         Perfume perfume = findPerfume(perfumeId);
-        perfume.updateInfo(updateInfoDto.getName(), updateInfoDto.getPrice(), updateInfoDto.getDescription());
+        perfume.updateInfo(name, price, description);
     }
 
     public void updateImage(Long perfumeId, String imageUrl) {

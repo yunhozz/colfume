@@ -1,8 +1,10 @@
 package colfume.api;
 
+import colfume.domain.member.service.UserDetailsImpl;
 import colfume.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -24,24 +26,19 @@ public class NotificationApiController {
     }
 
     @GetMapping("/notifications")
-    public ResponseEntity<List<NotificationQueryDto>> getNotificationsWithReceiverId(@RequestParam String receiverId) {
-        return ResponseEntity.ok(notificationService.findNotificationDtoWithReceiverId(Long.valueOf(receiverId)));
+    public ResponseEntity<List<NotificationQueryDto>> getNotificationsWithReceiverId(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(notificationService.findNotificationDtoWithReceiverId(userDetails.getId()));
     }
 
-    @GetMapping("/notifications/connect")
-    public ResponseEntity<SseEmitter> connect(@RequestHeader(value = "Last-Event-Id", defaultValue = "") String lastEventId, @RequestParam String userId) {
-        return ResponseEntity.ok(notificationService.connect(Long.valueOf(userId), lastEventId));
+    @PostMapping(value = "/notifications/connect", produces = "text/event-stream")
+    public ResponseEntity<SseEmitter> connect(@RequestHeader(value = "Last-Event-Id", defaultValue = "") String lastEventId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        notificationService.connect(userDetails.getId(), lastEventId);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/notifications")
-    public ResponseEntity<Long> createNotification(@Valid @RequestBody NotificationRequestDto notificationRequestDto, @RequestParam String senderId, @RequestParam String receiverId) {
-        return ResponseEntity.ok(notificationService.sendNotification(notificationRequestDto, Long.valueOf(senderId), Long.valueOf(receiverId)));
-    }
-
-    @PatchMapping("/notifications")
-    public ResponseEntity<Void> readNotification(@RequestParam String notificationId) {
-        notificationService.readNotification(Long.valueOf(notificationId));
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Long> createNotification(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody NotificationRequestDto notificationRequestDto, @RequestParam String receiverId) {
+        return ResponseEntity.ok(notificationService.sendNotification(notificationRequestDto, userDetails.getId(), Long.valueOf(receiverId)));
     }
 
     @DeleteMapping("/notifications")

@@ -8,10 +8,7 @@ import colfume.domain.member.model.repository.MemberAuthorityRepository;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.dto.TokenResponseDto;
 import colfume.enums.ErrorCode;
-import colfume.exception.EmailDuplicateException;
-import colfume.exception.EmailNotFoundException;
-import colfume.exception.MemberNotFoundException;
-import colfume.exception.PasswordMismatchException;
+import colfume.exception.*;
 import colfume.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,14 +31,14 @@ public class MemberService {
     private final JwtProvider jwtProvider;
     private final BCryptPasswordEncoder encoder;
 
-    public Long join(MemberRequestDto memberDto) {
-        if (memberRepository.findAll().stream().anyMatch(m -> m.getEmail().equals(memberDto.getEmail()))) {
+    public Long join(MemberRequestDto memberRequestDto) {
+        if (memberRepository.findAll().stream().anyMatch(m -> m.getEmail().equals(memberRequestDto.getEmail()))) {
             throw new EmailDuplicateException(ErrorCode.EMAIL_DUPLICATE);
         }
         Member member = Member.builder()
-                .email(memberDto.getEmail())
-                .password(encoder.encode(memberDto.getPassword()))
-                .name(memberDto.getName())
+                .email(memberRequestDto.getEmail())
+                .password(encoder.encode(memberRequestDto.getPassword()))
+                .name(memberRequestDto.getName())
                 .build();
 
         Authority role_user = authorityRepository.getReferenceById("ROLE_USER");
@@ -50,13 +47,34 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
-    public TokenResponseDto login(LoginRequestDto loginDto) {
-        Member member = memberRepository.findByEmail(loginDto.getEmail())
+    public TokenResponseDto login(String email, String password) {
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
-        if (!encoder.matches(loginDto.getPassword(), member.getPassword())) {
+        if (!encoder.matches(password, member.getPassword())) {
             throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
         }
-        return jwtProvider.createTokenDto(loginDto.getEmail(), member.getMemberAuthorities());
+        return jwtProvider.createTokenDto(email, member.getMemberAuthorities());
+    }
+
+    public void updatePassword(Long userId, String password, String newPw) {
+        Member member = findMember(userId);
+        if (encoder.matches(password, member.getPassword())) {
+            throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
+        }
+        if (encoder.matches(newPw, member.getPassword())) {
+            throw new PasswordSameException(ErrorCode.PASSWORD_SAME);
+        }
+        member.updatePassword(encoder.encode(newPw));
+    }
+
+    public void updateName(Long userId, String name) {
+        Member member = findMember(userId);
+        member.updateName(name);
+    }
+
+    public void withdraw(Long userId) {
+        Member member = findMember(userId);
+        memberRepository.delete(member);
     }
 
     @Transactional(readOnly = true)

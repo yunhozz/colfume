@@ -34,7 +34,7 @@ public class PerfumeApiController {
 
     @PatchMapping("/perfumes/info")
     public ResponseEntity<Void> updatePerfumeInfo(@RequestParam String perfumeId, @Valid @RequestBody UpdateInfoRequestDto updateInfoRequestDto) {
-        perfumeService.updateInfo(Long.valueOf(perfumeId), updateInfoRequestDto);
+        perfumeService.updateInfo(Long.valueOf(perfumeId), updateInfoRequestDto.getName(), updateInfoRequestDto.getPrice(), updateInfoRequestDto.getDescription());
         return ResponseEntity.ok().build();
     }
 
