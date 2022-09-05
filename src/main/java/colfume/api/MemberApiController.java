@@ -1,9 +1,14 @@
 package colfume.api;
 
 import colfume.domain.member.service.MemberService;
+import colfume.domain.member.service.UserDetailsImpl;
+import colfume.dto.ErrorResponseDto;
 import colfume.dto.TokenResponseDto;
+import colfume.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,6 +40,27 @@ public class MemberApiController {
 
     @PostMapping("/members/login")
     public ResponseEntity<TokenResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
-        return ResponseEntity.ok(memberService.login(loginRequestDto));
+        return ResponseEntity.ok(memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword()));
+    }
+
+    @PatchMapping("/members/password")
+    public ResponseEntity<Void> updatePassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody PasswordRequestDto passwordRequestDto) {
+        memberService.updatePassword(userDetails.getId(), passwordRequestDto.getPassword(), passwordRequestDto.getNewPw());
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/members/name")
+    public ResponseEntity<Object> updateName(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam(required = false) String name) {
+        if (!StringUtils.hasText(name)) {
+            return ResponseEntity.badRequest().body(new ErrorResponseDto(ErrorCode.NAME_NOT_INSERTED));
+        }
+        memberService.updateName(userDetails.getId(), name);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/members")
+    public ResponseEntity<Void> withdraw(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        memberService.withdraw(userDetails.getId());
+        return ResponseEntity.noContent().build();
     }
 }

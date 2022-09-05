@@ -36,4 +36,12 @@ public class Member extends BaseTime {
         this.password = password;
         this.name = name;
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
 }

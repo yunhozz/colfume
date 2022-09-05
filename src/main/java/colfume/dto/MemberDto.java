@@ -43,6 +43,18 @@ public class MemberDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class PasswordRequestDto {
+
+        @NotBlank(message = "기존 비밃번호를 입력해주세요.")
+        private String password;
+
+        @NotBlank(message = "변경하실 비밀번호를 입력해주세요.")
+        private String newPw;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class MemberResponseDto {
 
         private Long id;
