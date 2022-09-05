@@ -22,6 +22,7 @@ public class NotificationApiController {
 
     @GetMapping("/notifications/{id}")
     public ResponseEntity<NotificationResponseDto> getNotification(@PathVariable String id) {
+        notificationService.readNotification(Long.valueOf(id));
         return ResponseEntity.ok(notificationService.findNotificationDto(Long.valueOf(id)));
     }
 
