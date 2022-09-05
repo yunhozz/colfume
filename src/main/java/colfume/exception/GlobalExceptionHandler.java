@@ -85,6 +85,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
     }
 
+    @ExceptionHandler(PasswordSameException.class)
+    public ResponseEntity<ErrorResponseDto> handlePasswordSameException(PasswordSameException e) {
+        log.error("handlePasswordSameException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
+    }
+
     @ExceptionHandler(PerfumeNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handlePerfumeNotFoundException(PerfumeNotFoundException e) {
         log.error("handlePerfumeNotFoundException", e);
