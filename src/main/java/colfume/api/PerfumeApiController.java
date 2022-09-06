@@ -2,6 +2,7 @@ package colfume.api;
 
 import colfume.domain.perfume.service.PerfumeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,19 +30,19 @@ public class PerfumeApiController {
 
     @PostMapping("/perfumes")
     public ResponseEntity<Long> createPerfume(@Valid @RequestBody PerfumeRequestDto perfumeRequestDto, @RequestParam List<String> tags) {
-        return ResponseEntity.ok(perfumeService.createPerfume(perfumeRequestDto, tags));
+        return new ResponseEntity<>(perfumeService.createPerfume(perfumeRequestDto, tags), HttpStatus.CREATED);
     }
 
     @PatchMapping("/perfumes/info")
     public ResponseEntity<Void> updatePerfumeInfo(@RequestParam String perfumeId, @Valid @RequestBody UpdateInfoRequestDto updateInfoRequestDto) {
         perfumeService.updateInfo(Long.valueOf(perfumeId), updateInfoRequestDto.getName(), updateInfoRequestDto.getPrice(), updateInfoRequestDto.getDescription());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/perfumes/image")
     public ResponseEntity<Void> updatePerfumeImage(@RequestParam String perfumeId, @RequestParam(required = false) String imageUrl) {
         perfumeService.updateImage(Long.valueOf(perfumeId), imageUrl);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/perfumes")

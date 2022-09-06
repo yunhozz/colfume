@@ -6,6 +6,7 @@ import colfume.dto.ErrorResponseDto;
 import colfume.dto.TokenResponseDto;
 import colfume.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
@@ -35,18 +36,18 @@ public class MemberApiController {
 
     @PostMapping("/members/join")
     public ResponseEntity<Long> join(@Valid @RequestBody MemberRequestDto memberRequestDto) {
-        return ResponseEntity.ok(memberService.join(memberRequestDto));
+        return new ResponseEntity<>(memberService.join(memberRequestDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/members/login")
     public ResponseEntity<TokenResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
-        return ResponseEntity.ok(memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword()));
+        return new ResponseEntity<>(memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword()), HttpStatus.CREATED);
     }
 
     @PatchMapping("/members/password")
     public ResponseEntity<Void> updatePassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody PasswordRequestDto passwordRequestDto) {
         memberService.updatePassword(userDetails.getId(), passwordRequestDto.getPassword(), passwordRequestDto.getNewPw());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/members/name")
@@ -55,7 +56,7 @@ public class MemberApiController {
             return ResponseEntity.badRequest().body(new ErrorResponseDto(ErrorCode.NAME_NOT_INSERTED));
         }
         memberService.updateName(userDetails.getId(), name);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/members")

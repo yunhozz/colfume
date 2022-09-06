@@ -3,11 +3,9 @@ package colfume.api;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.MemberService;
-import colfume.dto.MemberDto;
+import colfume.dto.TokenResponseDto;
 import colfume.util.JwtProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +27,7 @@ import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -57,22 +54,13 @@ class MemberApiControllerTest {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
-    @BeforeEach
-    public void beforeEach() {
-        Member member1 = createMember("email1@gmail.com");
-        Member member2 = createMember("email2@gmail.com");
-        Member member3 = createMember("email3@gmail.com");
-        memberRepository.save(member1);
-        memberRepository.save(member2);
-        memberRepository.save(member3);
-    }
-
     @Test
     @WithMockUser
     @DisplayName("GET /api/members/{memberId}")
     void getMember() throws Exception {
         //given
-        Member member = memberRepository.getReferenceById(1L);
+        Member member = createMember("email@gmail.com");
+        memberRepository.save(member);
 
         //when
         ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/{memberId}", member.getId())
@@ -81,8 +69,8 @@ class MemberApiControllerTest {
 
         //then
         result.andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(1L))
-                .andExpect(jsonPath("email").value("email1@gmail.com"))
+                .andExpect(jsonPath("id").value(member.getId()))
+                .andExpect(jsonPath("email").value("email@gmail.com"))
                 .andExpect(jsonPath("password").exists())
                 .andExpect(jsonPath("name").value("tester"));
     }
@@ -91,6 +79,14 @@ class MemberApiControllerTest {
     @WithMockUser
     @DisplayName("GET /api/members")
     void getMembers() throws Exception {
+        //given
+        Member member1 = createMember("email1@gmail.com");
+        Member member2 = createMember("email2@gmail.com");
+        Member member3 = createMember("email3@gmail.com");
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        memberRepository.save(member3);
+
         //when
         ResultActions result = mockMvc.perform(get("/api/members")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -98,15 +94,15 @@ class MemberApiControllerTest {
 
         //then
         result.andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].id").value(member1.getId()))
                 .andExpect(jsonPath("$[0].email").value("email1@gmail.com"))
                 .andExpect(jsonPath("$[0].password").exists())
                 .andExpect(jsonPath("$[0].name").value("tester"))
-                .andExpect(jsonPath("$[1].id").value(2L))
+                .andExpect(jsonPath("$[1].id").value(member2.getId()))
                 .andExpect(jsonPath("$[1].email").value("email2@gmail.com"))
                 .andExpect(jsonPath("$[1].password").exists())
                 .andExpect(jsonPath("$[1].name").value("tester"))
-                .andExpect(jsonPath("$[2].id").value(3L))
+                .andExpect(jsonPath("$[2].id").value(member3.getId()))
                 .andExpect(jsonPath("$[2].email").value("email3@gmail.com"))
                 .andExpect(jsonPath("$[2].password").exists())
                 .andExpect(jsonPath("$[2].name").value("tester"));
@@ -127,8 +123,8 @@ class MemberApiControllerTest {
         );
 
         //then
-        result.andExpect(status().isOk())
-                .andExpect(content().string("4"));
+        result.andExpect(status().isCreated())
+                .andExpect(content().string("1"));
     }
 
     @Test
@@ -136,6 +132,13 @@ class MemberApiControllerTest {
     @DisplayName("POST /api/members/login")
     void login() throws Exception {
         //given
+        Member member1 = createMember("email1@gmail.com");
+        Member member2 = createMember("email2@gmail.com");
+        Member member3 = createMember("email3@gmail.com");
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        memberRepository.save(member3);
+
         LoginRequestDto loginRequestDto = new LoginRequestDto("email1@gmail.com", "123");
 
         //when
@@ -145,11 +148,86 @@ class MemberApiControllerTest {
         );
 
         //then
-        result.andExpect(status().isOk())
+        result.andExpect(status().isCreated())
                 .andExpect(jsonPath("grantType").value("Bearer"))
                 .andExpect(jsonPath("accessToken").exists())
                 .andExpect(jsonPath("refreshToken").exists())
                 .andExpect(jsonPath("accessTokenExpireDate").value(3600000));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("PATCH /api/members/password")
+    void updatePassword() throws Exception {
+        //given
+        Member member1 = createMember("email1@gmail.com");
+        Member member2 = createMember("email2@gmail.com");
+        Member member3 = createMember("email3@gmail.com");
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        memberRepository.save(member3);
+
+        TokenResponseDto token = memberService.login("email1@gmail.com", "123");
+        PasswordRequestDto passwordRequestDto = new PasswordRequestDto("123", "123123");
+
+        //when
+        ResultActions result = mockMvc.perform(patch("/api/members/password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-AUTH-TOKEN", token.getAccessToken())
+                .content(objectMapper.writeValueAsString(passwordRequestDto))
+        );
+
+        //then
+        result.andExpect(status().isCreated());
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("PATCH /api/members/name")
+    void updateName() throws Exception {
+        //given
+        Member member1 = createMember("email1@gmail.com");
+        Member member2 = createMember("email2@gmail.com");
+        Member member3 = createMember("email3@gmail.com");
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        memberRepository.save(member3);
+
+        TokenResponseDto token = memberService.login("email1@gmail.com", "123");
+
+        //when
+        ResultActions result = mockMvc.perform(patch("/api/members/name")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-AUTH-TOKEN", token.getAccessToken())
+                .param("name", "update")
+        );
+
+        //then
+        result.andExpect(status().isCreated());
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("DELETE /api/members")
+    void withdraw() throws Exception {
+        //given
+        Member member1 = createMember("email1@gmail.com");
+        Member member2 = createMember("email2@gmail.com");
+        Member member3 = createMember("email3@gmail.com");
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        memberRepository.save(member3);
+
+        TokenResponseDto token = memberService.login("email1@gmail.com", "123");
+
+        //when
+        ResultActions result = mockMvc.perform(delete("/api/members")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-AUTH-TOKEN", token.getAccessToken())
+        );
+
+        //then
+        result.andExpect(status().isNoContent());
     }
 
     private Member createMember(String email) {
