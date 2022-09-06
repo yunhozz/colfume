@@ -3,6 +3,7 @@ package colfume.api;
 import colfume.domain.member.service.UserDetailsImpl;
 import colfume.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +21,10 @@ public class NotificationApiController {
 
     private final NotificationService notificationService;
 
-    @GetMapping("/notifications/{id}")
-    public ResponseEntity<NotificationResponseDto> getNotification(@PathVariable String id) {
-        notificationService.readNotification(Long.valueOf(id));
-        return ResponseEntity.ok(notificationService.findNotificationDto(Long.valueOf(id)));
+    @GetMapping("/notifications/{notificationId}")
+    public ResponseEntity<NotificationResponseDto> getNotification(@PathVariable String notificationId) {
+        notificationService.readNotification(Long.valueOf(notificationId));
+        return ResponseEntity.ok(notificationService.findNotificationDto(Long.valueOf(notificationId)));
     }
 
     @GetMapping("/notifications")
@@ -34,12 +35,12 @@ public class NotificationApiController {
     @PostMapping(value = "/notifications/connect", produces = "text/event-stream")
     public ResponseEntity<SseEmitter> connect(@RequestHeader(value = "Last-Event-Id", defaultValue = "") String lastEventId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         notificationService.connect(userDetails.getId(), lastEventId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/notifications")
     public ResponseEntity<Long> createNotification(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody NotificationRequestDto notificationRequestDto, @RequestParam String receiverId) {
-        return ResponseEntity.ok(notificationService.sendNotification(notificationRequestDto, userDetails.getId(), Long.valueOf(receiverId)));
+        return new ResponseEntity<>(notificationService.sendNotification(notificationRequestDto, userDetails.getId(), Long.valueOf(receiverId)), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/notifications")
