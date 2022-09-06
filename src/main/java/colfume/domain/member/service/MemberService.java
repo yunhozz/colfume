@@ -57,12 +57,12 @@ public class MemberService {
     }
 
     public void updatePassword(Long userId, String password, String newPw) {
-        Member member = findMember(userId);
-        if (encoder.matches(password, member.getPassword())) {
-            throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
-        }
-        if (encoder.matches(newPw, member.getPassword())) {
+        if (password.equals(newPw)) {
             throw new PasswordSameException(ErrorCode.PASSWORD_SAME);
+        }
+        Member member = findMember(userId);
+        if (!encoder.matches(password, member.getPassword())) {
+            throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
         }
         member.updatePassword(encoder.encode(newPw));
     }
