@@ -30,7 +30,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final EmitterRepository emitterRepository;
     private final MemberRepository memberRepository;
-    private final Long DEFAULT_TIMEOUT = 60 * 60 * 1000L; // 1 hour
+    private final static Long DEFAULT_TIMEOUT = 60 * 60 * 1000L; // 1 hour
 
     public SseEmitter connect(Long userId, String lastEventId) {
         String emitterId = String.valueOf(userId) + System.currentTimeMillis();
