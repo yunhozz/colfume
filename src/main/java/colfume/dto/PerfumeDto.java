@@ -3,6 +3,7 @@ package colfume.dto;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.enums.Color;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public class PerfumeDto {
 
     @Getter
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PerfumeRequestDto {

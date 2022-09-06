@@ -30,6 +30,7 @@ public class Perfume extends BaseTime {
     private int price; // 가격
 
     @ElementCollection(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
     private List<Color> colors = new ArrayList<>(); // 색깔
 
     @ElementCollection(fetch = FetchType.LAZY)
