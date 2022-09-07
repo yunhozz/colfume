@@ -18,12 +18,12 @@ public class UserDetailsImpl implements UserDetails {
     private final String name;
     private final Set<MemberAuthority> memberAuthorities;
 
-    public UserDetailsImpl(Member member) {
+    public UserDetailsImpl(Member member, Set<MemberAuthority> memberAuthorities) {
         id = member.getId();
         email = member.getEmail();
         password = member.getPassword();
         name = member.getName();
-        memberAuthorities = member.getMemberAuthorities();
+        this.memberAuthorities = memberAuthorities;
     }
 
     @Override
