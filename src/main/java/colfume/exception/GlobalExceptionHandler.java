@@ -1,7 +1,6 @@
 package colfume.exception;
 
 import colfume.dto.ErrorResponseDto;
-import colfume.dto.NotValidResponseDto;
 import colfume.enums.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static colfume.dto.ErrorResponseDto.*;
 
 @Slf4j
 @ControllerAdvice
@@ -35,22 +36,22 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<NotValidResponseDto>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("handleMethodArgumentNotValidException", e);
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
-        List<NotValidResponseDto> notValidList = new ArrayList<>();
+        List<NotValidResponseDto> notValidResponseDtoList = new ArrayList<>();
 
-        fieldErrors.forEach(fieldError -> {
-            NotValidResponseDto notValid = NotValidResponseDto.builder()
-                    .message(fieldError.getDefaultMessage())
+        fieldErrors.forEach(fieldError ->  {
+            NotValidResponseDto notValidResponseDto = NotValidResponseDto.builder()
                     .field(fieldError.getField())
-                    .rejectValue(fieldError.getRejectedValue())
                     .code(fieldError.getCode())
+                    .rejectValue(fieldError.getRejectedValue())
+                    .defaultMessage(fieldError.getDefaultMessage())
                     .build();
-            notValidList.add(notValid);
+            notValidResponseDtoList.add(notValidResponseDto);
         });
 
-        return new ResponseEntity<>(notValidList, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorResponseDto(ErrorCode.NOT_VALID, notValidResponseDtoList), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MemberNotFoundException.class)
@@ -112,6 +113,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotificationSendFailException.class)
     public ResponseEntity<ErrorResponseDto> handleNotificationSendFailException(NotificationSendFailException e) {
         log.error("handleNotificationSendFailException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
+    }
+
+    @ExceptionHandler(ChatroomNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleChatroomNotFoundException(ChatroomNotFoundException e) {
+        log.error("handleChatroomNotFoundException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
+    }
+
+    @ExceptionHandler(ChatroomPermissionException.class)
+    public ResponseEntity<ErrorResponseDto> handleChatroomPermissionException(ChatroomPermissionException e) {
+        log.error("handleChatroomPermissionException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
         return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
