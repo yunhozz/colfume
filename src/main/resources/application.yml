@@ -14,13 +14,30 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
 
+#  구글 클라이언트 등록
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId:
+            clientSecret:
+            scope:
+              - email
+              - profile
+
   h2:
     console.enabled: true
 
-  jwt:
-    header: Authorization
-    secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
-    token-validity-in-seconds: 86400
+jwt:
+  header: Authorization
+  secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+  token-validity-in-seconds: 86400
+
+app:
+  oauth2:
+    authorizedRedirectUris:
+      - http://localhost:8080/oauth/redirect
 
 logging.level:
   org.hibernate.SQL: debug

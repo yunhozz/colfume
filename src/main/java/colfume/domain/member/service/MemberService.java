@@ -39,6 +39,7 @@ public class MemberService {
                 .email(memberRequestDto.getEmail())
                 .password(encoder.encode(memberRequestDto.getPassword()))
                 .name(memberRequestDto.getName())
+                .imageUrl(memberRequestDto.getImageUrl())
                 .build();
 
         Authority role_user = authorityRepository.getReferenceById("ROLE_USER");
@@ -67,9 +68,9 @@ public class MemberService {
         member.updatePassword(encoder.encode(newPw));
     }
 
-    public void updateName(Long userId, String name) {
+    public void updateInfo(Long userId, String name, String imageUrl) {
         Member member = findMember(userId);
-        member.updateName(name);
+        member.updateInfo(name, imageUrl);
     }
 
     public void withdraw(Long userId) {

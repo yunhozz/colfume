@@ -30,18 +30,30 @@ public class Member extends BaseTime {
     @Column(length = 10)
     private String name;
 
+    private String imageUrl;
+
     @Builder
-    private Member(String email, String password, String name) {
+    private Member(String email, String password, String name, String imageUrl) {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.imageUrl = imageUrl;
+    }
+
+    public Member update(String email, String name, String imageUrl) {
+        this.email = email;
+        this.name = name;
+        this.imageUrl = imageUrl;
+
+        return this;
+    }
+
+    public void updateInfo(String name, String imageUrl) {
+        this.name = name;
+        this.imageUrl = imageUrl;
     }
 
     public void updatePassword(String password) {
         this.password = password;
-    }
-
-    public void updateName(String name) {
-        this.name = name;
     }
 }

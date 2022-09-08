@@ -25,6 +25,8 @@ public class MemberDto {
 
         @NotBlank(message = "이름을 입력해주세요.")
         private String name;
+
+        private String imageUrl;
     }
 
     @Getter
@@ -61,6 +63,7 @@ public class MemberDto {
         private String email;
         private String password;
         private String name;
+        private String imageUrl;
         private LocalDateTime createdDate;
         private LocalDateTime lastModifiedDate;
 
@@ -69,6 +72,7 @@ public class MemberDto {
             email = member.getEmail();
             password = member.getPassword();
             name = member.getName();
+            imageUrl = member.getImageUrl();
             createdDate = member.getCreatedDate();
             lastModifiedDate = member.getLastModifiedDate();
         }

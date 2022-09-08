@@ -51,11 +51,11 @@ public class MemberApiController {
     }
 
     @PatchMapping("/members/name")
-    public ResponseEntity<Object> updateName(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam(required = false) String name) {
+    public ResponseEntity<Object> updateInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam(required = false) String name, @RequestParam(required = false) String imageUrl) {
         if (!StringUtils.hasText(name)) {
             return ResponseEntity.badRequest().body(new ErrorResponseDto(ErrorCode.NAME_NOT_INSERTED));
         }
-        memberService.updateName(userDetails.getId(), name);
+        memberService.updateInfo(userDetails.getId(), name, imageUrl);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

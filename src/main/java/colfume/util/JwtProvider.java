@@ -25,7 +25,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-    @Value("spring.jwt.secret")
+    @Value("jwt.secret")
     private String secretKey;
     private final String ROLES = "roles";
     private final Long ACCESSTOKEN_VALID_MILLISECOND = 60 * 60 * 1000L; // 1 hour
