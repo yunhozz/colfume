@@ -1,6 +1,7 @@
-package colfume.domain.member.model.repository;
+package colfume.domain.member.service;
 
 import colfume.domain.member.model.entity.Member;
+import colfume.domain.member.model.repository.MemberRepository;
 import colfume.dto.OAuthDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
