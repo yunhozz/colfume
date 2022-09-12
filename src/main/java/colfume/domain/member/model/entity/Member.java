@@ -32,6 +32,8 @@ public class Member extends BaseTime {
 
     private String imageUrl;
 
+    private boolean isEmailVerified; // 이메일 인증 여부
+
     @Builder
     private Member(String email, String password, String name, String imageUrl) {
         this.email = email;
@@ -55,5 +57,9 @@ public class Member extends BaseTime {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void emailVerified() {
+        isEmailVerified = true;
     }
 }

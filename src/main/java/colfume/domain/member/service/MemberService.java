@@ -1,6 +1,7 @@
 package colfume.domain.member.service;
 
 import colfume.domain.member.model.entity.Authority;
+import colfume.domain.member.model.entity.ConfirmationToken;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.entity.MemberAuthority;
 import colfume.domain.member.model.repository.AuthorityRepository;
@@ -28,6 +29,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final AuthorityRepository authorityRepository;
     private final MemberAuthorityRepository memberAuthorityRepository;
+    private final ConfirmationTokenService confirmationTokenService;
     private final JwtProvider jwtProvider;
     private final BCryptPasswordEncoder encoder;
 
@@ -48,11 +50,22 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
+    public void confirmEmail(Long tokenId) {
+        ConfirmationToken confirmationToken = confirmationTokenService.findByIdAndExpirationDateAfterAndExpired(tokenId);
+        Member member = findMember(confirmationToken.getUserId());
+
+        confirmationToken.useToken(); // 토큰 만료
+        member.emailVerified(); // 이메일 인증 성공
+    }
+
     public TokenResponseDto login(String email, String password) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
         if (!encoder.matches(password, member.getPassword())) {
             throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
+        }
+        if (!member.isEmailVerified()) {
+            throw new EmailNotVerifiedException(ErrorCode.EMAIL_NOT_VERIFIED);
         }
         return jwtProvider.createTokenDto(email, member.getMemberAuthorities());
     }

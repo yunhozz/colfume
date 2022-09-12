@@ -70,6 +70,22 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
     }
 
+    @ExceptionHandler(ConfirmationTokenNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleConfirmationTokenNotFoundException(ConfirmationTokenNotFoundException e) {
+        log.error("handleConfirmationTokenNotFoundException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
+    }
+
+    @ExceptionHandler(EmailNotVerifiedException.class)
+    public ResponseEntity<ErrorResponseDto> handleEmailNotVerifiedException(EmailNotVerifiedException e) {
+        log.error("handleEmailNotVerifiedException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return new ResponseEntity<>(error, HttpStatus.valueOf(e.getErrorCode().getStatus()));
+    }
+
     @ExceptionHandler(EmailDuplicateException.class)
     public ResponseEntity<ErrorResponseDto> handleEmailDuplicateException(EmailDuplicateException e) {
         log.error("handleEmailDuplicateException", e);

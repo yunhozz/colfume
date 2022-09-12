@@ -15,6 +15,8 @@ public enum ErrorCode {
     // member
     MEMBER_NOT_FOUND(400, "MEMBER-ERR-400", "찾으려는 유저가 존재하지 않습니다."),
     EMAIL_NOT_FOUND(400, "MEMBER-ERR-400", "이메일이 존재하지 않습니다."),
+    CONFIRMATION_TOKEN_NOT_FOUND(400, "MEMBER-ERR-400", "이메일 인증 토큰을 찾을 수 없습니다."),
+    EMAIL_NOT_VERIFIED(400, "MEMBER-ERR-400", "이메일 인증을 완료해주세요."),
     EMAIL_DUPLICATE(400, "MEMBER-ERR-400", "중복되는 이메일이 존재합니다."),
     PASSWORD_MISMATCH(400, "MEMBER-ERR-400", "비밀번호가 일치하지 않습니다."),
     PASSWORD_SAME(400, "MEMBER-ERR-400", "기존 비밀번호와 일치합니다."),
