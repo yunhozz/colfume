@@ -39,7 +39,7 @@ class MemberServiceTest {
     @Test
     void join() throws Exception {
         //given
-        MemberRequestDto memberDto = new MemberRequestDto("test@gmail.com", "123", "tester");
+        MemberRequestDto memberDto = new MemberRequestDto("qkrdbsgh@gmail.com", "123", "yunho", null);
 
         //when
         Long userId = memberService.join(memberDto);
@@ -51,8 +51,8 @@ class MemberServiceTest {
     @Test
     void join_fail_email_duplicate() throws Exception {
         //given
-        MemberRequestDto memberDto1 = new MemberRequestDto("email@gmail.com", "123", "tester");
-        MemberRequestDto memberDto2 = new MemberRequestDto("email@gmail.com", "123", "tester");
+        MemberRequestDto memberDto1 = new MemberRequestDto("qkrdbsgh@gmail.com", "123", "yunho", null);
+        MemberRequestDto memberDto2 = new MemberRequestDto("qkrdbsgh@gmail.com", "123", "yunho", null);
 
         //when
         try {

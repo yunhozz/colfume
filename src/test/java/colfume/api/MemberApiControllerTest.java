@@ -114,7 +114,7 @@ class MemberApiControllerTest {
     @DisplayName("POST /api/members/join")
     void join() throws Exception {
         //given
-        MemberRequestDto memberRequestDto = new MemberRequestDto("test@gmail.com", "123", "tester");
+        MemberRequestDto memberRequestDto = new MemberRequestDto("test@gmail.com", "123", "tester", null);
 
         //when
         ResultActions result = mockMvc.perform(post("/api/members/join")
