@@ -23,7 +23,7 @@ public class ConfirmationTokenService {
     public Long createConfirmationToken(Long userId, String email) {
         ConfirmationToken confirmationToken = new ConfirmationToken(userId, LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE));
         confirmationTokenRepository.save(confirmationToken);
-        mailService.sendMail(confirmationToken.getId(), email);
+        mailService.sendLinkMail(confirmationToken.getId(), email);
 
         return confirmationToken.getId();
     }

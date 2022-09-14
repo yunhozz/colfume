@@ -1,10 +1,8 @@
 package colfume.domain.member.service;
 
-import colfume.domain.member.model.entity.Authority;
-import colfume.domain.member.model.entity.ConfirmationToken;
-import colfume.domain.member.model.entity.Member;
-import colfume.domain.member.model.entity.MemberAuthority;
+import colfume.domain.member.model.entity.*;
 import colfume.domain.member.model.repository.AuthorityRepository;
+import colfume.domain.member.model.repository.MailCodeRepository;
 import colfume.domain.member.model.repository.MemberAuthorityRepository;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.dto.TokenResponseDto;
@@ -30,6 +28,7 @@ public class MemberService {
     private final AuthorityRepository authorityRepository;
     private final MemberAuthorityRepository memberAuthorityRepository;
     private final ConfirmationTokenService confirmationTokenService;
+    private final MailCodeRepository mailCodeRepository;
     private final JwtProvider jwtProvider;
     private final BCryptPasswordEncoder encoder;
 
@@ -50,12 +49,23 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
+    // 회원가입 완료 후 링크를 통해 인증
     public void confirmEmail(Long tokenId) {
         ConfirmationToken confirmationToken = confirmationTokenService.findByIdAndExpirationDateAfterAndExpired(tokenId);
         Member member = findMember(confirmationToken.getUserId());
 
         confirmationToken.useToken(); // 토큰 만료
         member.emailVerified(); // 이메일 인증 성공
+    }
+
+    // 회원가입 도중 이메일로 전송된 코드로 인증
+    public void confirmCode(String email, String code) {
+        MailCode mailCode = mailCodeRepository.findByEmail(email)
+                .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
+        if (!mailCode.getCode().equals(code)) {
+            throw new EmailNotVerifiedException(ErrorCode.EMAIL_NOT_VERIFIED);
+        }
+        mailCode.verified(); // 코드 검증 성공
     }
 
     public TokenResponseDto login(String email, String password) {
