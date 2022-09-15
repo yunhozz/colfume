@@ -1,13 +1,13 @@
 package colfume.config;
 
-import colfume.domain.member.model.repository.OAuth2UserService;
+import colfume.domain.member.service.OAuth2UserService;
 import colfume.util.JwtAccessDeniedHandler;
 import colfume.util.JwtAuthenticationEntryPoint;
 import colfume.util.JwtFilter;
 import colfume.util.JwtProvider;
-import com.querydsl.core.annotations.Config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,7 +20,7 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Config
+@Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
