@@ -2,6 +2,7 @@ package colfume.dto;
 
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.enums.Color;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +12,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static colfume.dto.HashtagDto.*;
 
 public class PerfumeDto {
 
@@ -61,7 +65,6 @@ public class PerfumeDto {
 
     @Getter
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class PerfumeResponseDto {
 
         private Long id;
@@ -76,6 +79,7 @@ public class PerfumeDto {
         private String imageUrl;
         private LocalDateTime createdDate;
         private LocalDateTime lastModifiedDate;
+        private List<HashtagResponseDto> hashtags;
 
         public PerfumeResponseDto(Perfume perfume) {
             id = perfume.getId();
@@ -90,6 +94,39 @@ public class PerfumeDto {
             imageUrl = perfume.getImageUrl();
             createdDate = perfume.getCreatedDate();
             lastModifiedDate = perfume.getLastModifiedDate();
+            hashtags = perfume.getHashtags().stream()
+                    .map(HashtagResponseDto::new)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class PerfumeSimpleResponseDto {
+
+        // perfume
+        private Long id;
+        private String name;
+        private Integer volume;
+        private Integer price;
+        private List<Color> colors;
+        private String imageUrl;
+
+        // hashtag
+        private List<HashtagSimpleResponseDto> hashtags;
+
+        public void setHashtags(List<HashtagSimpleResponseDto> hashtags) {
+            this.hashtags = hashtags;
+        }
+
+        @QueryProjection
+        public PerfumeSimpleResponseDto(Long id, String name, Integer volume, Integer price, List<Color> colors, String imageUrl) {
+            this.id = id;
+            this.name = name;
+            this.volume = volume;
+            this.price = price;
+            this.colors = colors;
+            this.imageUrl = imageUrl;
         }
     }
 }
