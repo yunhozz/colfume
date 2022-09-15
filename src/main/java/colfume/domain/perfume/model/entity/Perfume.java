@@ -47,7 +47,9 @@ public class Perfume extends BaseTime {
 
     private String imageUrl; // 이미지 url
 
-    private Perfume(String name, int volume, int price, List<Color> colors, List<String> moods, List<String> styles, List<String> notes, String description, String imageUrl) {
+    private int numOfLikes; // 좋아요 수 (북마크)
+
+    public Perfume(String name, int volume, int price, List<Color> colors, List<String> moods, List<String> styles, List<String> notes, String description, String imageUrl, int numOfLikes) {
         this.name = name;
         this.volume = volume;
         this.price = price;
@@ -57,10 +59,11 @@ public class Perfume extends BaseTime {
         this.notes = notes;
         this.description = description;
         this.imageUrl = imageUrl;
+        this.numOfLikes = numOfLikes;
     }
 
-    public static Perfume create(String name, int volume, int price, List<Color> colors, List<String> moods, List<String> styles, List<String> notes, String description, String imageUrl, List<Hashtag> hashtags) {
-        Perfume perfume = new Perfume(name, volume, price, colors, moods, styles, notes, description, imageUrl);
+    public static Perfume create(String name, int volume, int price, List<Color> colors, List<String> moods, List<String> styles, List<String> notes, String description, String imageUrl, int numOfLikes, List<Hashtag> hashtags) {
+        Perfume perfume = new Perfume(name, volume, price, colors, moods, styles, notes, description, imageUrl, numOfLikes);
         hashtags.forEach(perfume::addHashtag);
 
         return perfume;
@@ -74,6 +77,14 @@ public class Perfume extends BaseTime {
 
     public void updateImage(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void addLikes() {
+        numOfLikes++;
+    }
+
+    public void removeLikes() {
+        numOfLikes--;
     }
 
     // 연관관계 편의 메소드

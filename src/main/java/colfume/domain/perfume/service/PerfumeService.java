@@ -36,7 +36,7 @@ public class PerfumeService {
                 perfumeRequestDto.getNotes(),
                 perfumeRequestDto.getDescription(),
                 perfumeRequestDto.getImageUrl(),
-                hashtags
+                0, hashtags
         );
 
         return perfumeRepository.save(perfume).getId(); // auto persist : hashtag
