@@ -1,8 +1,10 @@
 package colfume.domain.perfume.service;
 
+import colfume.domain.perfume.model.entity.Color;
 import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
+import colfume.enums.ColorType;
 import colfume.enums.ErrorCode;
 import colfume.exception.PerfumeNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,24 +24,28 @@ public class PerfumeService {
 
     private final PerfumeRepository perfumeRepository;
 
-    public Long createPerfume(PerfumeRequestDto perfumeRequestDto, List<String> tags) {
+    public Long createPerfume(PerfumeRequestDto perfumeRequestDto, List<String> tags, List<ColorType> colorTypes) {
         List<Hashtag> hashtags = new ArrayList<>();
         tags.forEach(tag -> hashtags.add(new Hashtag(tag)));
+
+        List<Color> colors = new ArrayList<>();
+        colorTypes.forEach(colorType -> colors.add(new Color(colorType)));
 
         Perfume perfume = Perfume.create(
                 perfumeRequestDto.getName(),
                 perfumeRequestDto.getVolume(),
                 perfumeRequestDto.getPrice(),
-                perfumeRequestDto.getColors(),
                 perfumeRequestDto.getMoods(),
                 perfumeRequestDto.getStyles(),
                 perfumeRequestDto.getNotes(),
                 perfumeRequestDto.getDescription(),
                 perfumeRequestDto.getImageUrl(),
-                0, hashtags
+                0,
+                hashtags,
+                colors
         );
 
-        return perfumeRepository.save(perfume).getId(); // auto persist : hashtag
+        return perfumeRepository.save(perfume).getId(); // auto persist : hashtags, colors
     }
 
     public void updateInfo(Long perfumeId, String name, int price, String description) {
