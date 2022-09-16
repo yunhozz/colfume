@@ -1,7 +1,9 @@
 package colfume.dto;
 
+import colfume.domain.perfume.model.entity.Color;
+import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Perfume;
-import colfume.enums.Color;
+import colfume.enums.ColorType;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +15,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static colfume.dto.HashtagDto.*;
 
 public class PerfumeDto {
 
@@ -32,9 +32,6 @@ public class PerfumeDto {
 
         @NotNull(message = "가격을 입력해주세요.")
         private Integer price;
-
-        @NotNull(message = "색깔을 한가지 이상 선택해주세요.")
-        private List<Color> colors;
 
         private List<String> moods;
 
@@ -65,13 +62,13 @@ public class PerfumeDto {
 
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class PerfumeResponseDto {
 
         private Long id;
         private String name;
         private Integer volume;
         private Integer price;
-        private List<Color> colors;
         private List<String> moods;
         private List<String> styles;
         private List<String> notes;
@@ -80,13 +77,13 @@ public class PerfumeDto {
         private LocalDateTime createdDate;
         private LocalDateTime lastModifiedDate;
         private List<HashtagResponseDto> hashtags;
+        private List<ColorResponseDto> colors;
 
         public PerfumeResponseDto(Perfume perfume) {
             id = perfume.getId();
             name = perfume.getName();
             volume = perfume.getVolume();
             price = perfume.getPrice();
-            colors = perfume.getColors();
             moods = perfume.getMoods();
             styles = perfume.getStyles();
             notes = perfume.getNotes();
@@ -97,6 +94,40 @@ public class PerfumeDto {
             hashtags = perfume.getHashtags().stream()
                     .map(HashtagResponseDto::new)
                     .collect(Collectors.toList());
+            colors = perfume.getColors().stream()
+                    .map(ColorResponseDto::new)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class HashtagResponseDto {
+
+        private Long id;
+        private Long perfumeId;
+        private String tag;
+
+        public HashtagResponseDto(Hashtag hashtag) {
+            id = hashtag.getId();
+            perfumeId = hashtag.getPerfume().getId();
+            tag = hashtag.getTag();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ColorResponseDto {
+
+        private Long id;
+        private Long perfumeId;
+        private ColorType colorType;
+
+        public ColorResponseDto(Color color) {
+            id = color.getId();
+            colorType = color.getColorType();
         }
     }
 
@@ -109,24 +140,29 @@ public class PerfumeDto {
         private String name;
         private Integer volume;
         private Integer price;
-        private List<Color> colors;
         private String imageUrl;
 
         // hashtag
-        private List<HashtagSimpleResponseDto> hashtags;
+        private List<HashtagResponseDto> hashtags;
 
-        public void setHashtags(List<HashtagSimpleResponseDto> hashtags) {
-            this.hashtags = hashtags;
-        }
+        // color
+        private List<ColorResponseDto> colors;
 
         @QueryProjection
-        public PerfumeSimpleResponseDto(Long id, String name, Integer volume, Integer price, List<Color> colors, String imageUrl) {
+        public PerfumeSimpleResponseDto(Long id, String name, Integer volume, Integer price, String imageUrl) {
             this.id = id;
             this.name = name;
             this.volume = volume;
             this.price = price;
-            this.colors = colors;
             this.imageUrl = imageUrl;
+        }
+
+        public void setHashtags(List<HashtagResponseDto> hashtags) {
+            this.hashtags = hashtags;
+        }
+
+        public void setColors(List<ColorResponseDto> colors) {
+            this.colors = colors;
         }
     }
 }

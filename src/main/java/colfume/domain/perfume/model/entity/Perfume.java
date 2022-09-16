@@ -1,7 +1,6 @@
 package colfume.domain.perfume.model.entity;
 
 import colfume.domain.BaseTime;
-import colfume.enums.Color;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +21,9 @@ public class Perfume extends BaseTime {
     @OneToMany(mappedBy = "perfume", cascade = CascadeType.ALL)
     private List<Hashtag> hashtags = new ArrayList<>(); // 해시태그
 
+    @OneToMany(mappedBy = "perfume", cascade = CascadeType.ALL)
+    private List<Color> colors = new ArrayList<>(); // 색깔
+
     @Column(length = 30)
     private String name; // 이름
 
@@ -29,17 +31,13 @@ public class Perfume extends BaseTime {
 
     private int price; // 가격
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @Enumerated(EnumType.STRING)
-    private List<Color> colors = new ArrayList<>(); // 색깔
-
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection
     private List<String> moods = new ArrayList<>(); // 무드
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection
     private List<String> styles = new ArrayList<>(); // 스타일
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection
     private List<String> notes = new ArrayList<>(); // 노트
 
     @Column(length = 500)
@@ -49,11 +47,10 @@ public class Perfume extends BaseTime {
 
     private int numOfLikes; // 좋아요 수 (북마크)
 
-    public Perfume(String name, int volume, int price, List<Color> colors, List<String> moods, List<String> styles, List<String> notes, String description, String imageUrl, int numOfLikes) {
+    private Perfume(String name, int volume, int price, List<String> moods, List<String> styles, List<String> notes, String description, String imageUrl, int numOfLikes) {
         this.name = name;
         this.volume = volume;
         this.price = price;
-        this.colors = colors;
         this.moods = moods;
         this.styles = styles;
         this.notes = notes;
@@ -62,9 +59,10 @@ public class Perfume extends BaseTime {
         this.numOfLikes = numOfLikes;
     }
 
-    public static Perfume create(String name, int volume, int price, List<Color> colors, List<String> moods, List<String> styles, List<String> notes, String description, String imageUrl, int numOfLikes, List<Hashtag> hashtags) {
-        Perfume perfume = new Perfume(name, volume, price, colors, moods, styles, notes, description, imageUrl, numOfLikes);
+    public static Perfume create(String name, int volume, int price, List<String> moods, List<String> styles, List<String> notes, String description, String imageUrl, int numOfLikes, List<Hashtag> hashtags, List<Color> colors) {
+        Perfume perfume = new Perfume(name, volume, price, moods, styles, notes, description, imageUrl, numOfLikes);
         hashtags.forEach(perfume::addHashtag);
+        colors.forEach(perfume::addColor);
 
         return perfume;
     }
@@ -91,5 +89,11 @@ public class Perfume extends BaseTime {
     private void addHashtag(Hashtag hashtag) {
         hashtags.add(hashtag);
         hashtag.updatePerfume(this);
+    }
+
+    // 연관관계 편의 메소드
+    private void addColor(Color color) {
+        colors.add(color);
+        color.updatePerfume(this);
     }
 }

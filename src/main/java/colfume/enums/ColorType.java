@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Color {
+public enum ColorType {
 
     RED("COLOR_RED", "빨간색"),
     ORANGE("COLOR_ORANGE", "주황색"),

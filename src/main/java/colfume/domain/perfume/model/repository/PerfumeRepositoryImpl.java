@@ -2,7 +2,7 @@ package colfume.domain.perfume.model.repository;
 
 import colfume.dto.QPerfumeDto_PerfumeSimpleResponseDto;
 import colfume.dto.SearchDto;
-import colfume.enums.Color;
+import colfume.enums.ColorType;
 import colfume.enums.SearchCondition;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static colfume.domain.perfume.model.entity.QColor.*;
 import static colfume.domain.perfume.model.entity.QHashtag.*;
 import static colfume.domain.perfume.model.entity.QPerfume.*;
-import static colfume.dto.HashtagDto.*;
 import static colfume.dto.PerfumeDto.*;
 
 @Repository
@@ -37,25 +37,27 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.name,
                         perfume.volume,
                         perfume.price,
-                        perfume.colors,
                         perfume.imageUrl
                 ))
                 .from(perfume)
+                .join(perfume.colors, color)
                 .where(
                         volumeGoe(searchDto.getVolumeGoe()),
                         volumeLoe(searchDto.getVolumeLoe()),
                         priceGoe(searchDto.getPriceGoe()),
                         priceLoe(searchDto.getPriceLoe()),
-                        byColors(searchDto.getColors())
+                        byColors(searchDto.getColorTypes())
                 )
                 .orderBy(byCondition(searchDto.getCondition()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         List<Long> perfumeIds = perfumes.stream().map(PerfumeSimpleResponseDto::getId).toList();
 
-        List<HashtagSimpleResponseDto> hashtags = queryFactory
+        List<HashtagResponseDto> hashtags = queryFactory
                 .select(Projections.constructor(
-                        HashtagSimpleResponseDto.class,
+                        HashtagResponseDto.class,
                         hashtag.id,
                         perfume.id,
                         hashtag.tag
@@ -65,8 +67,23 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .where(perfume.id.in(perfumeIds))
                 .fetch();
 
-        Map<Long, List<HashtagSimpleResponseDto>> hashtagMap = hashtags.stream().collect(Collectors.groupingBy(HashtagSimpleResponseDto::getPerfumeId));
+        List<ColorResponseDto> colors = queryFactory
+                .select(Projections.constructor(
+                        ColorResponseDto.class,
+                        color.id,
+                        perfume.id,
+                        color.colorType
+                ))
+                .from(color)
+                .join(color.perfume, perfume)
+                .where(perfume.id.in(perfumeIds))
+                .fetch();
+
+        Map<Long, List<HashtagResponseDto>> hashtagMap = hashtags.stream().collect(Collectors.groupingBy(HashtagResponseDto::getPerfumeId));
         perfumes.forEach(perfumeSimpleResponseDto -> perfumeSimpleResponseDto.setHashtags(hashtagMap.get(perfumeSimpleResponseDto.getId())));
+
+        Map<Long, List<ColorResponseDto>> colorMap = colors.stream().collect(Collectors.groupingBy(ColorResponseDto::getPerfumeId));
+        perfumes.forEach(perfumeSimpleResponseDto -> perfumeSimpleResponseDto.setColors(colorMap.get(perfumeSimpleResponseDto.getId())));
 
         Long count = queryFactory
                 .select(perfume.count())
@@ -92,8 +109,8 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
         return priceLoe != null ? perfume.price.loe(priceLoe) : null;
     }
 
-    private BooleanExpression byColors(List<Color> colors) {
-        return !colors.isEmpty() ? perfume.colors.any().in(colors) : null;
+    private BooleanExpression byColors(List<ColorType> colorTypes) {
+        return colorTypes != null ? color.colorType.in(colorTypes) : null;
     }
 
     private OrderSpecifier<?> byCondition(SearchCondition condition) {
