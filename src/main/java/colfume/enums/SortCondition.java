@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum SearchCondition {
+public enum SortCondition {
 
     LATEST("최신순"),
     POPULARITY("인기순");
