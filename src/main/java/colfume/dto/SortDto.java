@@ -1,7 +1,7 @@
 package colfume.dto;
 
 import colfume.enums.ColorType;
-import colfume.enums.SearchCondition;
+import colfume.enums.SortCondition;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchDto {
+public class SortDto {
 
     // 향수 각 필드 상세 조회
     private Integer volumeGoe; // 최소 용량
@@ -21,5 +21,5 @@ public class SearchDto {
     private List<ColorType> colorTypes; // 색깔
 
     // 페이징 순서
-    private SearchCondition condition; // LATEST, POPULARITY
+    private SortCondition condition; // LATEST, POPULARITY
 }
