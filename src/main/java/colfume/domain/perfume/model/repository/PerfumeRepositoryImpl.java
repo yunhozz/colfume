@@ -1,9 +1,9 @@
 package colfume.domain.perfume.model.repository;
 
 import colfume.dto.QPerfumeDto_PerfumeSimpleResponseDto;
-import colfume.dto.SearchDto;
+import colfume.dto.SortDto;
 import colfume.enums.ColorType;
-import colfume.enums.SearchCondition;
+import colfume.enums.SortCondition;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -14,8 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static colfume.domain.perfume.model.entity.QColor.*;
@@ -30,7 +29,100 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<PerfumeSimpleResponseDto> findSimplePerfumeList(SearchDto searchDto, Pageable pageable) {
+    public Page<PerfumeSimpleResponseDto> searchByKeywordOrderByCreated(String keyword, Pageable pageable) {
+        List<PerfumeSimpleResponseDto> perfumes = queryFactory
+                .select(new QPerfumeDto_PerfumeSimpleResponseDto(
+                        perfume.id,
+                        perfume.name,
+                        perfume.volume,
+                        perfume.price,
+                        perfume.imageUrl
+                ))
+                .from(perfume)
+                .join(perfume.hashtags, hashtag)
+                .where(
+                        perfume.name.contains(keyword)
+                                .or(perfume.description.contains(keyword))
+                                .or(perfume.moods.any().contains(keyword))
+                                .or(perfume.styles.any().contains(keyword))
+                                .or(perfume.notes.any().contains(keyword))
+                                .or(hashtag.tag.contains(keyword))
+                )
+                .orderBy(perfume.createdDate.desc())
+                .fetch();
+
+        List<Long> perfumeIds = perfumes.stream().map(PerfumeSimpleResponseDto::getId).toList();
+        joinQueryWithHashtagAndColor(perfumes, perfumeIds);
+
+        Long count = queryFactory
+                .select(perfume.count())
+                .from(perfume)
+                .fetchOne();
+
+        return new PageImpl<>(perfumes, pageable, count);
+    }
+
+    // TODO : @ElementCollection 인 컬럼을 querydsl 로 어떻게 처리할지?
+    @Override
+    public Page<PerfumeSimpleResponseDto> searchByKeywordOrderByAccuracy(String keyword, Pageable pageable) {
+        List<PerfumeSearchResponseDto> searchPerfumes = queryFactory
+                .select(Projections.constructor(
+                        PerfumeSearchResponseDto.class,
+                        perfume.id,
+                        perfume.name,
+                        perfume.description,
+                        hashtag.tag
+                ))
+                .from(perfume)
+                .join(perfume.hashtags, hashtag)
+                .where(
+                        perfume.name.contains(keyword)
+                                .or(perfume.description.contains(keyword))
+                                .or(perfume.moods.any().contains(keyword))
+                                .or(perfume.styles.any().contains(keyword))
+                                .or(perfume.notes.any().contains(keyword))
+                                .or(hashtag.tag.contains(keyword))
+                )
+                .fetch();
+
+        Map<PerfumeSearchResponseDto, Integer> numberOfKeywordMap = new HashMap<>();
+        searchPerfumes.forEach(searchPerfume -> {
+            int count = 0;
+            count += countKeyword(searchPerfume.getName(), keyword);
+            count += countKeyword(searchPerfume.getDescription(), keyword);
+
+            numberOfKeywordMap.put(searchPerfume, count);
+        });
+
+        List<Map.Entry<PerfumeSearchResponseDto, Integer>> sortedEntryList = numberOfKeywordMap.entrySet().stream()
+                .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue())).toList();
+        List<Long> perfumeIds = sortedEntryList.stream().map(entry -> entry.getKey().getId()).toList();
+
+        List<PerfumeSimpleResponseDto> perfumes = queryFactory
+                .select(new QPerfumeDto_PerfumeSimpleResponseDto(
+                        perfume.id,
+                        perfume.name,
+                        perfume.volume,
+                        perfume.price,
+                        perfume.imageUrl
+                ))
+                .from(perfume)
+                .join(perfume.hashtags, hashtag)
+                .where(perfume.id.in(perfumeIds))
+                .fetch();
+
+        joinQueryWithHashtagAndColor(perfumes, perfumeIds);
+
+        Long count = queryFactory
+                .select(perfume.count())
+                .from(perfume)
+                .fetchOne();
+
+        return new PageImpl<>(perfumes, pageable, count);
+    }
+
+    @Override
+    public Page<PerfumeSimpleResponseDto> sortSimplePerfumeList(SortDto sortDto, Pageable pageable) {
         List<PerfumeSimpleResponseDto> perfumes = queryFactory
                 .select(new QPerfumeDto_PerfumeSimpleResponseDto(
                         perfume.id,
@@ -42,19 +134,29 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .from(perfume)
                 .join(perfume.colors, color)
                 .where(
-                        volumeGoe(searchDto.getVolumeGoe()),
-                        volumeLoe(searchDto.getVolumeLoe()),
-                        priceGoe(searchDto.getPriceGoe()),
-                        priceLoe(searchDto.getPriceLoe()),
-                        byColors(searchDto.getColorTypes())
+                        volumeGoe(sortDto.getVolumeGoe()),
+                        volumeLoe(sortDto.getVolumeLoe()),
+                        priceGoe(sortDto.getPriceGoe()),
+                        priceLoe(sortDto.getPriceLoe()),
+                        byColors(sortDto.getColorTypes())
                 )
-                .orderBy(byCondition(searchDto.getCondition()))
+                .orderBy(bySorting(sortDto.getCondition()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         List<Long> perfumeIds = perfumes.stream().map(PerfumeSimpleResponseDto::getId).toList();
+        joinQueryWithHashtagAndColor(perfumes, perfumeIds);
 
+        Long count = queryFactory
+                .select(perfume.count())
+                .from(perfume)
+                .fetchOne();
+
+        return new PageImpl<>(perfumes, pageable, count);
+    }
+
+    private void joinQueryWithHashtagAndColor(List<PerfumeSimpleResponseDto> perfumes, List<Long> perfumeIds) {
         List<HashtagResponseDto> hashtags = queryFactory
                 .select(Projections.constructor(
                         HashtagResponseDto.class,
@@ -84,13 +186,6 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
 
         Map<Long, List<ColorResponseDto>> colorMap = colors.stream().collect(Collectors.groupingBy(ColorResponseDto::getPerfumeId));
         perfumes.forEach(perfumeSimpleResponseDto -> perfumeSimpleResponseDto.setColors(colorMap.get(perfumeSimpleResponseDto.getId())));
-
-        Long count = queryFactory
-                .select(perfume.count())
-                .from(perfume)
-                .fetchOne();
-
-        return new PageImpl<>(perfumes, pageable, count);
     }
 
     private BooleanExpression volumeGoe(Integer volumeGoe) {
@@ -113,13 +208,17 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
         return colorTypes != null ? color.colorType.in(colorTypes) : null;
     }
 
-    private OrderSpecifier<?> byCondition(SearchCondition condition) {
-        if (condition == SearchCondition.LATEST) {
+    private OrderSpecifier<?> bySorting(SortCondition condition) {
+        if (condition == SortCondition.LATEST) {
             return perfume.createdDate.desc();
         }
-        if (condition == SearchCondition.POPULARITY) {
+        if (condition == SortCondition.POPULARITY) {
             return perfume.numOfLikes.desc();
         }
         return null;
+    }
+
+    private int countKeyword(String str, String keyword) {
+        return str.length() - str.replace(keyword, "").length();
     }
 }

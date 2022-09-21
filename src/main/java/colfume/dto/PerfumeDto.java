@@ -165,4 +165,15 @@ public class PerfumeDto {
             this.colors = colors;
         }
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PerfumeSearchResponseDto {
+
+        private Long id;
+        private String name;
+        private String description;
+        private String tag;
+    }
 }
