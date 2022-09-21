@@ -36,7 +36,7 @@ public class PerfumeApiController {
         return ResponseEntity.ok(perfumeService.findPerfumeDtoList());
     }
 
-    @GetMapping("/perfumes/search")
+    @PostMapping("/perfumes/search")
     public ResponseEntity<Page<PerfumeSimpleResponseDto>> searchPerfume(@Valid @RequestBody SearchDto searchDto, Pageable pageable) {
         if (searchDto.getCondition() == SearchCondition.LATEST) {
             return ResponseEntity.ok(perfumeRepository.searchByKeywordOrderByCreated(searchDto.getKeyword(), pageable));
@@ -47,7 +47,7 @@ public class PerfumeApiController {
         return null;
     }
 
-    @GetMapping("/perfumes/sort")
+    @PostMapping("/perfumes/sort")
     public ResponseEntity<Page<PerfumeSimpleResponseDto>> sortPerfumes(@RequestBody SortDto sortDto, Pageable pageable) {
         return ResponseEntity.ok(perfumeRepository.sortSimplePerfumeList(sortDto, pageable));
     }
