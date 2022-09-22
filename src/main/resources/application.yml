@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: oauth
+    include: oauth, mail
     active: local
 
 ---
