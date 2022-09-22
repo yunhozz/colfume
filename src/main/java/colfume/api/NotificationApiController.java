@@ -1,6 +1,6 @@
 package colfume.api;
 
-import colfume.domain.member.service.UserDetailsImpl;
+import colfume.domain.member.service.UserPrincipal;
 import colfume.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,19 +28,19 @@ public class NotificationApiController {
     }
 
     @GetMapping("/notifications")
-    public ResponseEntity<List<NotificationQueryDto>> getNotificationsWithReceiverId(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok(notificationService.findNotificationDtoWithReceiverId(userDetails.getId()));
+    public ResponseEntity<List<NotificationQueryDto>> getNotificationsWithReceiverId(@AuthenticationPrincipal UserPrincipal user) {
+        return ResponseEntity.ok(notificationService.findNotificationDtoWithReceiverId(user.getId()));
     }
 
     @PostMapping(value = "/notifications/connect", produces = "text/event-stream")
-    public ResponseEntity<SseEmitter> connect(@RequestHeader(value = "Last-Event-Id", defaultValue = "") String lastEventId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        notificationService.connect(userDetails.getId(), lastEventId);
+    public ResponseEntity<SseEmitter> connect(@RequestHeader(value = "Last-Event-Id", defaultValue = "") String lastEventId, @AuthenticationPrincipal UserPrincipal user) {
+        notificationService.connect(user.getId(), lastEventId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/notifications")
-    public ResponseEntity<Long> createNotification(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody NotificationRequestDto notificationRequestDto, @RequestParam String receiverId) {
-        return new ResponseEntity<>(notificationService.sendNotification(notificationRequestDto, userDetails.getId(), Long.valueOf(receiverId)), HttpStatus.CREATED);
+    public ResponseEntity<Long> createNotification(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody NotificationRequestDto notificationRequestDto, @RequestParam String receiverId) {
+        return new ResponseEntity<>(notificationService.sendNotification(notificationRequestDto, user.getId(), Long.valueOf(receiverId)), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/notifications")

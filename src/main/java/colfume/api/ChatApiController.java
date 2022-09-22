@@ -1,7 +1,6 @@
 package colfume.api;
 
-import colfume.domain.member.service.UserDetailsImpl;
-import colfume.dto.ChatDto;
+import colfume.domain.member.service.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,8 +21,8 @@ public class ChatApiController {
     private final SimpMessagingTemplate template;
 
     @MessageMapping("/chat/join")
-    public void join(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody ChatRequestDto chatRequestDto) {
-        chatRequestDto.setMessage(userDetails.getName() + "님이 입장하셨습니다.");
+    public void join(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody ChatRequestDto chatRequestDto) {
+        chatRequestDto.setMessage(user.getName() + "님이 입장하셨습니다.");
         template.convertAndSend("/subscribe/chat/room/" + chatRequestDto.getChatroomId(), chatRequestDto);
     }
 

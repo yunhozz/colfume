@@ -1,7 +1,7 @@
 package colfume.api;
 
 import colfume.domain.member.service.MemberService;
-import colfume.domain.member.service.UserDetailsImpl;
+import colfume.domain.member.service.UserPrincipal;
 import colfume.dto.ErrorResponseDto;
 import colfume.dto.TokenResponseDto;
 import colfume.enums.ErrorCode;
@@ -45,22 +45,22 @@ public class MemberApiController {
     }
 
     @PatchMapping("/members/password")
-    public ResponseEntity<Void> updatePassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody PasswordRequestDto passwordRequestDto) {
-        memberService.updatePassword(userDetails.getId(), passwordRequestDto.getPassword(), passwordRequestDto.getNewPw());
+    public ResponseEntity<Void> updatePassword(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody PasswordRequestDto passwordRequestDto) {
+        memberService.updatePassword(user.getId(), passwordRequestDto.getPassword(), passwordRequestDto.getNewPw());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/members/name")
-    public ResponseEntity<Object> updateInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam(required = false) String name, @RequestParam(required = false) String imageUrl) {
+    public ResponseEntity<Object> updateInfo(@AuthenticationPrincipal UserPrincipal user, @RequestParam(required = false) String name, @RequestParam(required = false) String imageUrl) {
         if (!StringUtils.hasText(name)) {
             return ResponseEntity.badRequest().body(new ErrorResponseDto(ErrorCode.NAME_NOT_INSERTED));
         }
-        memberService.updateInfo(userDetails.getId(), name, imageUrl);
+        memberService.updateInfo(user.getId(), name, imageUrl);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/members")
-    public ResponseEntity<Void> withdraw(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Void> withdraw(@AuthenticationPrincipal UserPrincipal userDetails) {
         memberService.withdraw(userDetails.getId());
         return ResponseEntity.noContent().build();
     }

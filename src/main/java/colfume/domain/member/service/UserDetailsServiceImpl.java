@@ -29,6 +29,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
         Set<MemberAuthority> memberAuthorities = memberAuthorityRepository.findByMember(member);
 
-        return new UserDetailsImpl(member, memberAuthorities);
+        return new UserPrincipal(member, memberAuthorities);
     }
 }

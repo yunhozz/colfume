@@ -8,7 +8,7 @@ import colfume.domain.member.model.repository.MemberRepository;
 import colfume.dto.TokenResponseDto;
 import colfume.enums.ErrorCode;
 import colfume.exception.*;
-import colfume.util.JwtProvider;
+import colfume.util.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

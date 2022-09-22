@@ -1,7 +1,7 @@
 package colfume.api;
 
 import colfume.domain.evaluation.service.EvaluationService;
-import colfume.domain.member.service.UserDetailsImpl;
+import colfume.domain.member.service.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,21 +27,21 @@ public class EvaluationApiController {
     }
 
     @PostMapping("/evaluations")
-    public ResponseEntity<Long> createEvaluation(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody EvaluationRequestDto evaluationRequestDto,
+    public ResponseEntity<Long> createEvaluation(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody EvaluationRequestDto evaluationRequestDto,
                                                  @RequestParam String perfumeId) {
-        return new ResponseEntity<>(evaluationService.createEvaluation(evaluationRequestDto, userDetails.getId(), Long.valueOf(perfumeId)), HttpStatus.CREATED);
+        return new ResponseEntity<>(evaluationService.createEvaluation(evaluationRequestDto, user.getId(), Long.valueOf(perfumeId)), HttpStatus.CREATED);
     }
 
     @PatchMapping("/evaluations")
-    public ResponseEntity<Void> updateContent(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody EvaluationRequestDto evaluationRequestDto,
+    public ResponseEntity<Void> updateContent(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody EvaluationRequestDto evaluationRequestDto,
                                               @RequestParam String evaluationId) {
-        evaluationService.updateContent(Long.valueOf(evaluationId), userDetails.getId(), evaluationRequestDto.getContent());
+        evaluationService.updateContent(Long.valueOf(evaluationId), user.getId(), evaluationRequestDto.getContent());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/evaluations")
-    public ResponseEntity<Void> deleteEvaluation(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam String evaluationId) {
-        evaluationService.deleteEvaluation(Long.valueOf(evaluationId), userDetails.getId());
+    public ResponseEntity<Void> deleteEvaluation(@AuthenticationPrincipal UserPrincipal user, @RequestParam String evaluationId) {
+        evaluationService.deleteEvaluation(Long.valueOf(evaluationId), user.getId());
         return ResponseEntity.noContent().build();
     }
 }
