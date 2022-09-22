@@ -1,4 +1,4 @@
-package colfume.util;
+package colfume.util.jwt;
 
 import colfume.domain.member.model.entity.MemberAuthority;
 import colfume.domain.member.service.UserDetailsServiceImpl;

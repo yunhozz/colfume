@@ -1,4 +1,4 @@
-package colfume.util;
+package colfume.util.jwt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

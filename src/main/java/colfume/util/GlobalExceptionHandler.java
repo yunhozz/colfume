@@ -1,7 +1,8 @@
-package colfume.exception;
+package colfume.util;
 
 import colfume.dto.ErrorResponseDto;
 import colfume.enums.ErrorCode;
+import colfume.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
