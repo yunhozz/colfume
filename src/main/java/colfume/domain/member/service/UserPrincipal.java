@@ -6,24 +6,35 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.*;
 
 @Getter
-public class UserDetailsImpl implements UserDetails {
+public class UserPrincipal implements UserDetails, OAuth2User {
 
     private final Long id;
     private final String email;
     private final String password;
     private final String name;
     private final Set<MemberAuthority> memberAuthorities;
+    private Map<String, Object> attributes;
 
-    public UserDetailsImpl(Member member, Set<MemberAuthority> memberAuthorities) {
+    public UserPrincipal(Member member, Set<MemberAuthority> memberAuthorities) {
         id = member.getId();
         email = member.getEmail();
         password = member.getPassword();
         name = member.getName();
         this.memberAuthorities = memberAuthorities;
+    }
+
+    public UserPrincipal(Member member, Set<MemberAuthority> memberAuthorities, Map<String, Object> attributes) {
+        id = member.getId();
+        email = member.getEmail();
+        password = member.getPassword();
+        name = member.getName();
+        this.memberAuthorities = memberAuthorities;
+        this.attributes = attributes;
     }
 
     @Override
@@ -44,6 +55,11 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 
     @Override
