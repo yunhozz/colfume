@@ -1,7 +1,7 @@
-package colfume.util.jwt;
+package colfume.oauth.jwt;
 
 import colfume.domain.member.model.entity.MemberAuthority;
-import colfume.domain.member.service.UserDetailsServiceImpl;
+import colfume.oauth.UserDetailsServiceImpl;
 import colfume.dto.TokenResponseDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.Base64UrlCodec;
@@ -25,8 +25,9 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-    @Value("jwt.secret")
+    @Value("${colfume.jwt.secret}")
     private String secretKey;
+
     private final String ROLES = "roles";
     private final Long ACCESSTOKEN_VALID_MILLISECOND = 60 * 60 * 1000L; // 1 hour
     private final Long REFRESHTOKEN_VALID_MILLISECOND = 14 * 24 * 60 * 60 * 1000L; // 14 day
@@ -44,6 +45,7 @@ public class JwtProvider {
         claims.put(ROLES, roles);
         Date now = new Date();
 
+        // resource 에 직접 접근할 수 있는 필수적인 정보를 담은 토큰, 짧은 생명 주기
         String accessToken = Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(claims)
@@ -52,6 +54,7 @@ public class JwtProvider {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
+        // access token 을 재발급 받기 위한 정보를 가지는 토큰, 긴 생명 주기
         String refreshToken = Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(claims)

@@ -1,4 +1,4 @@
-package colfume.util.jwt;
+package colfume.oauth.jwt;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

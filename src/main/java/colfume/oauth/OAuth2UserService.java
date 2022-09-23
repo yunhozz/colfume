@@ -1,4 +1,4 @@
-package colfume.domain.member.service;
+package colfume.oauth;
 
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
@@ -8,7 +8,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +35,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
 
-        return new DefaultOAuth2User(authorities, oAuthDto.getAttributes(), oAuthDto.getNameAttributeKey());
+        return new UserPrincipal(member, member.getMemberAuthorities(), attributes);
     }
 
     private Member saveOrUpdate(OAuthDto oAuthDto) {

@@ -1,4 +1,4 @@
-package colfume.util.jwt;
+package colfume.oauth.jwt;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
