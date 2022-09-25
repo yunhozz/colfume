@@ -1,7 +1,7 @@
 package colfume.api;
 
 import colfume.domain.evaluation.service.EvaluationService;
-import colfume.domain.member.service.UserPrincipal;
+import colfume.oauth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

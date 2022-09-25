@@ -1,9 +1,8 @@
 package colfume.api;
 
 import colfume.domain.member.service.MemberService;
-import colfume.domain.member.service.UserPrincipal;
+import colfume.oauth.UserPrincipal;
 import colfume.dto.ErrorResponseDto;
-import colfume.dto.TokenResponseDto;
 import colfume.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
