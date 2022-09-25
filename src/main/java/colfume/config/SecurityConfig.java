@@ -34,6 +34,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         JwtFilter jwtFilter = new JwtFilter(jwtProvider);
         httpSecurity
+                .cors().disable()
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/**").permitAll()
@@ -59,6 +60,16 @@ public class SecurityConfig {
                 .and()
 
                 .oauth2Login()
+                .authorizationEndpoint()
+                .baseUri("/oauth2/authorization")
+
+                .and()
+
+                .redirectionEndpoint()
+                .baseUri("/*/oauth2/code/*")
+
+                .and()
+
                 .userInfoEndpoint()
                 .userService(oAuth2UserService);
 
