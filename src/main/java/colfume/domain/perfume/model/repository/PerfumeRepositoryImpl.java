@@ -7,6 +7,7 @@ import colfume.enums.SortCondition;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -109,6 +110,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .from(perfume)
                 .join(perfume.hashtags, hashtag)
                 .where(perfume.id.in(perfumeIds))
+                .orderBy(orderByFieldList(perfumeIds)) // IN 절 순서 보장
                 .fetch();
 
         joinQueryWithHashtagAndColor(perfumes, perfumeIds);
@@ -216,6 +218,10 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
             return perfume.numOfLikes.desc();
         }
         return null;
+    }
+
+    private OrderSpecifier<?> orderByFieldList(List<Long> perfumeIds) {
+        return Expressions.stringTemplate("FIELD({0}, {1})", perfume.id, perfumeIds).asc();
     }
 
     private int countKeyword(String str, String keyword) {
