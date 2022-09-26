@@ -15,6 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static colfume.dto.MemberDto.*;
+import static colfume.dto.TokenDto.*;
 
 @RestController
 @RequestMapping("/api")
@@ -41,6 +42,11 @@ public class MemberApiController {
     @PostMapping("/members/login")
     public ResponseEntity<TokenResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
         return new ResponseEntity<>(memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword()), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/members/reissue")
+    public ResponseEntity<TokenResponseDto> tokenReissue(@RequestBody TokenRequestDto tokenRequestDto) {
+        return new ResponseEntity<>(memberService.tokenReissue(tokenRequestDto), HttpStatus.CREATED);
     }
 
     @PatchMapping("/members/password")

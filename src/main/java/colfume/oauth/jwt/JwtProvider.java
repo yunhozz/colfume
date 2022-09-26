@@ -2,7 +2,6 @@ package colfume.oauth.jwt;
 
 import colfume.domain.member.model.entity.MemberAuthority;
 import colfume.oauth.UserDetailsServiceImpl;
-import colfume.dto.TokenResponseDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.Base64UrlCodec;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import static colfume.dto.TokenDto.*;
 
 @Slf4j
 @Component
