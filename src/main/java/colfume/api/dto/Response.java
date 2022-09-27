@@ -3,30 +3,32 @@ package colfume.api.dto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Response {
 
+    private HttpStatus status;
     private boolean success;
     private int code;
     private Result result;
-    private HttpStatus status;
 
     public static Response success(HttpStatus status) {
-        return new Response(true, 0, null, status);
+        return new Response(status, true, 0, null);
     }
 
     public static <T> Response success(T data, HttpStatus status) {
-        return new Response(true, 0, new Success<>(data), status);
+        return new Response(status, true, 0, new Success<>(data));
     }
 
     public static Response failure(int code, String message, HttpStatus status) {
-        return new Response(false, code, new Failure<>(message), status);
+        return new Response(status, false, code, new Failure<>(message));
     }
 
     public static <T> Response failure(int code, T data, HttpStatus status) {
-        return new Response(false, code, new Failure<>(data), status);
+        return new Response(status, false, code, new Failure<>(data));
     }
 }
