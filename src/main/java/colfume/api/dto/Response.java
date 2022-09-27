@@ -21,10 +21,6 @@ public class Response {
     }
 
     public static Response failure(int code, String message) {
-        return new Response(false, code, new Failure<>(message));
-    }
-
-    public static <T> Response failure(int code, T data) {
-        return new Response(false, code, new Failure<>(data));
+        return new Response(false, code, new Failure(message));
     }
 }

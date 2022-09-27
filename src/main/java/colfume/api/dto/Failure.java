@@ -3,7 +3,7 @@ package colfume.api.dto;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class Failure<T> implements Result {
+public class Failure implements Result {
 
-    private T data;
+    private String message;
 }
