@@ -24,11 +24,7 @@ public class Response {
         return new Response(status, true, 0, new Success<>(data));
     }
 
-    public static Response failure(int code, String message, HttpStatus status) {
-        return new Response(status, false, code, new Failure<>(message));
-    }
-
-    public static <T> Response failure(int code, T data, HttpStatus status) {
-        return new Response(status, false, code, new Failure<>(data));
+    public static <T> Response failure(int code, String message, T data, HttpStatus status) {
+        return new Response(status, false, code, new Failure<>(message, data));
     }
 }
