@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
         log.error("handleException", e);
         ErrorResponseDto error = new ErrorResponseDto(ErrorCode.INTER_SERVER_ERROR);
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
         log.error("handleRuntimeException", e);
         ErrorResponseDto error = new ErrorResponseDto(ErrorCode.INTER_SERVER_ERROR);
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
         });
 
         ErrorResponseDto error = new ErrorResponseDto(ErrorCode.NOT_VALID, notValidResponseDtoList);
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(MemberNotFoundException.class)
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
         log.error("handleMemberNotFoundException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(EmailNotFoundException.class)
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
         log.error("handleEmailNotFoundException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(ConfirmationTokenNotFoundException.class)
@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
         log.error("handleConfirmationTokenNotFoundException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(EmailNotVerifiedException.class)
@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
         log.error("handleEmailNotVerifiedException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(EmailDuplicateException.class)
@@ -93,7 +93,7 @@ public class GlobalExceptionHandler {
         log.error("handleEmailDuplicateException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(PasswordMismatchException.class)
@@ -101,7 +101,7 @@ public class GlobalExceptionHandler {
         log.error("handlePasswordMismatchException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(PasswordSameException.class)
@@ -109,7 +109,7 @@ public class GlobalExceptionHandler {
         log.error("handlePasswordSameException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(PerfumeNotFoundException.class)
@@ -117,7 +117,7 @@ public class GlobalExceptionHandler {
         log.error("handlePerfumeNotFoundException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(NotificationNotFoundException.class)
@@ -125,7 +125,7 @@ public class GlobalExceptionHandler {
         log.error("handleNotificationNotFoundException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(NotificationSendFailException.class)
@@ -133,7 +133,7 @@ public class GlobalExceptionHandler {
         log.error("handleNotificationSendFailException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(ChatroomNotFoundException.class)
@@ -141,7 +141,7 @@ public class GlobalExceptionHandler {
         log.error("handleChatroomNotFoundException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(ChatroomPermissionException.class)
@@ -149,6 +149,6 @@ public class GlobalExceptionHandler {
         log.error("handleChatroomPermissionException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+        return Response.failure(-1000, error.getMessage(), error, HttpStatus.valueOf(error.getStatus()));
     }
 }
