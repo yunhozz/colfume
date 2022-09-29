@@ -32,7 +32,7 @@ public class ChatroomApiController {
     public Response createChatroom(@AuthenticationPrincipal UserPrincipal user, @RequestParam(required = false) String title) {
         if (!StringUtils.hasText(title)) {
             ErrorResponseDto error = new ErrorResponseDto(ErrorCode.CHATROOM_TITLE_NOT_INSERTED);
-            return Response.failure(-1000, error.getMessage(), error, HttpStatus.BAD_REQUEST);
+            return Response.failure(-1000, error, HttpStatus.BAD_REQUEST);
         }
         return Response.success(chatroomService.makeChatroom(user.getId(), title), HttpStatus.CREATED);
     }
@@ -41,7 +41,7 @@ public class ChatroomApiController {
     public Response updateChatroomTitle(@AuthenticationPrincipal UserPrincipal user, @RequestParam String chatroomId, @RequestParam(required = false) String title) {
         if (!StringUtils.hasText(title)) {
             ErrorResponseDto error = new ErrorResponseDto(ErrorCode.CHATROOM_TITLE_NOT_INSERTED);
-            return Response.failure(-1000, error.getMessage(), error, HttpStatus.BAD_REQUEST);
+            return Response.failure(-1000, error, HttpStatus.BAD_REQUEST);
         }
         chatroomService.updateTitle(Long.valueOf(chatroomId), user.getId(), title);
         return Response.success(HttpStatus.CREATED);

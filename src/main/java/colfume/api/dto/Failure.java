@@ -7,6 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class Failure<T> implements Result {
 
-    private String message;
     private T data;
 }

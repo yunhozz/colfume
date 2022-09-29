@@ -58,7 +58,7 @@ public class MemberApiController {
     public Response updateInfo(@AuthenticationPrincipal UserPrincipal user, @RequestParam(required = false) String name, @RequestParam(required = false) String imageUrl) {
         if (!StringUtils.hasText(name)) {
             ErrorResponseDto error = new ErrorResponseDto(ErrorCode.NAME_NOT_INSERTED);
-            return Response.failure(-1000, error.getMessage(), error, HttpStatus.BAD_REQUEST);
+            return Response.failure(-1000, error, HttpStatus.BAD_REQUEST);
         }
         memberService.updateInfo(user.getId(), name, imageUrl);
         return Response.success(HttpStatus.CREATED);
