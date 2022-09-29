@@ -1,5 +1,6 @@
 package colfume.api;
 
+import colfume.api.dto.Response;
 import colfume.domain.chat.service.ChatroomService;
 import colfume.oauth.UserPrincipal;
 import colfume.dto.ErrorResponseDto;
@@ -23,30 +24,32 @@ public class ChatroomApiController {
     private final ChatroomService chatroomService;
 
     @GetMapping("/chat/rooms")
-    public ResponseEntity<List<ChatroomResponseDto>> getChatroomList() {
-        return ResponseEntity.ok(chatroomService.findChatroomDtoList());
+    public Response getChatroomList() {
+        return Response.success(chatroomService.findChatroomDtoList(), HttpStatus.OK);
     }
 
     @PostMapping("/chat/rooms")
-    public ResponseEntity<Object> createChatroom(@AuthenticationPrincipal UserPrincipal user, @RequestParam(required = false) String title) {
+    public Response createChatroom(@AuthenticationPrincipal UserPrincipal user, @RequestParam(required = false) String title) {
         if (!StringUtils.hasText(title)) {
-            return ResponseEntity.badRequest().body(new ErrorResponseDto(ErrorCode.CHATROOM_TITLE_NOT_INSERTED));
+            ErrorResponseDto error = new ErrorResponseDto(ErrorCode.CHATROOM_TITLE_NOT_INSERTED);
+            return Response.failure(-1000, error.getMessage(), error, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(chatroomService.makeChatroom(user.getId(), title), HttpStatus.CREATED);
+        return Response.success(chatroomService.makeChatroom(user.getId(), title), HttpStatus.CREATED);
     }
 
     @PatchMapping("/chat/rooms")
-    public ResponseEntity<Object> updateChatroomTitle(@AuthenticationPrincipal UserPrincipal user, @RequestParam String chatroomId, @RequestParam(required = false) String title) {
+    public Response updateChatroomTitle(@AuthenticationPrincipal UserPrincipal user, @RequestParam String chatroomId, @RequestParam(required = false) String title) {
         if (!StringUtils.hasText(title)) {
-            return ResponseEntity.badRequest().body(new ErrorResponseDto(ErrorCode.CHATROOM_TITLE_NOT_INSERTED));
+            ErrorResponseDto error = new ErrorResponseDto(ErrorCode.CHATROOM_TITLE_NOT_INSERTED);
+            return Response.failure(-1000, error.getMessage(), error, HttpStatus.BAD_REQUEST);
         }
         chatroomService.updateTitle(Long.valueOf(chatroomId), user.getId(), title);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return Response.success(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/chat/rooms")
-    public ResponseEntity<Void> deleteChatroom(@AuthenticationPrincipal UserPrincipal user, @RequestParam String chatroomId) {
+    public Response deleteChatroom(@AuthenticationPrincipal UserPrincipal user, @RequestParam String chatroomId) {
         chatroomService.deleteChatroom(Long.valueOf(chatroomId), user.getId());
-        return ResponseEntity.noContent().build();
+        return Response.success(HttpStatus.NO_CONTENT);
     }
 }
