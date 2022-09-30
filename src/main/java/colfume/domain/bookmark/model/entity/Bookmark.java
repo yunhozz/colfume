@@ -3,6 +3,8 @@ package colfume.domain.bookmark.model.entity;
 import colfume.domain.BaseTime;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.perfume.model.entity.Perfume;
+import colfume.enums.ErrorCode;
+import colfume.exception.AlreadyDeletedException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,8 +28,21 @@ public class Bookmark extends BaseTime {
     @JoinColumn(name = "perfume_id")
     private Perfume perfume;
 
-    public Bookmark(Member member, Perfume perfume) {
+    private String redirectUrl;
+
+    private boolean isDeleted;
+
+    public Bookmark(Member member, Perfume perfume, String redirectUrl) {
         this.member = member;
         this.perfume = perfume;
+        this.redirectUrl = redirectUrl;
+    }
+
+    public void delete() {
+        if (!isDeleted) {
+            isDeleted = true;
+        } else {
+            throw new AlreadyDeletedException(ErrorCode.ALREADY_DELETED);
+        }
     }
 }
