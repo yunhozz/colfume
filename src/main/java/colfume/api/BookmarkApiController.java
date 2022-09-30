@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotBlank;
-
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -36,7 +34,8 @@ public class BookmarkApiController {
     }
 
     @PostMapping("/bookmark")
-    public Response makeBookmark(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam String perfumeId, @NotBlank @RequestParam String redirectUrl) {
+    public Response makeBookmark(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam String perfumeId) {
+        String redirectUrl = "http://localhost:8080/perfume/" + perfumeId;
         return Response.success(bookmarkService.makeBookmark(userPrincipal.getId(), Long.valueOf(perfumeId), redirectUrl), HttpStatus.CREATED);
     }
 
