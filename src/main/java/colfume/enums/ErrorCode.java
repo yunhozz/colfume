@@ -11,6 +11,7 @@ public enum ErrorCode {
     NOT_FOUND(404, "COMMON-ERR-404", "PAGE NOT FOUND"),
     INTER_SERVER_ERROR(500, "COMMON-ERR-500", "INTER SERVER ERROR"),
     NOT_VALID(400, "COMMON-ERR-400", "입력값이 올바르지 않습니다."),
+    ALREADY_DELETED(400, "COMMON-ERR-400", "이미 삭제된 데이터입니다."),
 
     // member
     MEMBER_NOT_FOUND(400, "MEMBER-ERR-400", "찾으려는 유저가 존재하지 않습니다."),
