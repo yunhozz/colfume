@@ -27,12 +27,15 @@ public class BookmarkService {
                 .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
         Bookmark bookmark = new Bookmark(member, perfume, redirectUrl);
 
+        perfume.addLikes(); // 좋아요 수 +1
+
         return bookmarkRepository.save(bookmark).getId();
     }
 
     public void deleteBookmark(Long bookmarkId) {
         Bookmark bookmark = findBookmark(bookmarkId);
         bookmark.delete(); // soft delete
+        bookmark.getPerfume().subtractLikes(); // 좋아요 수 -1
     }
 
     @Transactional(readOnly = true)
