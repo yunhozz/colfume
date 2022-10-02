@@ -40,7 +40,6 @@ public class PerfumeService {
                 perfumeRequestDto.getNotes(),
                 perfumeRequestDto.getDescription(),
                 perfumeRequestDto.getImageUrl(),
-                0,
                 hashtags,
                 colors
         );
