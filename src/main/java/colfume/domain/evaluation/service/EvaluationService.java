@@ -7,13 +7,11 @@ import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
 import colfume.enums.ErrorCode;
+import colfume.exception.CrudNotAuthenticationException;
 import colfume.exception.PerfumeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static colfume.dto.EvaluationDto.*;
 
@@ -34,35 +32,32 @@ public class EvaluationService {
                 .writer(writer)
                 .perfume(perfume)
                 .content(evaluationRequestDto.getContent())
+                .score(evaluationRequestDto.getScore())
                 .build();
+
+        perfume.addEvaluationCount(); // 평가수 +1
+        perfumeRepository.updateScoreForAdd(perfume.getId(), evaluationRequestDto.getScore()); // 평가 점수 update (추가)
 
         return evaluationRepository.save(evaluation).getId();
     }
 
-    public void updateContent(Long evaluationId, Long userId, String content) {
+    public void update(Long evaluationId, Long userId, String content, int score) {
         Evaluation evaluation = findEvaluation(evaluationId);
         if (!evaluation.getWriter().getId().equals(userId)) {
-            throw new IllegalStateException("수정 권한이 없습니다.");
+            throw new CrudNotAuthenticationException(ErrorCode.NOT_AUTHENTICATED);
         }
-        evaluation.updateContent(content);
+        evaluation.update(content, score);
     }
 
     public void deleteEvaluation(Long evaluationId, Long userId) {
         Evaluation evaluation = findEvaluation(evaluationId);
         if (!evaluation.getWriter().getId().equals(userId)) {
-            throw new IllegalStateException("삭제 권한이 없습니다.");
+            throw new CrudNotAuthenticationException(ErrorCode.NOT_AUTHENTICATED);
         }
-        evaluationRepository.delete(evaluation);
-    }
-
-    @Transactional(readOnly = true)
-    public List<EvaluationResponseDto> findEvaluationDtoListByPerfumeId(Long perfumeId) {
-        Perfume perfume = perfumeRepository.findById(perfumeId)
-                .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
-
-        return evaluationRepository.findByPerfume(perfume).stream()
-                .map(EvaluationResponseDto::new)
-                .collect(Collectors.toList());
+        Perfume perfume = evaluation.getPerfume();
+        evaluation.delete(); // soft delete
+        perfume.subtractEvaluationCount(); // 평가수 -1
+        perfumeRepository.updateScoreForSubtract(perfume.getId(), evaluation.getScore()); // 평가 점수 update (삭제)
     }
 
     @Transactional(readOnly = true)
