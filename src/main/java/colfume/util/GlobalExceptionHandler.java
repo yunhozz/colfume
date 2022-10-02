@@ -56,6 +56,22 @@ public class GlobalExceptionHandler {
         return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
     }
 
+    @ExceptionHandler(AlreadyDeletedException.class)
+    public Response handleAlreadyDeletedException(AlreadyDeletedException e) {
+        log.error("handleAlreadyDeletedException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+    }
+
+    @ExceptionHandler(CrudNotAuthenticationException.class)
+    public Response handleCrudNotAuthenticationException(CrudNotAuthenticationException e) {
+        log.error("handleCrudNotAuthenticationException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+    }
+
     @ExceptionHandler(MemberNotFoundException.class)
     public Response handleMemberNotFoundException(MemberNotFoundException e) {
         log.error("handleMemberNotFoundException", e);
