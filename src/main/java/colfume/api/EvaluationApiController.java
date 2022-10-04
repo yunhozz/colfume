@@ -1,6 +1,7 @@
 package colfume.api;
 
 import colfume.api.dto.Response;
+import colfume.domain.evaluation.model.repository.EvaluationRepository;
 import colfume.domain.evaluation.service.EvaluationService;
 import colfume.oauth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -18,25 +19,25 @@ import static colfume.dto.EvaluationDto.*;
 public class EvaluationApiController {
 
     private final EvaluationService evaluationService;
+    private final EvaluationRepository evaluationRepository;
 
     @GetMapping("/evaluations")
-    public Response getEvaluationList(@RequestParam String perfumeId) {
-        return Response.success(evaluationService.findEvaluationDtoListByPerfumeId(Long.valueOf(perfumeId)), HttpStatus.OK);
+    public Response getEvaluationListByPerfume(@RequestParam String perfumeId) {
+        return Response.success(evaluationRepository.findEvaluationListByPerfumeId(Long.valueOf(perfumeId)), HttpStatus.OK);
     }
 
-    @PostMapping("/evaluations")
+    @PostMapping("/evaluation")
     public Response createEvaluation(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody EvaluationRequestDto evaluationRequestDto, @RequestParam String perfumeId) {
         return Response.success(evaluationService.createEvaluation(evaluationRequestDto, user.getId(), Long.valueOf(perfumeId)), HttpStatus.OK);
     }
 
-    @PatchMapping("/evaluations")
-    public Response updateContent(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody EvaluationRequestDto evaluationRequestDto,
-                                              @RequestParam String evaluationId) {
-        evaluationService.updateContent(Long.valueOf(evaluationId), user.getId(), evaluationRequestDto.getContent());
+    @PatchMapping("/evaluation")
+    public Response updateEvaluation(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody EvaluationRequestDto evaluationRequestDto, @RequestParam String evaluationId) {
+        evaluationService.update(Long.valueOf(evaluationId), user.getId(), evaluationRequestDto.getContent(), evaluationRequestDto.getScore());
         return Response.success(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/evaluations")
+    @DeleteMapping("/evaluation")
     public Response deleteEvaluation(@AuthenticationPrincipal UserPrincipal user, @RequestParam String evaluationId) {
         evaluationService.deleteEvaluation(Long.valueOf(evaluationId), user.getId());
         return Response.success(HttpStatus.NO_CONTENT);
