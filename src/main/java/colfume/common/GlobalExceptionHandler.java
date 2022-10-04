@@ -1,4 +1,4 @@
-package colfume.util;
+package colfume.common;
 
 import colfume.api.dto.Response;
 import colfume.dto.ErrorResponseDto;
