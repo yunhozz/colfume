@@ -1,12 +1,23 @@
 package colfume.domain.member.service;
 
-import colfume.domain.member.model.entity.*;
+import colfume.api.dto.member.MemberRequestDto;
+import colfume.domain.member.model.entity.Authority;
+import colfume.domain.member.model.entity.ConfirmationToken;
+import colfume.domain.member.model.entity.MailCode;
+import colfume.domain.member.model.entity.Member;
+import colfume.domain.member.model.entity.MemberAuthority;
 import colfume.domain.member.model.repository.AuthorityRepository;
 import colfume.domain.member.model.repository.MailCodeRepository;
 import colfume.domain.member.model.repository.MemberAuthorityRepository;
 import colfume.domain.member.model.repository.MemberRepository;
+import colfume.domain.member.service.dto.MemberResponseDto;
 import colfume.enums.ErrorCode;
-import colfume.exception.*;
+import colfume.exception.EmailDuplicateException;
+import colfume.exception.EmailNotFoundException;
+import colfume.exception.EmailNotVerifiedException;
+import colfume.exception.MemberNotFoundException;
+import colfume.exception.PasswordMismatchException;
+import colfume.exception.PasswordSameException;
 import colfume.oauth.jwt.JwtProvider;
 import colfume.oauth.jwt.UserRefreshToken;
 import colfume.oauth.jwt.UserRefreshTokenRepository;
@@ -19,8 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static colfume.dto.MemberDto.*;
-import static colfume.dto.TokenDto.*;
+import static colfume.dto.TokenDto.TokenRequestDto;
+import static colfume.dto.TokenDto.TokenResponseDto;
 
 @Service
 @Transactional
