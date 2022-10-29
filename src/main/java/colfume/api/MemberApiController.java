@@ -17,44 +17,44 @@ import static colfume.dto.MemberDto.*;
 import static colfume.dto.TokenDto.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class MemberApiController {
 
     private final MemberService memberService;
 
-    @GetMapping("/members/{userId}")
-    public Response getMember(@PathVariable String userId) {
-        return Response.success(memberService.findMemberDto(Long.valueOf(userId)), HttpStatus.OK);
+    @GetMapping("/{id}")
+    public Response getMember(@PathVariable String id) {
+        return Response.success(memberService.findMemberDto(Long.valueOf(id)), HttpStatus.OK);
     }
 
-    @GetMapping("/members")
+    @GetMapping
     public Response getMemberList() {
         return Response.success(memberService.findMemberDtoList(), HttpStatus.OK);
     }
 
-    @PostMapping("/members/join")
+    @PostMapping("/join")
     public Response join(@Valid @RequestBody MemberRequestDto memberRequestDto) {
         return Response.success(memberService.join(memberRequestDto), HttpStatus.CREATED);
     }
 
-    @PostMapping("/members/login")
+    @PostMapping("/login")
     public Response login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
         return Response.success(memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword()), HttpStatus.CREATED);
     }
 
-    @PostMapping("/members/reissue")
+    @PostMapping("/reissue")
     public Response tokenReissue(@RequestBody TokenRequestDto tokenRequestDto) {
         return Response.success(memberService.tokenReissue(tokenRequestDto), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/members/password")
+    @PatchMapping("/password")
     public Response updatePassword(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody PasswordRequestDto passwordRequestDto) {
         memberService.updatePassword(user.getId(), passwordRequestDto.getPassword(), passwordRequestDto.getNewPw());
         return Response.success(HttpStatus.CREATED);
     }
 
-    @PatchMapping("/members/name")
+    @PatchMapping("/name")
     public Response updateInfo(@AuthenticationPrincipal UserPrincipal user, @RequestParam(required = false) String name, @RequestParam(required = false) String imageUrl) {
         if (!StringUtils.hasText(name)) {
             ErrorResponseDto error = new ErrorResponseDto(ErrorCode.NAME_NOT_INSERTED);
@@ -64,9 +64,9 @@ public class MemberApiController {
         return Response.success(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/members")
-    public Response withdraw(@AuthenticationPrincipal UserPrincipal userDetails) {
-        memberService.withdraw(userDetails.getId());
+    @DeleteMapping
+    public Response withdraw(@AuthenticationPrincipal UserPrincipal user) {
+        memberService.withdraw(user.getId());
         return Response.success(HttpStatus.NO_CONTENT);
     }
 }

@@ -17,18 +17,18 @@ import java.util.List;
 import static colfume.dto.ChatDto.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/chat/rooms")
 @RequiredArgsConstructor
 public class ChatroomApiController {
 
     private final ChatroomService chatroomService;
 
-    @GetMapping("/chat/rooms")
+    @GetMapping
     public Response getChatroomList() {
         return Response.success(chatroomService.findChatroomDtoList(), HttpStatus.OK);
     }
 
-    @PostMapping("/chat/rooms")
+    @PostMapping
     public Response createChatroom(@AuthenticationPrincipal UserPrincipal user, @RequestParam(required = false) String title) {
         if (!StringUtils.hasText(title)) {
             ErrorResponseDto error = new ErrorResponseDto(ErrorCode.CHATROOM_TITLE_NOT_INSERTED);
@@ -37,19 +37,19 @@ public class ChatroomApiController {
         return Response.success(chatroomService.makeChatroom(user.getId(), title), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/chat/rooms")
-    public Response updateChatroomTitle(@AuthenticationPrincipal UserPrincipal user, @RequestParam String chatroomId, @RequestParam(required = false) String title) {
+    @PatchMapping("/{id}")
+    public Response updateChatroomTitle(@AuthenticationPrincipal UserPrincipal user, @PathVariable String id, @RequestParam(required = false) String title) {
         if (!StringUtils.hasText(title)) {
             ErrorResponseDto error = new ErrorResponseDto(ErrorCode.CHATROOM_TITLE_NOT_INSERTED);
             return Response.failure(-1000, error, HttpStatus.BAD_REQUEST);
         }
-        chatroomService.updateTitle(Long.valueOf(chatroomId), user.getId(), title);
+        chatroomService.updateTitle(Long.valueOf(id), user.getId(), title);
         return Response.success(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/chat/rooms")
-    public Response deleteChatroom(@AuthenticationPrincipal UserPrincipal user, @RequestParam String chatroomId) {
-        chatroomService.deleteChatroom(Long.valueOf(chatroomId), user.getId());
+    @DeleteMapping("/{id}")
+    public Response deleteChatroom(@AuthenticationPrincipal UserPrincipal user, @RequestParam String id) {
+        chatroomService.deleteChatroom(Long.valueOf(id), user.getId());
         return Response.success(HttpStatus.NO_CONTENT);
     }
 }

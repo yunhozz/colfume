@@ -16,32 +16,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/bookmarks")
 @RequiredArgsConstructor
 public class BookmarkApiController {
 
     private final BookmarkService bookmarkService;
     private final BookmarkRepository bookmarkRepository;
 
-    @GetMapping("/bookmark/{bookmarkId}")
-    public Response getPerfumeIdForRedirectUrl(@PathVariable String bookmarkId) {
-        return Response.success(bookmarkRepository.findPerfumeIdByBookmarkId(Long.valueOf(bookmarkId)), HttpStatus.OK);
+    @GetMapping("/{id}")
+    public Response getPerfumeIdForRedirectUrl(@PathVariable String id) {
+        return Response.success(bookmarkRepository.findPerfumeIdByBookmarkId(Long.valueOf(id)), HttpStatus.OK);
     }
 
-    @GetMapping("/bookmarks")
+    @GetMapping
     public Response getBookmarkListByUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         return Response.success(bookmarkRepository.findBookmarkListByUserId(userPrincipal.getId()), HttpStatus.OK);
     }
 
-    @PostMapping("/bookmark")
+    @PostMapping
     public Response makeBookmark(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam String perfumeId) {
         String redirectUrl = "http://localhost:8080/perfume/" + perfumeId;
         return Response.success(bookmarkService.makeBookmark(userPrincipal.getId(), Long.valueOf(perfumeId), redirectUrl), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/bookmark")
-    public Response deleteBookmark(@RequestParam String bookmarkId) {
-        bookmarkService.deleteBookmark(Long.valueOf(bookmarkId));
+    @DeleteMapping("/{id}")
+    public Response deleteBookmark(@PathVariable String id) {
+        bookmarkService.deleteBookmark(Long.valueOf(id));
         return Response.success(HttpStatus.NO_CONTENT);
     }
 }

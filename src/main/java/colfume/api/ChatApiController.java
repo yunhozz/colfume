@@ -14,19 +14,19 @@ import javax.validation.Valid;
 import static colfume.dto.ChatDto.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/chats")
 @RequiredArgsConstructor
 public class ChatApiController {
 
     private final SimpMessagingTemplate template;
 
-    @MessageMapping("/chat/join")
+    @MessageMapping("/join")
     public void join(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody ChatRequestDto chatRequestDto) {
         chatRequestDto.setMessage(user.getName() + "님이 입장하셨습니다.");
         template.convertAndSend("/subscribe/chat/room/" + chatRequestDto.getChatroomId(), chatRequestDto);
     }
 
-    @MessageMapping("/chat/message")
+    @MessageMapping("/message")
     public void message(@Valid @RequestBody ChatRequestDto chatRequestDto) {
         template.convertAndSend("/subscribe/chat/room/" + chatRequestDto.getChatroomId(), chatRequestDto);
     }

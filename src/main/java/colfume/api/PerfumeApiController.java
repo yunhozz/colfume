@@ -18,24 +18,24 @@ import java.util.List;
 import static colfume.dto.PerfumeDto.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/perfumes")
 @RequiredArgsConstructor
 public class PerfumeApiController {
 
     private final PerfumeService perfumeService;
     private final PerfumeRepository perfumeRepository;
 
-    @GetMapping("/perfumes/{perfumeId}")
-    public Response getPerfume(@PathVariable String perfumeId) {
-        return Response.success(perfumeService.findPerfumeDto(Long.valueOf(perfumeId)), HttpStatus.OK);
+    @GetMapping("/{id}")
+    public Response getPerfume(@PathVariable String id) {
+        return Response.success(perfumeService.findPerfumeDto(Long.valueOf(id)), HttpStatus.OK);
     }
 
-    @GetMapping("/perfumes")
+    @GetMapping
     public Response getPerfumes() {
         return Response.success(perfumeService.findPerfumeDtoList(), HttpStatus.OK);
     }
 
-    @PostMapping("/perfumes/search")
+    @PostMapping("/search")
     public Response searchPerfume(@Valid @RequestBody SearchDto searchDto, Pageable pageable) {
         if (searchDto.getCondition() == SearchCondition.LATEST) {
             return Response.success(perfumeRepository.searchByKeywordOrderByCreated(searchDto.getKeyword(), pageable), HttpStatus.OK);
@@ -46,31 +46,31 @@ public class PerfumeApiController {
         return null;
     }
 
-    @PostMapping("/perfumes/sort")
+    @PostMapping("/sort")
     public Response sortPerfumes(@RequestBody SortDto sortDto, Pageable pageable) {
         return Response.success(perfumeRepository.sortSimplePerfumeList(sortDto, pageable), HttpStatus.OK);
     }
 
-    @PostMapping("/perfumes")
+    @PostMapping
     public Response createPerfume(@Valid @RequestBody PerfumeRequestDto perfumeRequestDto, @RequestParam List<String> tags, @RequestParam List<ColorType> colorTypes) {
         return Response.success(perfumeService.createPerfume(perfumeRequestDto, tags, colorTypes), HttpStatus.OK);
     }
 
-    @PatchMapping("/perfumes/info")
-    public Response updatePerfumeInfo(@RequestParam String perfumeId, @Valid @RequestBody UpdateInfoRequestDto updateInfoRequestDto) {
-        perfumeService.updateInfo(Long.valueOf(perfumeId), updateInfoRequestDto.getName(), updateInfoRequestDto.getPrice(), updateInfoRequestDto.getDescription());
+    @PatchMapping("/{id}/info")
+    public Response updatePerfumeInfo(@PathVariable String id, @Valid @RequestBody UpdateInfoRequestDto updateInfoRequestDto) {
+        perfumeService.updateInfo(Long.valueOf(id), updateInfoRequestDto.getName(), updateInfoRequestDto.getPrice(), updateInfoRequestDto.getDescription());
         return Response.success(HttpStatus.CREATED);
     }
 
-    @PatchMapping("/perfumes/image")
-    public Response updatePerfumeImage(@RequestParam String perfumeId, @RequestParam(required = false) String imageUrl) {
-        perfumeService.updateImage(Long.valueOf(perfumeId), imageUrl);
+    @PatchMapping("/{id}/image")
+    public Response updatePerfumeImage(@PathVariable String id, @RequestParam(required = false) String imageUrl) {
+        perfumeService.updateImage(Long.valueOf(id), imageUrl);
         return Response.success(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/perfumes")
-    public Response deletePerfume(@RequestParam String perfumeId) {
-        perfumeService.deletePerfume(Long.valueOf(perfumeId));
+    @DeleteMapping("/{id}")
+    public Response deletePerfume(@PathVariable String id) {
+        perfumeService.deletePerfume(Long.valueOf(id));
         return Response.success(HttpStatus.NO_CONTENT);
     }
 }

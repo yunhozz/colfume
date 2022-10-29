@@ -14,32 +14,32 @@ import javax.validation.Valid;
 import static colfume.dto.EvaluationDto.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/evaluations")
 @RequiredArgsConstructor
 public class EvaluationApiController {
 
     private final EvaluationService evaluationService;
     private final EvaluationRepository evaluationRepository;
 
-    @GetMapping("/evaluations")
+    @GetMapping
     public Response getEvaluationListByPerfume(@RequestParam String perfumeId) {
         return Response.success(evaluationRepository.findEvaluationListByPerfumeId(Long.valueOf(perfumeId)), HttpStatus.OK);
     }
 
-    @PostMapping("/evaluation")
+    @PostMapping
     public Response createEvaluation(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody EvaluationRequestDto evaluationRequestDto, @RequestParam String perfumeId) {
         return Response.success(evaluationService.createEvaluation(evaluationRequestDto, user.getId(), Long.valueOf(perfumeId)), HttpStatus.OK);
     }
 
-    @PatchMapping("/evaluation")
-    public Response updateEvaluation(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody EvaluationRequestDto evaluationRequestDto, @RequestParam String evaluationId) {
-        evaluationService.update(Long.valueOf(evaluationId), user.getId(), evaluationRequestDto.getContent(), evaluationRequestDto.getScore());
+    @PatchMapping("/{id}")
+    public Response updateEvaluation(@AuthenticationPrincipal UserPrincipal user, @PathVariable String id, @Valid @RequestBody EvaluationRequestDto evaluationRequestDto) {
+        evaluationService.update(Long.valueOf(id), user.getId(), evaluationRequestDto.getContent(), evaluationRequestDto.getScore());
         return Response.success(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/evaluation")
-    public Response deleteEvaluation(@AuthenticationPrincipal UserPrincipal user, @RequestParam String evaluationId) {
-        evaluationService.deleteEvaluation(Long.valueOf(evaluationId), user.getId());
+    @DeleteMapping("/{id}")
+    public Response deleteEvaluation(@AuthenticationPrincipal UserPrincipal user, @RequestParam String id) {
+        evaluationService.deleteEvaluation(Long.valueOf(id), user.getId());
         return Response.success(HttpStatus.NO_CONTENT);
     }
 }
