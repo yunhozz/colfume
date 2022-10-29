@@ -1,5 +1,6 @@
 package colfume.domain.perfume.service;
 
+import colfume.api.dto.perfume.PerfumeRequestDto;
 import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.HashtagRepository;
@@ -11,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static colfume.dto.PerfumeDto.*;
-import static colfume.enums.ColorType.*;
-import static org.assertj.core.api.Assertions.*;
+import static colfume.enums.ColorType.GREEN;
+import static colfume.enums.ColorType.RED;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional

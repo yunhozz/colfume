@@ -1,9 +1,11 @@
 package colfume.domain.perfume.service;
 
+import colfume.api.dto.perfume.PerfumeRequestDto;
 import colfume.domain.perfume.model.entity.Color;
 import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
+import colfume.domain.perfume.service.dto.PerfumeResponseDto;
 import colfume.enums.ColorType;
 import colfume.enums.ErrorCode;
 import colfume.exception.PerfumeNotFoundException;
@@ -14,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static colfume.dto.PerfumeDto.*;
 
 @Service
 @Transactional

@@ -1,6 +1,8 @@
 package colfume.api;
 
 import colfume.api.dto.Response;
+import colfume.api.dto.perfume.PerfumeRequestDto;
+import colfume.api.dto.perfume.UpdateInfoRequestDto;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
 import colfume.domain.perfume.service.PerfumeService;
 import colfume.dto.SearchDto;
@@ -14,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-
-import static colfume.dto.PerfumeDto.*;
 
 @RestController
 @RequestMapping("/api/perfumes")

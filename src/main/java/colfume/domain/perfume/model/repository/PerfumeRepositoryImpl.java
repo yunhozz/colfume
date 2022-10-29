@@ -1,6 +1,10 @@
 package colfume.domain.perfume.model.repository;
 
-import colfume.dto.QPerfumeDto_PerfumeSimpleResponseDto;
+import colfume.domain.perfume.model.repository.dto.ColorResponseDto;
+import colfume.domain.perfume.model.repository.dto.HashtagResponseDto;
+import colfume.domain.perfume.model.repository.dto.PerfumeSearchQueryDto;
+import colfume.domain.perfume.model.repository.dto.PerfumeSimpleQueryDto;
+import colfume.domain.perfume.model.repository.dto.QPerfumeSimpleQueryDto;
 import colfume.dto.SortDto;
 import colfume.enums.ColorType;
 import colfume.enums.SortCondition;
@@ -15,14 +19,16 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static colfume.domain.perfume.model.entity.QColor.*;
-import static colfume.domain.perfume.model.entity.QHashtag.*;
-import static colfume.domain.perfume.model.entity.QPerfume.*;
-import static colfume.dto.PerfumeDto.*;
+import static colfume.domain.perfume.model.entity.QColor.color;
+import static colfume.domain.perfume.model.entity.QHashtag.hashtag;
+import static colfume.domain.perfume.model.entity.QPerfume.perfume;
 
+// TODO : 커서 페이징 방식으로 구현
 @Repository
 @RequiredArgsConstructor
 public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
@@ -30,9 +36,9 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<PerfumeSimpleResponseDto> searchByKeywordOrderByCreated(String keyword, Pageable pageable) {
-        List<PerfumeSimpleResponseDto> perfumes = queryFactory
-                .select(new QPerfumeDto_PerfumeSimpleResponseDto(
+    public Page<PerfumeSimpleQueryDto> searchByKeywordOrderByCreated(String keyword, Pageable pageable) {
+        List<PerfumeSimpleQueryDto> perfumes = queryFactory
+                .select(new QPerfumeSimpleQueryDto(
                         perfume.id,
                         perfume.name,
                         perfume.volume,
@@ -60,10 +66,10 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
 
     // TODO : @ElementCollection 인 컬럼을 querydsl 로 어떻게 처리할지?
     @Override
-    public Page<PerfumeSimpleResponseDto> searchByKeywordOrderByAccuracy(String keyword, Pageable pageable) {
-        List<PerfumeSearchResponseDto> searchPerfumes = queryFactory
+    public Page<PerfumeSimpleQueryDto> searchByKeywordOrderByAccuracy(String keyword, Pageable pageable) {
+        List<PerfumeSearchQueryDto> searchPerfumes = queryFactory
                 .select(Projections.constructor(
-                        PerfumeSearchResponseDto.class,
+                        PerfumeSearchQueryDto.class,
                         perfume.id,
                         perfume.name,
                         perfume.description,
@@ -83,8 +89,8 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
 
         List<Long> perfumeIds = extractPerfumeIdsOrderByKeywordDesc(keyword, searchPerfumes);
 
-        List<PerfumeSimpleResponseDto> perfumes = queryFactory
-                .select(new QPerfumeDto_PerfumeSimpleResponseDto(
+        List<PerfumeSimpleQueryDto> perfumes = queryFactory
+                .select(new QPerfumeSimpleQueryDto(
                         perfume.id,
                         perfume.name,
                         perfume.volume,
@@ -103,9 +109,9 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
     }
 
     @Override
-    public Page<PerfumeSimpleResponseDto> sortSimplePerfumeList(SortDto sortDto, Pageable pageable) {
-        List<PerfumeSimpleResponseDto> perfumes = queryFactory
-                .select(new QPerfumeDto_PerfumeSimpleResponseDto(
+    public Page<PerfumeSimpleQueryDto> sortSimplePerfumeList(SortDto sortDto, Pageable pageable) {
+        List<PerfumeSimpleQueryDto> perfumes = queryFactory
+                .select(new QPerfumeSimpleQueryDto(
                         perfume.id,
                         perfume.name,
                         perfume.volume,
@@ -132,12 +138,12 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
         return new PageImpl<>(perfumes, pageable, perfumes.size());
     }
 
-    private List<Long> extractPerfumeIds(List<PerfumeSimpleResponseDto> perfumes) {
-        return perfumes.stream().map(PerfumeSimpleResponseDto::getId).toList();
+    private List<Long> extractPerfumeIds(List<PerfumeSimpleQueryDto> perfumes) {
+        return perfumes.stream().map(PerfumeSimpleQueryDto::getId).toList();
     }
 
-    private List<Long> extractPerfumeIdsOrderByKeywordDesc(String keyword, List<PerfumeSearchResponseDto> searchPerfumes) {
-        Map<PerfumeSearchResponseDto, Integer> numberOfKeywordMap = new HashMap<>();
+    private List<Long> extractPerfumeIdsOrderByKeywordDesc(String keyword, List<PerfumeSearchQueryDto> searchPerfumes) {
+        Map<PerfumeSearchQueryDto, Integer> numberOfKeywordMap = new HashMap<>();
         searchPerfumes.forEach(searchPerfume -> {
             int count = 0;
             count += countKeyword(searchPerfume.getName(), keyword);
@@ -146,13 +152,17 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
             numberOfKeywordMap.put(searchPerfume, count);
         });
 
-        List<Map.Entry<PerfumeSearchResponseDto, Integer>> sortedEntryList = numberOfKeywordMap.entrySet().stream()
+        List<Map.Entry<PerfumeSearchQueryDto, Integer>> sortedEntryList = numberOfKeywordMap.entrySet().stream()
                 .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue())).toList();
 
         return sortedEntryList.stream().map(entry -> entry.getKey().getId()).toList();
     }
 
-    private void joinQueryWithHashtagAndColor(List<PerfumeSimpleResponseDto> perfumes, List<Long> perfumeIds) {
+    private int countKeyword(String str, String keyword) {
+        return str.length() - str.replace(keyword, "").length();
+    }
+
+    private void joinQueryWithHashtagAndColor(List<PerfumeSimpleQueryDto> perfumes, List<Long> perfumeIds) {
         List<HashtagResponseDto> hashtags = queryFactory
                 .select(Projections.constructor(
                         HashtagResponseDto.class,
@@ -178,10 +188,10 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .fetch();
 
         Map<Long, List<HashtagResponseDto>> hashtagMap = hashtags.stream().collect(Collectors.groupingBy(HashtagResponseDto::getPerfumeId));
-        perfumes.forEach(perfumeSimpleResponseDto -> perfumeSimpleResponseDto.setHashtags(hashtagMap.get(perfumeSimpleResponseDto.getId())));
+        perfumes.forEach(perfumeSimpleQueryDto -> perfumeSimpleQueryDto.setHashtags(hashtagMap.get(perfumeSimpleQueryDto.getId())));
 
         Map<Long, List<ColorResponseDto>> colorMap = colors.stream().collect(Collectors.groupingBy(ColorResponseDto::getPerfumeId));
-        perfumes.forEach(perfumeSimpleResponseDto -> perfumeSimpleResponseDto.setColors(colorMap.get(perfumeSimpleResponseDto.getId())));
+        perfumes.forEach(perfumeSimpleQueryDto -> perfumeSimpleQueryDto.setColors(colorMap.get(perfumeSimpleQueryDto.getId())));
     }
 
     private BooleanExpression volumeGoe(Integer volumeGoe) {
@@ -216,9 +226,5 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
 
     private OrderSpecifier<?> orderByFieldList(List<Long> perfumeIds) {
         return Expressions.stringTemplate("FIELD({0}, {1})", perfume.id, perfumeIds).asc();
-    }
-
-    private int countKeyword(String str, String keyword) {
-        return str.length() - str.replace(keyword, "").length();
     }
 }
