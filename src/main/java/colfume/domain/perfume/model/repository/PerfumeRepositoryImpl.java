@@ -52,15 +52,10 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .orderBy(perfume.createdDate.desc())
                 .fetch();
 
-        List<Long> perfumeIds = perfumes.stream().map(PerfumeSimpleResponseDto::getId).toList();
+        List<Long> perfumeIds = extractPerfumeIds(perfumes);
         joinQueryWithHashtagAndColor(perfumes, perfumeIds);
 
-        Long count = queryFactory
-                .select(perfume.count())
-                .from(perfume)
-                .fetchOne();
-
-        return new PageImpl<>(perfumes, pageable, count);
+        return new PageImpl<>(perfumes, pageable, perfumes.size());
     }
 
     // TODO : @ElementCollection 인 컬럼을 querydsl 로 어떻게 처리할지?
@@ -86,18 +81,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 )
                 .fetch();
 
-        Map<PerfumeSearchResponseDto, Integer> numberOfKeywordMap = new HashMap<>();
-        searchPerfumes.forEach(searchPerfume -> {
-            int count = 0;
-            count += countKeyword(searchPerfume.getName(), keyword);
-            count += countKeyword(searchPerfume.getDescription(), keyword);
-
-            numberOfKeywordMap.put(searchPerfume, count);
-        });
-
-        List<Map.Entry<PerfumeSearchResponseDto, Integer>> sortedEntryList = numberOfKeywordMap.entrySet().stream()
-                .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue())).toList();
-        List<Long> perfumeIds = sortedEntryList.stream().map(entry -> entry.getKey().getId()).toList();
+        List<Long> perfumeIds = extractPerfumeIdsOrderByKeywordDesc(keyword, searchPerfumes);
 
         List<PerfumeSimpleResponseDto> perfumes = queryFactory
                 .select(new QPerfumeDto_PerfumeSimpleResponseDto(
@@ -115,12 +99,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
 
         joinQueryWithHashtagAndColor(perfumes, perfumeIds);
 
-        Long count = queryFactory
-                .select(perfume.count())
-                .from(perfume)
-                .fetchOne();
-
-        return new PageImpl<>(perfumes, pageable, count);
+        return new PageImpl<>(perfumes, pageable, perfumes.size());
     }
 
     @Override
@@ -147,15 +126,30 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        List<Long> perfumeIds = perfumes.stream().map(PerfumeSimpleResponseDto::getId).toList();
+        List<Long> perfumeIds = extractPerfumeIds(perfumes);
         joinQueryWithHashtagAndColor(perfumes, perfumeIds);
 
-        Long count = queryFactory
-                .select(perfume.count())
-                .from(perfume)
-                .fetchOne();
+        return new PageImpl<>(perfumes, pageable, perfumes.size());
+    }
 
-        return new PageImpl<>(perfumes, pageable, count);
+    private List<Long> extractPerfumeIds(List<PerfumeSimpleResponseDto> perfumes) {
+        return perfumes.stream().map(PerfumeSimpleResponseDto::getId).toList();
+    }
+
+    private List<Long> extractPerfumeIdsOrderByKeywordDesc(String keyword, List<PerfumeSearchResponseDto> searchPerfumes) {
+        Map<PerfumeSearchResponseDto, Integer> numberOfKeywordMap = new HashMap<>();
+        searchPerfumes.forEach(searchPerfume -> {
+            int count = 0;
+            count += countKeyword(searchPerfume.getName(), keyword);
+            count += countKeyword(searchPerfume.getDescription(), keyword);
+
+            numberOfKeywordMap.put(searchPerfume, count);
+        });
+
+        List<Map.Entry<PerfumeSearchResponseDto, Integer>> sortedEntryList = numberOfKeywordMap.entrySet().stream()
+                .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue())).toList();
+
+        return sortedEntryList.stream().map(entry -> entry.getKey().getId()).toList();
     }
 
     private void joinQueryWithHashtagAndColor(List<PerfumeSimpleResponseDto> perfumes, List<Long> perfumeIds) {
