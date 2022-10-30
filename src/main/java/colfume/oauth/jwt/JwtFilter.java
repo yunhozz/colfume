@@ -1,4 +1,4 @@
-package colfume.common.oauth.jwt;
+package colfume.oauth.jwt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

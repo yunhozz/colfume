@@ -1,4 +1,4 @@
-package colfume.common.oauth;
+package colfume.oauth;
 
 import colfume.common.enums.ErrorCode;
 import colfume.domain.member.model.entity.Member;

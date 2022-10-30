@@ -1,4 +1,4 @@
-package colfume.common.oauth;
+package colfume.oauth;
 
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;

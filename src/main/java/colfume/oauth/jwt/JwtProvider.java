@@ -1,6 +1,6 @@
-package colfume.common.oauth.jwt;
+package colfume.oauth.jwt;
 
-import colfume.common.oauth.UserDetailsServiceImpl;
+import colfume.oauth.UserDetailsServiceImpl;
 import colfume.domain.member.model.entity.MemberAuthority;
 import colfume.domain.member.service.dto.TokenResponseDto;
 import io.jsonwebtoken.Claims;

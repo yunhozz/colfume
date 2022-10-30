@@ -1,6 +1,6 @@
 package colfume.api;
 
-import colfume.common.oauth.UserPrincipal;
+import colfume.oauth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

@@ -3,7 +3,7 @@ package colfume.api;
 import colfume.api.dto.member.LoginRequestDto;
 import colfume.api.dto.member.MemberRequestDto;
 import colfume.api.dto.member.PasswordRequestDto;
-import colfume.common.oauth.jwt.JwtProvider;
+import colfume.oauth.jwt.JwtProvider;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.MemberService;

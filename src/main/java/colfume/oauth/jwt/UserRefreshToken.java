@@ -1,4 +1,4 @@
-package colfume.common.oauth.jwt;
+package colfume.oauth.jwt;
 
 import colfume.domain.BaseTime;
 import lombok.AccessLevel;

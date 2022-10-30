@@ -2,7 +2,7 @@ package colfume.api;
 
 import colfume.api.dto.Response;
 import colfume.domain.chat.service.ChatroomService;
-import colfume.common.oauth.UserPrincipal;
+import colfume.oauth.UserPrincipal;
 import colfume.common.dto.ErrorResponseDto;
 import colfume.common.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;

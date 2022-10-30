@@ -1,4 +1,4 @@
-package colfume.common.oauth.jwt;
+package colfume.oauth.jwt;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

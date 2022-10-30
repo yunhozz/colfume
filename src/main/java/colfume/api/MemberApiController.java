@@ -7,7 +7,7 @@ import colfume.api.dto.member.PasswordRequestDto;
 import colfume.api.dto.member.TokenRequestDto;
 import colfume.common.dto.ErrorResponseDto;
 import colfume.common.enums.ErrorCode;
-import colfume.common.oauth.UserPrincipal;
+import colfume.oauth.UserPrincipal;
 import colfume.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
