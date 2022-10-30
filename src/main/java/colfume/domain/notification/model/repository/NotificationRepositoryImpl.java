@@ -1,8 +1,6 @@
 package colfume.domain.notification.model.repository;
 
 import colfume.domain.member.model.entity.QMember;
-import colfume.domain.notification.model.entity.QNotification;
-import colfume.dto.NotificationDto;
 import colfume.dto.QNotificationDto_NotificationQueryDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static colfume.domain.notification.model.entity.QNotification.*;
-import static colfume.dto.NotificationDto.*;
+import static colfume.common.dto.NotificationDto.*;
 
 @Repository
 @RequiredArgsConstructor

@@ -4,10 +4,11 @@ import colfume.api.dto.Response;
 import colfume.api.dto.member.LoginRequestDto;
 import colfume.api.dto.member.MemberRequestDto;
 import colfume.api.dto.member.PasswordRequestDto;
+import colfume.api.dto.member.TokenRequestDto;
+import colfume.common.dto.ErrorResponseDto;
+import colfume.common.enums.ErrorCode;
+import colfume.common.oauth.UserPrincipal;
 import colfume.domain.member.service.MemberService;
-import colfume.dto.ErrorResponseDto;
-import colfume.enums.ErrorCode;
-import colfume.oauth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-
-import static colfume.dto.TokenDto.TokenRequestDto;
 
 @RestController
 @RequestMapping("/api/members")

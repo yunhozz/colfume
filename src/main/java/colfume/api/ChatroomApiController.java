@@ -2,19 +2,14 @@ package colfume.api;
 
 import colfume.api.dto.Response;
 import colfume.domain.chat.service.ChatroomService;
-import colfume.oauth.UserPrincipal;
-import colfume.dto.ErrorResponseDto;
-import colfume.enums.ErrorCode;
+import colfume.common.oauth.UserPrincipal;
+import colfume.common.dto.ErrorResponseDto;
+import colfume.common.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import static colfume.dto.ChatDto.*;
 
 @RestController
 @RequestMapping("/api/chat/rooms")

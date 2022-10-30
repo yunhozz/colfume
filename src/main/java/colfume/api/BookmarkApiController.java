@@ -3,7 +3,7 @@ package colfume.api;
 import colfume.api.dto.Response;
 import colfume.domain.bookmark.model.repository.BookmarkRepository;
 import colfume.domain.bookmark.service.BookmarkService;
-import colfume.oauth.UserPrincipal;
+import colfume.common.oauth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

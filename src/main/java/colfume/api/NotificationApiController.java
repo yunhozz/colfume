@@ -1,7 +1,7 @@
 package colfume.api;
 
 import colfume.api.dto.Response;
-import colfume.oauth.UserPrincipal;
+import colfume.common.oauth.UserPrincipal;
 import colfume.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static colfume.dto.NotificationDto.*;
+import static colfume.common.dto.NotificationDto.*;
 
 @RestController
 @RequestMapping("/api/notifications")

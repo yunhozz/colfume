@@ -1,7 +1,7 @@
 package colfume.domain.perfume.model.repository;
 
 import colfume.domain.perfume.model.repository.dto.PerfumeSimpleQueryDto;
-import colfume.dto.SortDto;
+import colfume.common.dto.SortDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

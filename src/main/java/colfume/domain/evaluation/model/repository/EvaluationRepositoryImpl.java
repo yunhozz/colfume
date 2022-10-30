@@ -10,7 +10,7 @@ import java.util.List;
 import static colfume.domain.evaluation.model.entity.QEvaluation.*;
 import static colfume.domain.member.model.entity.QMember.*;
 import static colfume.domain.perfume.model.entity.QPerfume.*;
-import static colfume.dto.EvaluationDto.*;
+import static colfume.common.dto.EvaluationDto.*;
 
 @Repository
 @RequiredArgsConstructor

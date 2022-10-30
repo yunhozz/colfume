@@ -1,6 +1,6 @@
 package colfume.common;
 
-import colfume.util.CookieUtils;
+import colfume.common.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

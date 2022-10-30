@@ -1,10 +1,10 @@
 package colfume.config;
 
-import colfume.oauth.OAuth2UserService;
-import colfume.oauth.jwt.JwtAccessDeniedHandler;
-import colfume.oauth.jwt.JwtAuthenticationEntryPoint;
-import colfume.oauth.jwt.JwtFilter;
-import colfume.oauth.jwt.JwtProvider;
+import colfume.common.oauth.OAuth2UserService;
+import colfume.common.oauth.jwt.JwtAccessDeniedHandler;
+import colfume.common.oauth.jwt.JwtAuthenticationEntryPoint;
+import colfume.common.oauth.jwt.JwtFilter;
+import colfume.common.oauth.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

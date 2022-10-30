@@ -5,10 +5,10 @@ import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.notification.model.entity.Notification;
 import colfume.domain.notification.model.repository.EmitterRepository;
 import colfume.domain.notification.model.repository.NotificationRepository;
-import colfume.enums.ErrorCode;
-import colfume.exception.MemberNotFoundException;
-import colfume.exception.NotificationNotFoundException;
-import colfume.exception.NotificationSendFailException;
+import colfume.common.enums.ErrorCode;
+import colfume.domain.member.service.exception.MemberNotFoundException;
+import colfume.domain.notification.service.exception.NotificationNotFoundException;
+import colfume.domain.notification.service.exception.NotificationSendFailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,11 +19,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static colfume.dto.NotificationDto.*;
+import static colfume.common.dto.NotificationDto.*;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class NotificationService {
 
@@ -32,6 +31,7 @@ public class NotificationService {
     private final MemberRepository memberRepository;
     private final static Long DEFAULT_TIMEOUT = 60 * 60 * 1000L; // 1 hour
 
+    @Transactional
     public SseEmitter connect(Long userId, String lastEventId) {
         String emitterId = String.valueOf(userId) + System.currentTimeMillis();
         SseEmitter emitter = emitterRepository.saveEmitter(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
@@ -49,6 +49,7 @@ public class NotificationService {
         return emitter;
     }
 
+    @Transactional
     public Long sendNotification(NotificationRequestDto notificationRequestDto, Long senderId, Long receiverId) {
         Member sender = memberRepository.getReferenceById(senderId);
         Member receiver = memberRepository.findById(receiverId)
@@ -71,11 +72,13 @@ public class NotificationService {
         return notificationRepository.save(notification).getId();
     }
 
+    @Transactional
     public void readNotification(Long notificationId) {
         Notification notification = findNotification(notificationId);
         notification.check();
     }
 
+    @Transactional
     public void deleteNotification(Long notificationId) {
         Notification notification = findNotification(notificationId);
         notificationRepository.delete(notification);
@@ -92,7 +95,6 @@ public class NotificationService {
         return notificationRepository.findWithReceiverId(receiver.getId());
     }
 
-    @Transactional(readOnly = true)
     private Notification findNotification(Long notificationId) {
         return notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new NotificationNotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND));

@@ -2,7 +2,7 @@ package colfume.domain.evaluation.model.repository;
 
 import java.util.List;
 
-import static colfume.dto.EvaluationDto.*;
+import static colfume.common.dto.EvaluationDto.*;
 
 public interface EvaluationRepositoryCustom {
 

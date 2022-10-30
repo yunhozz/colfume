@@ -1,26 +1,25 @@
 package colfume.domain.member.service;
 
 import colfume.api.dto.member.MemberRequestDto;
+import colfume.api.dto.member.TokenRequestDto;
+import colfume.common.enums.ErrorCode;
+import colfume.common.oauth.jwt.JwtProvider;
+import colfume.common.oauth.jwt.UserRefreshToken;
+import colfume.common.oauth.jwt.UserRefreshTokenRepository;
 import colfume.domain.member.model.entity.Authority;
-import colfume.domain.member.model.entity.ConfirmationToken;
-import colfume.domain.member.model.entity.MailCode;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.entity.MemberAuthority;
 import colfume.domain.member.model.repository.AuthorityRepository;
-import colfume.domain.member.model.repository.MailCodeRepository;
 import colfume.domain.member.model.repository.MemberAuthorityRepository;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.dto.MemberResponseDto;
-import colfume.enums.ErrorCode;
-import colfume.exception.EmailDuplicateException;
-import colfume.exception.EmailNotFoundException;
-import colfume.exception.EmailNotVerifiedException;
-import colfume.exception.MemberNotFoundException;
-import colfume.exception.PasswordMismatchException;
-import colfume.exception.PasswordSameException;
-import colfume.oauth.jwt.JwtProvider;
-import colfume.oauth.jwt.UserRefreshToken;
-import colfume.oauth.jwt.UserRefreshTokenRepository;
+import colfume.domain.member.service.dto.TokenResponseDto;
+import colfume.domain.member.service.exception.EmailDuplicateException;
+import colfume.domain.member.service.exception.EmailNotFoundException;
+import colfume.domain.member.service.exception.EmailNotVerifiedException;
+import colfume.domain.member.service.exception.MemberNotFoundException;
+import colfume.domain.member.service.exception.PasswordMismatchException;
+import colfume.domain.member.service.exception.PasswordSameException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,11 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static colfume.dto.TokenDto.TokenRequestDto;
-import static colfume.dto.TokenDto.TokenResponseDto;
-
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -42,11 +37,10 @@ public class MemberService {
     private final AuthorityRepository authorityRepository;
     private final MemberAuthorityRepository memberAuthorityRepository;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
-    private final ConfirmationTokenService confirmationTokenService;
-    private final MailCodeRepository mailCodeRepository;
     private final JwtProvider jwtProvider;
     private final BCryptPasswordEncoder encoder;
 
+    @Transactional
     public Long join(MemberRequestDto memberRequestDto) {
         if (memberRepository.findAll().stream().anyMatch(m -> m.getEmail().equals(memberRequestDto.getEmail()))) {
             throw new EmailDuplicateException(ErrorCode.EMAIL_DUPLICATE);
@@ -64,25 +58,7 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
-    // 회원가입 완료 후 링크를 통해 인증
-    public void confirmEmail(Long tokenId) {
-        ConfirmationToken confirmationToken = confirmationTokenService.findByIdAndExpirationDateAfterAndExpired(tokenId);
-        Member member = findMember(confirmationToken.getUserId());
-
-        confirmationToken.useToken(); // 토큰 만료
-        member.emailVerified(); // 이메일 인증 성공
-    }
-
-    // 회원가입 도중 이메일로 전송된 코드로 인증
-    public void confirmCode(String email, String code) {
-        MailCode mailCode = mailCodeRepository.findByEmail(email)
-                .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
-        if (!mailCode.getCode().equals(code)) {
-            throw new EmailNotVerifiedException(ErrorCode.EMAIL_NOT_VERIFIED);
-        }
-        mailCode.verified(); // 코드 검증 성공
-    }
-
+    @Transactional
     public TokenResponseDto login(String email, String password) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
@@ -100,6 +76,7 @@ public class MemberService {
 
     // access token 재발급
     // TODO : 예외 처리 수정
+    @Transactional
     public TokenResponseDto tokenReissue(TokenRequestDto tokenRequestDto) {
         if (!jwtProvider.validateToken(tokenRequestDto.getRefreshToken())) {
             throw new IllegalStateException("검증되지 않은 jwt 토큰입니다.");
@@ -119,6 +96,7 @@ public class MemberService {
         return tokenDto;
     }
 
+    @Transactional
     public void updatePassword(Long userId, String password, String newPw) {
         if (password.equals(newPw)) {
             throw new PasswordSameException(ErrorCode.PASSWORD_SAME);
@@ -130,11 +108,13 @@ public class MemberService {
         member.updatePassword(encoder.encode(newPw));
     }
 
+    @Transactional
     public void updateInfo(Long userId, String name, String imageUrl) {
         Member member = findMember(userId);
         member.updateInfo(name, imageUrl);
     }
 
+    @Transactional
     public void withdraw(Long userId) {
         Member member = findMember(userId);
         memberRepository.delete(member);
@@ -152,7 +132,6 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     private Member findMember(Long userId) {
         return memberRepository.findById(userId)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));

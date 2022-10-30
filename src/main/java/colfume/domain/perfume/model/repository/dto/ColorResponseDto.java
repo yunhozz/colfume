@@ -1,7 +1,7 @@
 package colfume.domain.perfume.model.repository.dto;
 
 import colfume.domain.perfume.model.entity.Color;
-import colfume.enums.ColorType;
+import colfume.common.enums.ColorType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

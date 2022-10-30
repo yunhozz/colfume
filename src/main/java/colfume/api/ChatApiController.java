@@ -1,6 +1,6 @@
 package colfume.api;
 
-import colfume.oauth.UserPrincipal;
+import colfume.common.oauth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static colfume.dto.ChatDto.*;
+import static colfume.common.dto.ChatDto.*;
 
 @RestController
 @RequestMapping("/api/chats")

@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static colfume.enums.ColorType.GREEN;
-import static colfume.enums.ColorType.RED;
+import static colfume.common.enums.ColorType.GREEN;
+import static colfume.common.enums.ColorType.RED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

@@ -1,9 +1,22 @@
 package colfume.common;
 
 import colfume.api.dto.Response;
-import colfume.dto.ErrorResponseDto;
-import colfume.enums.ErrorCode;
-import colfume.exception.*;
+import colfume.common.dto.ErrorResponseDto;
+import colfume.common.enums.ErrorCode;
+import colfume.domain.chat.service.exception.ChatroomNotFoundException;
+import colfume.domain.chat.service.exception.ChatroomPermissionException;
+import colfume.domain.evaluation.service.exception.AlreadyDeletedException;
+import colfume.domain.evaluation.service.exception.CrudNotAuthenticationException;
+import colfume.domain.member.service.exception.ConfirmationTokenNotFoundException;
+import colfume.domain.member.service.exception.EmailDuplicateException;
+import colfume.domain.member.service.exception.EmailNotFoundException;
+import colfume.domain.member.service.exception.EmailNotVerifiedException;
+import colfume.domain.member.service.exception.MemberNotFoundException;
+import colfume.domain.member.service.exception.PasswordMismatchException;
+import colfume.domain.member.service.exception.PasswordSameException;
+import colfume.domain.notification.service.exception.NotificationNotFoundException;
+import colfume.domain.notification.service.exception.NotificationSendFailException;
+import colfume.domain.perfume.service.exception.PerfumeNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -14,7 +27,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.ArrayList;
 import java.util.List;
 
-import static colfume.dto.ErrorResponseDto.*;
+import static colfume.common.dto.ErrorResponseDto.*;
 
 @Slf4j
 @RestControllerAdvice

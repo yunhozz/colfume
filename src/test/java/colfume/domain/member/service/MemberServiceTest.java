@@ -2,12 +2,13 @@ package colfume.domain.member.service;
 
 import colfume.api.dto.member.LoginRequestDto;
 import colfume.api.dto.member.MemberRequestDto;
+import colfume.common.enums.ErrorCode;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
-import colfume.enums.ErrorCode;
-import colfume.exception.EmailDuplicateException;
-import colfume.exception.EmailNotFoundException;
-import colfume.exception.PasswordMismatchException;
+import colfume.domain.member.service.dto.TokenResponseDto;
+import colfume.domain.member.service.exception.EmailDuplicateException;
+import colfume.domain.member.service.exception.EmailNotFoundException;
+import colfume.domain.member.service.exception.PasswordMismatchException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import static colfume.dto.TokenDto.TokenResponseDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

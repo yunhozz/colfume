@@ -10,7 +10,7 @@ import java.util.List;
 import static colfume.domain.bookmark.model.entity.QBookmark.*;
 import static colfume.domain.member.model.entity.QMember.*;
 import static colfume.domain.perfume.model.entity.QPerfume.*;
-import static colfume.dto.BookmarkDto.*;
+import static colfume.common.dto.BookmarkDto.*;
 
 @Repository
 @RequiredArgsConstructor

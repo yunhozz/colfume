@@ -4,8 +4,8 @@ import colfume.domain.perfume.model.entity.Color;
 import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.dto.PerfumeSimpleQueryDto;
-import colfume.dto.SortDto;
-import colfume.enums.SortCondition;
+import colfume.common.dto.SortDto;
+import colfume.common.enums.SortCondition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static colfume.enums.ColorType.GREEN;
-import static colfume.enums.ColorType.RED;
-import static colfume.enums.ColorType.YELLOW;
+import static colfume.common.enums.ColorType.GREEN;
+import static colfume.common.enums.ColorType.RED;
+import static colfume.common.enums.ColorType.YELLOW;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

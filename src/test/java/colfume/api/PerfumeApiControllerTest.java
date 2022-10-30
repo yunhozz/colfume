@@ -20,10 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static colfume.enums.ColorType.GREEN;
-import static colfume.enums.ColorType.ORANGE;
-import static colfume.enums.ColorType.RED;
-import static colfume.enums.ColorType.YELLOW;
+import static colfume.common.enums.ColorType.GREEN;
+import static colfume.common.enums.ColorType.ORANGE;
+import static colfume.common.enums.ColorType.RED;
+import static colfume.common.enums.ColorType.YELLOW;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;

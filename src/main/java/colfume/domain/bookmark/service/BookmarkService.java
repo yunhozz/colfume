@@ -6,14 +6,13 @@ import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
-import colfume.enums.ErrorCode;
-import colfume.exception.PerfumeNotFoundException;
+import colfume.common.enums.ErrorCode;
+import colfume.domain.perfume.service.exception.PerfumeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class BookmarkService {
 
@@ -21,6 +20,7 @@ public class BookmarkService {
     private final MemberRepository memberRepository;
     private final PerfumeRepository perfumeRepository;
 
+    @Transactional
     public Long makeBookmark(Long userId, Long perfumeId, String redirectUrl) {
         Member member = memberRepository.getReferenceById(userId);
         Perfume perfume = perfumeRepository.findById(perfumeId)
@@ -32,13 +32,13 @@ public class BookmarkService {
         return bookmarkRepository.save(bookmark).getId();
     }
 
+    @Transactional
     public void deleteBookmark(Long bookmarkId) {
         Bookmark bookmark = findBookmark(bookmarkId);
         bookmark.delete(); // soft delete
         bookmark.getPerfume().subtractLikes(); // 좋아요 수 -1
     }
 
-    @Transactional(readOnly = true)
     private Bookmark findBookmark(Long bookmarkId) {
         return bookmarkRepository.findById(bookmarkId)
                 .orElseThrow();

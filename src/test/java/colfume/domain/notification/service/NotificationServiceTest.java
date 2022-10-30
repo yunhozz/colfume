@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.util.List;
 import java.util.Optional;
 
-import static colfume.dto.NotificationDto.*;
+import static colfume.common.dto.NotificationDto.*;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest

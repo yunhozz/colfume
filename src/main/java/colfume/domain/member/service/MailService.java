@@ -1,7 +1,14 @@
 package colfume.domain.member.service;
 
+import colfume.common.enums.ErrorCode;
+import colfume.domain.member.model.entity.ConfirmationToken;
 import colfume.domain.member.model.entity.MailCode;
+import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MailCodeRepository;
+import colfume.domain.member.model.repository.MemberRepository;
+import colfume.domain.member.service.exception.EmailNotFoundException;
+import colfume.domain.member.service.exception.EmailNotVerifiedException;
+import colfume.domain.member.service.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -14,12 +21,13 @@ import javax.mail.internet.MimeMessage;
 import java.util.Random;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class MailService {
 
     private final JavaMailSender javaMailSender;
+    private final MemberRepository memberRepository;
     private final MailCodeRepository mailCodeRepository;
+    private final ConfirmationTokenService confirmationTokenService;
 
     public void sendLinkMail(Long confirmationTokenId, String email) {
         MimeMessage message = createMessageWithLink(confirmationTokenId, email);
@@ -46,6 +54,7 @@ public class MailService {
     }
 
     // 코드 인증 방식
+    @Transactional
     private MimeMessage createMessageWithCode(String email) {
         MimeMessage message = javaMailSender.createMimeMessage();
         String code = createCode();
@@ -78,6 +87,27 @@ public class MailService {
         return message;
     }
 
+    // 회원가입 완료 후 링크를 통해 인증
+    @Transactional
+    public void confirmEmail(Long tokenId) {
+        ConfirmationToken confirmationToken = confirmationTokenService.findByIdAndExpirationDateAfterAndExpired(tokenId);
+        Member member = findMember(confirmationToken.getUserId());
+
+        confirmationToken.useToken(); // 토큰 만료
+        member.emailVerified(); // 이메일 인증 성공
+    }
+
+    // 회원가입 도중 이메일로 전송된 코드로 인증
+    @Transactional
+    public void confirmCode(String email, String code) {
+        MailCode mailCode = mailCodeRepository.findByEmail(email)
+                .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
+        if (!mailCode.getCode().equals(code)) {
+            throw new EmailNotVerifiedException(ErrorCode.EMAIL_NOT_VERIFIED);
+        }
+        mailCode.verified(); // 코드 검증 성공
+    }
+
     private String createCode() {
         StringBuilder code = new StringBuilder();
         Random rnd = new Random();
@@ -101,5 +131,10 @@ public class MailService {
             }
         }
         return code.toString();
+    }
+
+    private Member findMember(Long userId) {
+        return memberRepository.findById(userId)
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
     }
 }

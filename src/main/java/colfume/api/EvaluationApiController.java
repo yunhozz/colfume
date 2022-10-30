@@ -3,7 +3,7 @@ package colfume.api;
 import colfume.api.dto.Response;
 import colfume.domain.evaluation.model.repository.EvaluationRepository;
 import colfume.domain.evaluation.service.EvaluationService;
-import colfume.oauth.UserPrincipal;
+import colfume.common.oauth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static colfume.dto.EvaluationDto.*;
+import static colfume.common.dto.EvaluationDto.*;
 
 @RestController
 @RequestMapping("/api/evaluations")
