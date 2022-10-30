@@ -60,8 +60,8 @@ public class MemberService {
 
     @Transactional
     public TokenResponseDto login(String email, String password) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
+        Member member = findMemberByEmail(email);
+
         if (!encoder.matches(password, member.getPassword())) {
             throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
         }
@@ -82,8 +82,7 @@ public class MemberService {
             throw new IllegalStateException("검증되지 않은 jwt 토큰입니다.");
         }
         Authentication authentication = jwtProvider.getAuthentication(tokenRequestDto.getAccessToken());
-        Member member = memberRepository.findByEmail(authentication.getName())
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+        Member member = findMemberByEmail(authentication.getName());
         UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(member.getId())
                 .orElseThrow(() -> new IllegalStateException("재발급 jwt 토큰을 찾을 수 없습니다."));
 
@@ -102,6 +101,7 @@ public class MemberService {
             throw new PasswordSameException(ErrorCode.PASSWORD_SAME);
         }
         Member member = findMember(userId);
+
         if (!encoder.matches(password, member.getPassword())) {
             throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
         }
@@ -135,5 +135,10 @@ public class MemberService {
     private Member findMember(Long userId) {
         return memberRepository.findById(userId)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    private Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
     }
 }
