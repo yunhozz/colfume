@@ -3,14 +3,11 @@ package colfume.domain.member.service;
 import colfume.api.dto.member.MemberRequestDto;
 import colfume.api.dto.member.TokenRequestDto;
 import colfume.common.enums.ErrorCode;
+import colfume.common.enums.Role;
 import colfume.oauth.jwt.JwtProvider;
 import colfume.oauth.jwt.UserRefreshToken;
 import colfume.oauth.jwt.UserRefreshTokenRepository;
-import colfume.domain.member.model.entity.Authority;
 import colfume.domain.member.model.entity.Member;
-import colfume.domain.member.model.entity.MemberAuthority;
-import colfume.domain.member.model.repository.AuthorityRepository;
-import colfume.domain.member.model.repository.MemberAuthorityRepository;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.dto.MemberResponseDto;
 import colfume.domain.member.service.dto.TokenResponseDto;
@@ -34,8 +31,6 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final AuthorityRepository authorityRepository;
-    private final MemberAuthorityRepository memberAuthorityRepository;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
     private final JwtProvider jwtProvider;
     private final BCryptPasswordEncoder encoder;
@@ -50,10 +45,8 @@ public class MemberService {
                 .password(encoder.encode(memberRequestDto.getPassword()))
                 .name(memberRequestDto.getName())
                 .imageUrl(memberRequestDto.getImageUrl())
+                .role(Role.USER)
                 .build();
-
-        Authority role_user = authorityRepository.getReferenceById("ROLE_USER");
-        memberAuthorityRepository.save(new MemberAuthority(member, role_user));
 
         return memberRepository.save(member).getId();
     }
@@ -68,7 +61,7 @@ public class MemberService {
         if (!member.isEmailVerified()) {
             throw new EmailNotVerifiedException(ErrorCode.EMAIL_NOT_VERIFIED);
         }
-        TokenResponseDto tokenDto = jwtProvider.createTokenDto(email, member.getMemberAuthorities());
+        TokenResponseDto tokenDto = jwtProvider.createTokenDto(email, member.getRole().getKey());
         userRefreshTokenRepository.save(new UserRefreshToken(member.getId(), tokenDto.getRefreshToken()));
 
         return tokenDto;
@@ -89,7 +82,7 @@ public class MemberService {
         if (!userRefreshToken.getRefreshToken().equals(tokenRequestDto.getRefreshToken())) {
             throw new IllegalStateException("재발급 jwt 토큰이 일치하지 않습니다.");
         }
-        TokenResponseDto tokenDto = jwtProvider.createTokenDto(member.getEmail(), member.getMemberAuthorities());
+        TokenResponseDto tokenDto = jwtProvider.createTokenDto(member.getEmail(), member.getRole().getKey());
         userRefreshToken.updateRefreshToken(tokenDto.getRefreshToken());
 
         return tokenDto;

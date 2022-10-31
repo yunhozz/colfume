@@ -5,9 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.GenericFilter;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
@@ -21,7 +24,7 @@ public class JwtFilter extends GenericFilter {
         String token = jwtProvider.resolveToken((HttpServletRequest) request);
         log.info("[Verifying token]");
         log.info("url = {}", ((HttpServletRequest) request).getRequestURL().toString());
-        log.info("jwt token = {}", ((HttpServletResponse) response).getHeader("X-AUTH-TOKEN"));
+        log.info("jwt token = {}", token);
 
         if (token != null && jwtProvider.validateToken(token)) {
             Authentication authentication = jwtProvider.getAuthentication(token);

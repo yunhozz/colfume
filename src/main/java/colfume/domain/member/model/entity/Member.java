@@ -1,14 +1,19 @@
 package colfume.domain.member.model.entity;
 
+import colfume.common.enums.Role;
 import colfume.domain.BaseTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 @Getter
@@ -18,9 +23,6 @@ public class Member extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToMany(mappedBy = "member")
-    private Set<MemberAuthority> memberAuthorities = new HashSet<>();
 
     @Column(length = 50, unique = true)
     private String email;
@@ -34,12 +36,16 @@ public class Member extends BaseTime {
 
     private boolean isEmailVerified; // 이메일 인증 여부
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Builder
-    private Member(String email, String password, String name, String imageUrl) {
+    private Member(String email, String password, String name, String imageUrl, Role role) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.imageUrl = imageUrl;
+        this.role = role;
     }
 
     public Member update(String email, String name, String imageUrl) {

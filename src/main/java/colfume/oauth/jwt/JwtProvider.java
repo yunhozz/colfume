@@ -1,8 +1,7 @@
 package colfume.oauth.jwt;
 
-import colfume.oauth.UserDetailsServiceImpl;
-import colfume.domain.member.model.entity.MemberAuthority;
 import colfume.domain.member.service.dto.TokenResponseDto;
+import colfume.oauth.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
@@ -23,8 +22,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Component
@@ -34,7 +31,7 @@ public class JwtProvider {
     @Value("${colfume.jwt.secret}")
     private String secretKey;
 
-    private final String ROLES = "roles";
+    private final String ROLE = "role";
     private final Long ACCESSTOKEN_VALID_MILLISECOND = 60 * 60 * 1000L; // 1 hour
     private final Long REFRESHTOKEN_VALID_MILLISECOND = 14 * 24 * 60 * 60 * 1000L; // 14 day
     private final UserDetailsServiceImpl userDetailsService;
@@ -44,11 +41,9 @@ public class JwtProvider {
         secretKey = Base64UrlCodec.BASE64URL.encode(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public TokenResponseDto createTokenDto(String email, Set<MemberAuthority> memberAuthorities) {
-        List<String> roles = memberAuthorities.stream()
-                .map(memberAuthority -> memberAuthority.getAuthority().getRole()).toList();
+    public TokenResponseDto createTokenDto(String email, String role) {
         Claims claims = Jwts.claims().setSubject(email);
-        claims.put(ROLES, roles);
+        claims.put(ROLE, role);
         Date now = new Date();
 
         // resource 에 직접 접근할 수 있는 필수적인 정보를 담은 토큰, 짧은 생명 주기
@@ -88,7 +83,7 @@ public class JwtProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("X-AUTH-TOKEN");
+        return request.getHeader("Authorization");
     }
 
     public boolean validateToken(String token) {

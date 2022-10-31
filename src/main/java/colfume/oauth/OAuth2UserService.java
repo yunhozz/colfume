@@ -1,8 +1,10 @@
 package colfume.oauth;
 
+import colfume.common.enums.Role;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -10,10 +12,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OAuth2UserService extends DefaultOAuth2UserService {
@@ -30,20 +32,23 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         OAuthProvider oAuthProvider = OAuthProvider.of(registrationId, userNameAttributeName, attributes);
         Member member = saveOrUpdate(oAuthProvider);
-        List<String> roles = member.getMemberAuthorities().stream()
-                .map(memberAuthority -> memberAuthority.getAuthority().getRole()).toList();
+        log.info("email = " + attributes.get("email"));
+        log.info("name = " + attributes.get("name"));
 
-        return new UserPrincipal(member, member.getMemberAuthorities(), attributes);
+        return new UserPrincipal(member, attributes);
     }
 
     private Member saveOrUpdate(OAuthProvider oAuthProvider) {
         Optional<Member> optionalMember = memberRepository.findByEmail(oAuthProvider.getEmail());
+
         if (optionalMember.isEmpty()) {
             Member member = Member.builder()
                     .email(oAuthProvider.getEmail())
                     .name(oAuthProvider.getName())
                     .imageUrl(oAuthProvider.getImageUrl())
+                    .role(Role.USER)
                     .build();
+
             return memberRepository.save(member);
         }
         return optionalMember.get().update(oAuthProvider.getEmail(), oAuthProvider.getName(), oAuthProvider.getImageUrl());

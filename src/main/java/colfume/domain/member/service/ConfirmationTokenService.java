@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 public class ConfirmationTokenService {
 
     private final ConfirmationTokenRepository confirmationTokenRepository;
-    private final MailService mailService;
 
     private static final long EMAIL_TOKEN_EXPIRATION_TIME_VALUE = 5L; // 5분 후 만료
 
@@ -23,7 +22,6 @@ public class ConfirmationTokenService {
     public Long createConfirmationToken(Long userId, String email) {
         ConfirmationToken confirmationToken = new ConfirmationToken(userId, LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE));
         confirmationTokenRepository.save(confirmationToken);
-        mailService.sendLinkMail(confirmationToken.getId(), email);
 
         return confirmationToken.getId();
     }
