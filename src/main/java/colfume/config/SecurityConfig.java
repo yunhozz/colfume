@@ -1,5 +1,6 @@
 package colfume.config;
 
+import colfume.oauth.OAuth2AuthenticationSuccessHandler;
 import colfume.oauth.OAuth2UserService;
 import colfume.oauth.jwt.JwtAccessDeniedHandler;
 import colfume.oauth.jwt.JwtAuthenticationEntryPoint;
@@ -8,6 +9,7 @@ import colfume.oauth.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -24,6 +27,7 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final OAuth2UserService oAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -41,13 +45,6 @@ public class SecurityConfig {
                 .anyRequest().authenticated();
 
         httpSecurity
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling()
-                .accessDeniedHandler(jwtAccessDeniedHandler)
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-
-                .and()
-
                 .headers()
                 .frameOptions()
                 .sameOrigin()
@@ -59,19 +56,28 @@ public class SecurityConfig {
 
                 .and()
 
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+
+                .and()
+
                 .oauth2Login()
+                .defaultSuccessUrl("/me")
+                .successHandler(oAuth2AuthenticationSuccessHandler)
+                .userInfoEndpoint()
+                .userService(oAuth2UserService)
+
+                .and()
+
                 .authorizationEndpoint()
                 .baseUri("/oauth2/authorization")
 
                 .and()
 
                 .redirectionEndpoint()
-                .baseUri("/*/oauth2/code/*")
-
-                .and()
-
-                .userInfoEndpoint()
-                .userService(oAuth2UserService);
+                .baseUri("/*/oauth2/code/*");
 
         return httpSecurity.build();
     }
