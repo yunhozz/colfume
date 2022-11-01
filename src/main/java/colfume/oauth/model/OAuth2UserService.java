@@ -30,27 +30,27 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
         Map<String, Object> attributes = delegate.loadUser(userRequest).getAttributes();
 
-        OAuthProvider oAuthProvider = OAuthProvider.of(registrationId, userNameAttributeName, attributes);
-        Member member = saveOrUpdate(oAuthProvider);
+        OAuth2Provider oAuth2Provider = OAuth2Provider.of(registrationId, userNameAttributeName, attributes);
+        Member member = saveOrUpdate(oAuth2Provider);
         log.info("email = " + attributes.get("email"));
         log.info("name = " + attributes.get("name"));
 
         return new UserPrincipal(member, attributes);
     }
 
-    private Member saveOrUpdate(OAuthProvider oAuthProvider) {
-        Optional<Member> optionalMember = memberRepository.findByEmail(oAuthProvider.getEmail());
+    private Member saveOrUpdate(OAuth2Provider oAuth2Provider) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(oAuth2Provider.getEmail());
 
         if (optionalMember.isEmpty()) {
             Member member = Member.builder()
-                    .email(oAuthProvider.getEmail())
-                    .name(oAuthProvider.getName())
-                    .imageUrl(oAuthProvider.getImageUrl())
+                    .email(oAuth2Provider.getEmail())
+                    .name(oAuth2Provider.getName())
+                    .imageUrl(oAuth2Provider.getImageUrl())
                     .role(Role.USER)
                     .build();
 
             return memberRepository.save(member);
         }
-        return optionalMember.get().update(oAuthProvider.getEmail(), oAuthProvider.getName(), oAuthProvider.getImageUrl());
+        return optionalMember.get().update(oAuth2Provider.getEmail(), oAuth2Provider.getName(), oAuth2Provider.getImageUrl());
     }
 }

@@ -11,7 +11,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OAuthProvider {
+public class OAuth2Provider {
 
     private String email;
     private String name;
@@ -19,7 +19,7 @@ public class OAuthProvider {
     private String nameAttributeKey;
     private Map<String, Object> attributes;
 
-    public static OAuthProvider of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
+    public static OAuth2Provider of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
         if (registrationId.equals("kakao")) {
             return ofKakao(userNameAttributeName, attributes);
         }
@@ -29,11 +29,11 @@ public class OAuthProvider {
         return null;
     }
 
-    public static OAuthProvider ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
+    public static OAuth2Provider ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
 
-        return OAuthProvider.builder()
+        return OAuth2Provider.builder()
                 .email((String) kakaoAccount.get("email"))
                 .name((String) kakaoProfile.get("nickname"))
                 .imageUrl((String) kakaoProfile.get("profile_img_url"))
@@ -42,8 +42,8 @@ public class OAuthProvider {
                 .build();
     }
 
-    public static OAuthProvider ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
-        return OAuthProvider.builder()
+    public static OAuth2Provider ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
+        return OAuth2Provider.builder()
                 .email((String) attributes.get("email"))
                 .name((String) attributes.get("name"))
                 .imageUrl((String) attributes.get("picture"))
