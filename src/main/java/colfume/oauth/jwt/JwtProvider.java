@@ -31,7 +31,6 @@ public class JwtProvider {
     @Value("${colfume.jwt.secret}")
     private String secretKey;
 
-    private final String ROLE = "role";
     private final Long ACCESSTOKEN_VALID_MILLISECOND = 60 * 60 * 1000L; // 1 hour
     private final Long REFRESHTOKEN_VALID_MILLISECOND = 14 * 24 * 60 * 60 * 1000L; // 14 day
     private final UserDetailsServiceImpl userDetailsService;
@@ -43,7 +42,7 @@ public class JwtProvider {
 
     public TokenResponseDto createTokenDto(String email, String role) {
         Claims claims = Jwts.claims().setSubject(email);
-        claims.put(ROLE, role);
+        claims.put("role", role);
         Date now = new Date();
 
         // resource 에 직접 접근할 수 있는 필수적인 정보를 담은 토큰, 짧은 생명 주기
@@ -68,6 +67,7 @@ public class JwtProvider {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .accessTokenExpireDate(ACCESSTOKEN_VALID_MILLISECOND)
+                .refreshTokenExpireDate(REFRESHTOKEN_VALID_MILLISECOND)
                 .build();
     }
 
