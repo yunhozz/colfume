@@ -64,7 +64,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         response.setContentType("text/html;charset=UTF-8");
         response.setContentType("application/json;charset=UTF-8");
         response.addHeader("Authorization", tokenResponseDto.getGrantType() + " " + tokenResponseDto.getAccessToken());
-        response.addHeader("Refresh", tokenResponseDto.getRefreshToken());
+        response.addHeader("Refresh", tokenResponseDto.getGrantType() + " " + tokenResponseDto.getRefreshToken());
 
         PrintWriter writer = response.getWriter();
         writer.println(objectMapper.writeValueAsString(tokenResponseDto));
