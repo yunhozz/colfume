@@ -1,6 +1,6 @@
 package colfume.config;
 
-import colfume.oauth.OAuth2UserService;
+import colfume.oauth.model.OAuth2UserService;
 import colfume.oauth.handler.OAuth2AuthenticationFailureHandler;
 import colfume.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import colfume.oauth.jwt.JwtAccessDeniedHandler;

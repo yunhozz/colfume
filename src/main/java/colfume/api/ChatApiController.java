@@ -1,7 +1,7 @@
 package colfume.api;
 
 import colfume.api.dto.chat.ChatRequestDto;
-import colfume.oauth.UserPrincipal;
+import colfume.oauth.model.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

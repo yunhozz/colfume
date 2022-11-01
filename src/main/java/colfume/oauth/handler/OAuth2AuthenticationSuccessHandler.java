@@ -2,10 +2,10 @@ package colfume.oauth.handler;
 
 import colfume.common.util.CookieUtils;
 import colfume.domain.member.service.dto.TokenResponseDto;
-import colfume.oauth.UserPrincipal;
+import colfume.oauth.model.UserPrincipal;
 import colfume.oauth.jwt.JwtProvider;
-import colfume.oauth.jwt.UserRefreshToken;
-import colfume.oauth.jwt.UserRefreshTokenRepository;
+import colfume.oauth.model.UserRefreshToken;
+import colfume.oauth.model.UserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

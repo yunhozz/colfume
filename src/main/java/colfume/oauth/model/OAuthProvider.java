@@ -1,4 +1,4 @@
-package colfume.oauth;
+package colfume.oauth.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -3,7 +3,7 @@ package colfume.api;
 import colfume.api.dto.Response;
 import colfume.api.dto.notification.NotificationRequestDto;
 import colfume.domain.notification.service.NotificationService;
-import colfume.oauth.UserPrincipal;
+import colfume.oauth.model.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

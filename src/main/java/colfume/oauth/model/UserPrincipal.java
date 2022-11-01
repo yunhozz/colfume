@@ -1,4 +1,4 @@
-package colfume.oauth;
+package colfume.oauth.model;
 
 import colfume.domain.member.model.entity.Member;
 import lombok.Getter;

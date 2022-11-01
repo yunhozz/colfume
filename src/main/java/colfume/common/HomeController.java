@@ -1,6 +1,6 @@
 package colfume.common;
 
-import colfume.oauth.UserPrincipal;
+import colfume.oauth.model.UserPrincipal;
 import colfume.oauth.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
