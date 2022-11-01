@@ -87,8 +87,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private void addTokenOnResponse(HttpServletResponse response, TokenResponseDto tokenResponseDto) {
         response.setContentType("application/json;charset=UTF-8");
-        response.addHeader("Authorization", tokenResponseDto.getAccessToken());
-        response.addHeader("Refresh", tokenResponseDto.getRefreshToken());
+        response.addHeader("Authorization", tokenResponseDto.getGrantType() + " " + tokenResponseDto.getAccessToken());
+        response.addHeader("Refresh", tokenResponseDto.getGrantType() + " " + tokenResponseDto.getRefreshToken());
     }
 
     private void addRefreshTokenOnCookie(HttpServletRequest request, HttpServletResponse response, TokenResponseDto tokenResponseDto) {
