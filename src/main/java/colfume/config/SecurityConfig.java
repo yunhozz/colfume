@@ -1,7 +1,8 @@
 package colfume.config;
 
-import colfume.oauth.OAuth2AuthenticationSuccessHandler;
 import colfume.oauth.OAuth2UserService;
+import colfume.oauth.handler.OAuth2AuthenticationFailureHandler;
+import colfume.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import colfume.oauth.jwt.JwtAccessDeniedHandler;
 import colfume.oauth.jwt.JwtAuthenticationEntryPoint;
 import colfume.oauth.jwt.JwtFilter;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final OAuth2UserService oAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -64,8 +66,8 @@ public class SecurityConfig {
                 .and()
 
                 .oauth2Login()
-                .defaultSuccessUrl("/home")
                 .successHandler(oAuth2AuthenticationSuccessHandler)
+                .failureHandler(oAuth2AuthenticationFailureHandler)
                 .userInfoEndpoint()
                 .userService(oAuth2UserService)
 
