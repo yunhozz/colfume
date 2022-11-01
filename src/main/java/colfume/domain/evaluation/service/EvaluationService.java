@@ -1,5 +1,7 @@
 package colfume.domain.evaluation.service;
 
+import colfume.api.dto.evaluation.EvaluationRequestDto;
+import colfume.common.enums.ErrorCode;
 import colfume.domain.evaluation.model.entity.Evaluation;
 import colfume.domain.evaluation.model.repository.EvaluationRepository;
 import colfume.domain.evaluation.service.exception.CrudNotAuthenticationException;
@@ -7,13 +9,10 @@ import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
-import colfume.common.enums.ErrorCode;
 import colfume.domain.perfume.service.exception.PerfumeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static colfume.common.dto.EvaluationDto.*;
 
 @Service
 @RequiredArgsConstructor

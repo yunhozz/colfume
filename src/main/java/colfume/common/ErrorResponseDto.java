@@ -1,4 +1,4 @@
-package colfume.common.dto;
+package colfume.common;
 
 import colfume.common.enums.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonInclude;

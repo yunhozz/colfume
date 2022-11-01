@@ -4,7 +4,7 @@ import colfume.api.dto.Response;
 import colfume.api.dto.member.LoginRequestDto;
 import colfume.api.dto.member.MemberRequestDto;
 import colfume.api.dto.member.PasswordRequestDto;
-import colfume.common.dto.ErrorResponseDto;
+import colfume.common.ErrorResponseDto;
 import colfume.common.enums.ErrorCode;
 import colfume.domain.member.service.MemberService;
 import colfume.domain.member.service.dto.TokenResponseDto;

@@ -1,4 +1,4 @@
-package colfume.common.dto;
+package colfume.api.dto.perfume;
 
 import colfume.common.enums.ColorType;
 import colfume.common.enums.SortCondition;

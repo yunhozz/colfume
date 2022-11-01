@@ -1,8 +1,8 @@
 package colfume.domain.bookmark.model.repository;
 
-import java.util.List;
+import colfume.domain.bookmark.model.repository.dto.BookmarkQueryDto;
 
-import static colfume.common.dto.BookmarkDto.*;
+import java.util.List;
 
 public interface BookmarkRepositoryCustom {
 

@@ -1,22 +1,21 @@
 package colfume.domain.chat.service;
 
+import colfume.common.enums.ErrorCode;
 import colfume.domain.chat.model.entity.Chat;
 import colfume.domain.chat.model.entity.Chatroom;
 import colfume.domain.chat.model.repository.ChatRepository;
 import colfume.domain.chat.model.repository.ChatroomRepository;
+import colfume.domain.chat.service.dto.ChatroomResponseDto;
 import colfume.domain.chat.service.exception.ChatroomNotFoundException;
 import colfume.domain.chat.service.exception.ChatroomPermissionException;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
-import colfume.common.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static colfume.common.dto.ChatDto.*;
 
 @Service
 @RequiredArgsConstructor

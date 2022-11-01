@@ -1,15 +1,15 @@
 package colfume.domain.notification.model.repository;
 
 import colfume.domain.member.model.entity.QMember;
-import colfume.dto.QNotificationDto_NotificationQueryDto;
+import colfume.domain.notification.model.repository.dto.NotificationQueryDto;
+import colfume.domain.notification.model.repository.dto.QNotificationQueryDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static colfume.domain.notification.model.entity.QNotification.*;
-import static colfume.common.dto.NotificationDto.*;
+import static colfume.domain.notification.model.entity.QNotification.notification;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class NotificationRepositoryImpl implements NotificationRepositoryCustom 
         QMember receiver = new QMember("receiver");
 
         return queryFactory
-                .select(new QNotificationDto_NotificationQueryDto(
+                .select(new QNotificationQueryDto(
                         notification.id,
                         notification.message,
                         notification.redirectUrl,

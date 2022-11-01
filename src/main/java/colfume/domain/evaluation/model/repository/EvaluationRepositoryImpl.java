@@ -1,16 +1,16 @@
 package colfume.domain.evaluation.model.repository;
 
-import colfume.dto.QEvaluationDto_EvaluationQueryDto;
+import colfume.domain.evaluation.model.repository.dto.EvaluationQueryDto;
+import colfume.domain.evaluation.model.repository.dto.QEvaluationQueryDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static colfume.domain.evaluation.model.entity.QEvaluation.*;
-import static colfume.domain.member.model.entity.QMember.*;
-import static colfume.domain.perfume.model.entity.QPerfume.*;
-import static colfume.common.dto.EvaluationDto.*;
+import static colfume.domain.evaluation.model.entity.QEvaluation.evaluation;
+import static colfume.domain.member.model.entity.QMember.member;
+import static colfume.domain.perfume.model.entity.QPerfume.perfume;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class EvaluationRepositoryImpl implements EvaluationRepositoryCustom {
     @Override
     public List<EvaluationQueryDto> findEvaluationListByPerfumeId(Long perfumeId) {
         return queryFactory
-                .select(new QEvaluationDto_EvaluationQueryDto(
+                .select(new QEvaluationQueryDto(
                         evaluation.id,
                         evaluation.content,
                         evaluation.score,

@@ -1,16 +1,16 @@
 package colfume.domain.bookmark.model.repository;
 
-import colfume.dto.QBookmarkDto_BookmarkQueryDto;
+import colfume.domain.bookmark.model.repository.dto.BookmarkQueryDto;
+import colfume.domain.bookmark.model.repository.dto.QBookmarkQueryDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static colfume.domain.bookmark.model.entity.QBookmark.*;
-import static colfume.domain.member.model.entity.QMember.*;
-import static colfume.domain.perfume.model.entity.QPerfume.*;
-import static colfume.common.dto.BookmarkDto.*;
+import static colfume.domain.bookmark.model.entity.QBookmark.bookmark;
+import static colfume.domain.member.model.entity.QMember.member;
+import static colfume.domain.perfume.model.entity.QPerfume.perfume;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class BookmarkRepositoryImpl implements BookmarkRepositoryCustom {
     @Override
     public List<BookmarkQueryDto> findBookmarkListByUserId(Long userId) {
         return queryFactory
-                .select(new QBookmarkDto_BookmarkQueryDto(
+                .select(new QBookmarkQueryDto(
                         bookmark.id,
                         bookmark.createdDate,
                         perfume.id,

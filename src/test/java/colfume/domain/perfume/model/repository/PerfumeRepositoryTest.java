@@ -4,7 +4,7 @@ import colfume.domain.perfume.model.entity.Color;
 import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.dto.PerfumeSimpleQueryDto;
-import colfume.common.dto.SortDto;
+import colfume.api.dto.perfume.SortDto;
 import colfume.common.enums.SortCondition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

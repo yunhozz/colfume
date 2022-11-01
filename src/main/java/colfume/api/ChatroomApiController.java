@@ -3,7 +3,7 @@ package colfume.api;
 import colfume.api.dto.Response;
 import colfume.domain.chat.service.ChatroomService;
 import colfume.oauth.UserPrincipal;
-import colfume.common.dto.ErrorResponseDto;
+import colfume.common.ErrorResponseDto;
 import colfume.common.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

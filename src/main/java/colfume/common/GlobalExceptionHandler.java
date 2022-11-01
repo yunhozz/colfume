@@ -1,7 +1,6 @@
 package colfume.common;
 
 import colfume.api.dto.Response;
-import colfume.common.dto.ErrorResponseDto;
 import colfume.common.enums.ErrorCode;
 import colfume.domain.chat.service.exception.ChatroomNotFoundException;
 import colfume.domain.chat.service.exception.ChatroomPermissionException;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.ArrayList;
 import java.util.List;
 
-import static colfume.common.dto.ErrorResponseDto.*;
+import static colfume.common.ErrorResponseDto.*;
 
 @Slf4j
 @RestControllerAdvice

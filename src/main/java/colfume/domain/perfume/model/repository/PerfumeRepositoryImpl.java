@@ -5,7 +5,7 @@ import colfume.domain.perfume.model.repository.dto.HashtagResponseDto;
 import colfume.domain.perfume.model.repository.dto.PerfumeSearchQueryDto;
 import colfume.domain.perfume.model.repository.dto.PerfumeSimpleQueryDto;
 import colfume.domain.perfume.model.repository.dto.QPerfumeSimpleQueryDto;
-import colfume.common.dto.SortDto;
+import colfume.api.dto.perfume.SortDto;
 import colfume.common.enums.ColorType;
 import colfume.common.enums.SortCondition;
 import com.querydsl.core.types.OrderSpecifier;

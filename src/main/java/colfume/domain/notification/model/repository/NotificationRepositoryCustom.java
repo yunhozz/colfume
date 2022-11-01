@@ -1,8 +1,8 @@
 package colfume.domain.notification.model.repository;
 
-import java.util.List;
+import colfume.domain.notification.model.repository.dto.NotificationQueryDto;
 
-import static colfume.common.dto.NotificationDto.*;
+import java.util.List;
 
 public interface NotificationRepositoryCustom {
 

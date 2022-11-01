@@ -1,8 +1,8 @@
 package colfume.domain.evaluation.model.repository;
 
-import java.util.List;
+import colfume.domain.evaluation.model.repository.dto.EvaluationQueryDto;
 
-import static colfume.common.dto.EvaluationDto.*;
+import java.util.List;
 
 public interface EvaluationRepositoryCustom {
 

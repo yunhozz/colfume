@@ -1,4 +1,4 @@
-package colfume.common.dto;
+package colfume.api.dto.perfume;
 
 import colfume.common.enums.SearchCondition;
 import lombok.AllArgsConstructor;
