@@ -23,6 +23,8 @@ public enum ErrorCode {
     PASSWORD_MISMATCH(400, "MEMBER-ERR-400", "비밀번호가 일치하지 않습니다."),
     PASSWORD_SAME(400, "MEMBER-ERR-400", "기존 비밀번호와 일치합니다."),
     NAME_NOT_INSERTED(400, "MEMBER-ERR-400", "변경하실 이름을 입력해주세요."),
+    REFRESH_TOKEN_NOT_FOUND(400, "MEMBER-ERR-400", "재발급 토큰이 존재하지 않습니다."),
+    REFRESH_TOKEN_NOT_CORRESPOND(400, "MEMBER-ERR-400", "기존 재발급 토큰과 일치하지 않습니다."),
 
     // perfume
     PERFUME_NOT_FOUND(400, "PERFUME-ERR-400", "찾으려는 향수가 존재하지 않습니다."),

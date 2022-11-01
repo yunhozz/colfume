@@ -14,6 +14,8 @@ import colfume.domain.member.service.exception.EmailNotVerifiedException;
 import colfume.domain.member.service.exception.MemberNotFoundException;
 import colfume.domain.member.service.exception.PasswordMismatchException;
 import colfume.domain.member.service.exception.PasswordSameException;
+import colfume.domain.member.service.exception.RefreshTokenNotCorrespondException;
+import colfume.domain.member.service.exception.RefreshTokenNotFoundException;
 import colfume.domain.notification.service.exception.NotificationNotFoundException;
 import colfume.domain.notification.service.exception.NotificationSendFailException;
 import colfume.domain.perfume.service.exception.PerfumeNotFoundException;
@@ -136,6 +138,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PasswordSameException.class)
     public Response handlePasswordSameException(PasswordSameException e) {
         log.error("handlePasswordSameException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+    }
+
+    @ExceptionHandler(RefreshTokenNotFoundException.class)
+    public Response handleRefreshTokenNotFoundException(RefreshTokenNotFoundException e) {
+        log.error("handleRefreshTokenNotFoundException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+    }
+
+    @ExceptionHandler(RefreshTokenNotCorrespondException.class)
+    public Response handleRefreshTokenNotCorrespondException(RefreshTokenNotCorrespondException e) {
+        log.error("handleRefreshTokenNotCorrespondException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
         return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
