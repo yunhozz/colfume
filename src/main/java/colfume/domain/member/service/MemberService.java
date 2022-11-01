@@ -1,12 +1,8 @@
 package colfume.domain.member.service;
 
 import colfume.api.dto.member.MemberRequestDto;
-import colfume.api.dto.member.TokenRequestDto;
 import colfume.common.enums.ErrorCode;
 import colfume.common.enums.Role;
-import colfume.oauth.jwt.JwtProvider;
-import colfume.oauth.jwt.UserRefreshToken;
-import colfume.oauth.jwt.UserRefreshTokenRepository;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.dto.MemberResponseDto;
@@ -17,6 +13,12 @@ import colfume.domain.member.service.exception.EmailNotVerifiedException;
 import colfume.domain.member.service.exception.MemberNotFoundException;
 import colfume.domain.member.service.exception.PasswordMismatchException;
 import colfume.domain.member.service.exception.PasswordSameException;
+import colfume.domain.member.service.exception.RefreshTokenNotCorrespondException;
+import colfume.domain.member.service.exception.RefreshTokenNotFoundException;
+import colfume.oauth.UserPrincipal;
+import colfume.oauth.jwt.JwtProvider;
+import colfume.oauth.jwt.UserRefreshToken;
+import colfume.oauth.jwt.UserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -67,20 +69,21 @@ public class MemberService {
         return tokenDto;
     }
 
-    // access token 재발급
-    // TODO : 예외 처리 수정
+    // jwt token 재발급
     @Transactional
-    public TokenResponseDto tokenReissue(TokenRequestDto tokenRequestDto) {
-        if (!jwtProvider.validateToken(tokenRequestDto.getRefreshToken())) {
+    public TokenResponseDto tokenReissue(String refreshToken) {
+        if (!jwtProvider.validateToken(refreshToken)) {
             throw new IllegalStateException("검증되지 않은 jwt 토큰입니다.");
         }
-        Authentication authentication = jwtProvider.getAuthentication(tokenRequestDto.getAccessToken());
-        Member member = findMemberByEmail(authentication.getName());
-        UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(member.getId())
-                .orElseThrow(() -> new IllegalStateException("재발급 jwt 토큰을 찾을 수 없습니다."));
+        Authentication authentication = jwtProvider.getAuthentication(refreshToken);
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        if (!userRefreshToken.getRefreshToken().equals(tokenRequestDto.getRefreshToken())) {
-            throw new IllegalStateException("재발급 jwt 토큰이 일치하지 않습니다.");
+        Member member = findMemberByEmail(userPrincipal.getEmail());
+        UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(member.getId())
+                .orElseThrow(() -> new RefreshTokenNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
+
+        if (!userRefreshToken.getRefreshToken().equals(refreshToken)) {
+            throw new RefreshTokenNotCorrespondException(ErrorCode.REFRESH_TOKEN_NOT_CORRESPOND);
         }
         TokenResponseDto tokenDto = jwtProvider.createTokenDto(member.getEmail(), member.getRole().getKey());
         userRefreshToken.updateRefreshToken(tokenDto.getRefreshToken());

@@ -4,11 +4,11 @@ import colfume.api.dto.Response;
 import colfume.api.dto.member.LoginRequestDto;
 import colfume.api.dto.member.MemberRequestDto;
 import colfume.api.dto.member.PasswordRequestDto;
-import colfume.api.dto.member.TokenRequestDto;
 import colfume.common.dto.ErrorResponseDto;
 import colfume.common.enums.ErrorCode;
-import colfume.oauth.UserPrincipal;
 import colfume.domain.member.service.MemberService;
+import colfume.domain.member.service.dto.TokenResponseDto;
+import colfume.oauth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -42,19 +44,29 @@ public class MemberApiController {
         return Response.success(memberService.findMemberDtoList(), HttpStatus.OK);
     }
 
+    @GetMapping("/token/reissue")
+    public Response tokenReissue(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = request.getHeader("Refresh");
+        TokenResponseDto tokenResponseDto = null;
+
+        if (refreshToken != null) {
+            tokenResponseDto = memberService.tokenReissue(refreshToken);
+            addTokenInResponse(response, tokenResponseDto);
+        }
+        return Response.success(tokenResponseDto, HttpStatus.OK);
+    }
+
     @PostMapping("/join")
     public Response join(@Valid @RequestBody MemberRequestDto memberRequestDto) {
         return Response.success(memberService.join(memberRequestDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public Response login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
-        return Response.success(memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword()), HttpStatus.CREATED);
-    }
+    public Response login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        TokenResponseDto tokenResponseDto = memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+        addTokenInResponse(response, tokenResponseDto);
 
-    @PostMapping("/reissue")
-    public Response tokenReissue(@RequestBody TokenRequestDto tokenRequestDto) {
-        return Response.success(memberService.tokenReissue(tokenRequestDto), HttpStatus.CREATED);
+        return Response.success(tokenResponseDto, HttpStatus.CREATED);
     }
 
     @PatchMapping("/password")
@@ -77,5 +89,11 @@ public class MemberApiController {
     public Response withdraw(@AuthenticationPrincipal UserPrincipal user) {
         memberService.withdraw(user.getId());
         return Response.success(HttpStatus.NO_CONTENT);
+    }
+
+    private void addTokenInResponse(HttpServletResponse response, TokenResponseDto tokenResponseDto) {
+        response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("Authentication", tokenResponseDto.getAccessToken());
+        response.addHeader("Refresh", tokenResponseDto.getRefreshToken());
     }
 }
