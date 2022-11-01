@@ -59,6 +59,7 @@ public class PerfumeService {
         perfume.updateImage(imageUrl);
     }
 
+    @Transactional
     public void deletePerfume(Long perfumeId) {
         Perfume perfume = findPerfume(perfumeId);
         perfumeRepository.delete(perfume);
