@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .and()
 
                 .oauth2Login()
-                .defaultSuccessUrl("/me")
+                .defaultSuccessUrl("/home")
                 .successHandler(oAuth2AuthenticationSuccessHandler)
                 .userInfoEndpoint()
                 .userService(oAuth2UserService)
