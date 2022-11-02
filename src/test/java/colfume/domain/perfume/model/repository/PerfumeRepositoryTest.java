@@ -4,8 +4,6 @@ import colfume.domain.perfume.model.entity.Color;
 import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.dto.PerfumeSimpleQueryDto;
-import colfume.api.dto.perfume.SortDto;
-import colfume.common.enums.SortCondition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,12 +54,24 @@ class PerfumeRepositoryTest {
     }
 
     @Test
+    void findSimplePerfumePage() throws Exception {
+        //given
+        PageRequest pageable = PageRequest.ofSize(30);
+
+        //when
+        Page<PerfumeSimpleQueryDto> result = perfumeRepository.findSimplePerfumePage(0L, pageable);
+
+        //then
+        assertThat(result.getNumberOfElements()).isEqualTo(5);
+    }
+
+    @Test
     void searchByKeywordOrderByCreated() throws Exception {
         //given
         PageRequest pageable = PageRequest.ofSize(30);
 
         //when
-        Page<PerfumeSimpleQueryDto> result = perfumeRepository.searchByKeywordOrderByCreated("tag1", pageable);
+        Page<PerfumeSimpleQueryDto> result = perfumeRepository.searchByKeywordOrderByCreated("tag1", 0L, pageable);
 
         //then
         assertThat(result.getNumberOfElements()).isEqualTo(10);
@@ -73,22 +83,9 @@ class PerfumeRepositoryTest {
         PageRequest pageable = PageRequest.ofSize(30);
 
         //when
-        Page<PerfumeSimpleQueryDto> result = perfumeRepository.searchByKeywordOrderByAccuracy("tag1", pageable);
+        Page<PerfumeSimpleQueryDto> result = perfumeRepository.searchByKeywordOrderByAccuracy("tag1", 0L, pageable);
 
         //then
         assertThat(result.getNumberOfElements()).isEqualTo(10);
-    }
-
-    @Test
-    void findSimplePerfumeList() throws Exception {
-        //given
-        SortDto sortDto = new SortDto(50, 250, null, null, List.of(GREEN), SortCondition.POPULARITY);
-        PageRequest pageable = PageRequest.ofSize(30);
-
-        //when
-        Page<PerfumeSimpleQueryDto> result = perfumeRepository.sortSimplePerfumeList(sortDto, pageable);
-
-        //then
-        assertThat(result.getNumberOfElements()).isEqualTo(5);
     }
 }
