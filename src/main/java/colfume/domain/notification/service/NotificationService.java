@@ -1,6 +1,7 @@
 package colfume.domain.notification.service;
 
 import colfume.api.dto.notification.NotificationRequestDto;
+import colfume.common.converter.entity.NotificationConverter;
 import colfume.common.enums.ErrorCode;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
@@ -30,6 +31,8 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final EmitterRepository emitterRepository;
     private final MemberRepository memberRepository;
+    private final NotificationConverter converter;
+
     private final static Long DEFAULT_TIMEOUT = 60 * 60 * 1000L; // 1 hour
 
     @Transactional
@@ -55,18 +58,15 @@ public class NotificationService {
         Member sender = memberRepository.getReferenceById(senderId);
         Member receiver = memberRepository.findById(receiverId)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        Notification notification = Notification.builder()
-                .sender(sender)
-                .receiver(receiver)
-                .message(notificationRequestDto.getMessage())
-                .redirectUrl(notificationRequestDto.getRedirectUrl())
-                .build();
+
+        NotificationConverter notificationConverter = new NotificationConverter(sender, receiver);
+        Notification notification = notificationConverter.convertToEntity(notificationRequestDto);
 
         Map<String, SseEmitter> emitters = emitterRepository.findEmittersWithUserId(String.valueOf(receiverId));
         emitters.forEach(
                 (key, emitter) -> {
                     emitterRepository.saveEventCache(key, notification);
-                    sendToClient(emitter, String.valueOf(receiverId), new NotificationResponseDto(notification));
+                    sendToClient(emitter, String.valueOf(receiverId), converter.convertToDto(notification));
                 }
         );
 
@@ -87,7 +87,8 @@ public class NotificationService {
 
     @Transactional(readOnly = true)
     public NotificationResponseDto findNotificationDto(Long notificationId) {
-        return new NotificationResponseDto(findNotification(notificationId));
+        Notification notification = findNotification(notificationId);
+        return converter.convertToDto(notification);
     }
 
     @Transactional(readOnly = true)

@@ -1,6 +1,7 @@
 package colfume.domain.evaluation.service;
 
 import colfume.api.dto.evaluation.EvaluationRequestDto;
+import colfume.common.converter.entity.EvaluationConverter;
 import colfume.common.enums.ErrorCode;
 import colfume.domain.evaluation.model.entity.Evaluation;
 import colfume.domain.evaluation.model.repository.EvaluationRepository;
@@ -27,12 +28,9 @@ public class EvaluationService {
         Member writer = memberRepository.getReferenceById(writerId);
         Perfume perfume = perfumeRepository.findById(perfumeId)
                 .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
-        Evaluation evaluation = Evaluation.builder()
-                .writer(writer)
-                .perfume(perfume)
-                .content(evaluationRequestDto.getContent())
-                .score(evaluationRequestDto.getScore())
-                .build();
+
+        EvaluationConverter evaluationConverter = new EvaluationConverter(writer, perfume);
+        Evaluation evaluation = evaluationConverter.convertToEntity(evaluationRequestDto);
 
         perfume.addEvaluationCount(); // 평가수 +1
         perfumeRepository.updateScoreForAdd(perfume.getId(), evaluationRequestDto.getScore()); // 평가 점수 update (추가)

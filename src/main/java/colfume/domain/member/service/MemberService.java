@@ -1,8 +1,8 @@
 package colfume.domain.member.service;
 
 import colfume.api.dto.member.MemberRequestDto;
+import colfume.common.converter.entity.MemberConverter;
 import colfume.common.enums.ErrorCode;
-import colfume.common.enums.Role;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.dto.MemberResponseDto;
@@ -15,8 +15,8 @@ import colfume.domain.member.service.exception.PasswordMismatchException;
 import colfume.domain.member.service.exception.PasswordSameException;
 import colfume.domain.member.service.exception.RefreshTokenNotCorrespondException;
 import colfume.domain.member.service.exception.RefreshTokenNotFoundException;
-import colfume.oauth.model.UserPrincipal;
 import colfume.oauth.jwt.JwtProvider;
+import colfume.oauth.model.UserPrincipal;
 import colfume.oauth.model.UserRefreshToken;
 import colfume.oauth.model.UserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +35,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
     private final JwtProvider jwtProvider;
+    private final MemberConverter converter;
     private final BCryptPasswordEncoder encoder;
 
     @Transactional
@@ -42,13 +43,7 @@ public class MemberService {
         if (memberRepository.findAll().stream().anyMatch(m -> m.getEmail().equals(memberRequestDto.getEmail()))) {
             throw new EmailDuplicateException(ErrorCode.EMAIL_DUPLICATE);
         }
-        Member member = Member.builder()
-                .email(memberRequestDto.getEmail())
-                .password(encoder.encode(memberRequestDto.getPassword()))
-                .name(memberRequestDto.getName())
-                .imageUrl(memberRequestDto.getImageUrl())
-                .role(Role.USER)
-                .build();
+        Member member = converter.convertToEntity(memberRequestDto);
 
         return memberRepository.save(member).getId();
     }
@@ -118,13 +113,14 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberResponseDto findMemberDto(Long userId) {
-        return new MemberResponseDto(findMember(userId));
+        Member member = findMember(userId);
+        return converter.convertToDto(member);
     }
 
     @Transactional(readOnly = true)
     public List<MemberResponseDto> findMemberDtoList() {
         return memberRepository.findAll().stream()
-                .map(MemberResponseDto::new)
+                .map(converter::convertToDto)
                 .collect(Collectors.toList());
     }
 

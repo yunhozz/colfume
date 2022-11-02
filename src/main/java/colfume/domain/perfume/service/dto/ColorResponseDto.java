@@ -15,6 +15,7 @@ public class ColorResponseDto {
 
     public ColorResponseDto(Color color) {
         id = color.getId();
+        perfumeId = color.getPerfume().getId();
         colorType = color.getColorType();
     }
 }

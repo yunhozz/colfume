@@ -1,12 +1,12 @@
 package colfume.domain.bookmark.service;
 
+import colfume.common.enums.ErrorCode;
 import colfume.domain.bookmark.model.entity.Bookmark;
 import colfume.domain.bookmark.model.repository.BookmarkRepository;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
-import colfume.common.enums.ErrorCode;
 import colfume.domain.perfume.service.exception.PerfumeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,8 +25,8 @@ public class BookmarkService {
         Member member = memberRepository.getReferenceById(userId);
         Perfume perfume = perfumeRepository.findById(perfumeId)
                 .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
-        Bookmark bookmark = new Bookmark(member, perfume, redirectUrl);
 
+        Bookmark bookmark = new Bookmark(member, perfume, redirectUrl);
         perfume.addLikes(); // 좋아요 수 +1
 
         return bookmarkRepository.save(bookmark).getId();

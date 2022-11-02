@@ -1,6 +1,6 @@
 package colfume.domain.notification.service.dto;
 
-import colfume.domain.notification.model.entity.Notification;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class NotificationResponseDto {
 
     private Long id;
@@ -17,14 +18,4 @@ public class NotificationResponseDto {
     private String redirectUrl;
     private Boolean isChecked;
     private LocalDateTime createdDate;
-
-    public NotificationResponseDto(Notification notification) {
-        id = notification.getId();
-        senderId = notification.getSender().getId();
-        receiverId = notification.getReceiver().getId();
-        message = notification.getMessage();
-        redirectUrl = notification.getRedirectUrl();
-        isChecked = notification.isChecked();
-        createdDate = notification.getCreatedDate();
-    }
 }

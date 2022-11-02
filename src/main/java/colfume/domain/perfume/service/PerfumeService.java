@@ -1,13 +1,14 @@
 package colfume.domain.perfume.service;
 
 import colfume.api.dto.perfume.PerfumeRequestDto;
+import colfume.common.converter.entity.PerfumeConverter;
+import colfume.common.enums.ColorType;
+import colfume.common.enums.ErrorCode;
 import colfume.domain.perfume.model.entity.Color;
 import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
 import colfume.domain.perfume.service.dto.PerfumeResponseDto;
-import colfume.common.enums.ColorType;
-import colfume.common.enums.ErrorCode;
 import colfume.domain.perfume.service.exception.PerfumeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class PerfumeService {
 
     private final PerfumeRepository perfumeRepository;
+    private final PerfumeConverter converter;
 
     @Transactional
     public Long createPerfume(PerfumeRequestDto perfumeRequestDto, List<String> tags, List<ColorType> colorTypes) {
@@ -31,18 +33,8 @@ public class PerfumeService {
         List<Color> colors = new ArrayList<>();
         colorTypes.forEach(colorType -> colors.add(new Color(colorType)));
 
-        Perfume perfume = Perfume.create(
-                perfumeRequestDto.getName(),
-                perfumeRequestDto.getVolume(),
-                perfumeRequestDto.getPrice(),
-                perfumeRequestDto.getMoods(),
-                perfumeRequestDto.getStyles(),
-                perfumeRequestDto.getNotes(),
-                perfumeRequestDto.getDescription(),
-                perfumeRequestDto.getImageUrl(),
-                hashtags,
-                colors
-        );
+        PerfumeConverter converter = new PerfumeConverter(hashtags, colors);
+        Perfume perfume = converter.convertToEntity(perfumeRequestDto);
 
         return perfumeRepository.save(perfume).getId(); // auto persist : hashtags, colors
     }
@@ -67,13 +59,14 @@ public class PerfumeService {
 
     @Transactional(readOnly = true)
     public PerfumeResponseDto findPerfumeDto(Long perfumeId) {
-        return new PerfumeResponseDto(findPerfume(perfumeId));
+        Perfume perfume = findPerfume(perfumeId);
+        return converter.convertToDto(perfume);
     }
 
     @Transactional(readOnly = true)
     public List<PerfumeResponseDto> findPerfumeDtoList() {
         return perfumeRepository.findAll().stream()
-                .map(PerfumeResponseDto::new)
+                .map(converter::convertToDto)
                 .collect(Collectors.toList());
     }
 
