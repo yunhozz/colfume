@@ -3,10 +3,12 @@ package colfume.domain.perfume.model.repository;
 import colfume.api.dto.perfume.SortDto;
 import colfume.common.enums.ColorType;
 import colfume.common.enums.SortCondition;
-import colfume.domain.perfume.model.repository.dto.ColorResponseDto;
-import colfume.domain.perfume.model.repository.dto.HashtagResponseDto;
+import colfume.domain.perfume.model.repository.dto.ColorQueryDto;
+import colfume.domain.perfume.model.repository.dto.HashtagQueryDto;
 import colfume.domain.perfume.model.repository.dto.PerfumeSearchQueryDto;
 import colfume.domain.perfume.model.repository.dto.PerfumeSimpleQueryDto;
+import colfume.domain.perfume.model.repository.dto.QColorQueryDto;
+import colfume.domain.perfume.model.repository.dto.QHashtagQueryDto;
 import colfume.domain.perfume.model.repository.dto.QPerfumeSimpleQueryDto;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -181,9 +183,8 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
     }
 
     private void joinQueryWithHashtagAndColor(List<PerfumeSimpleQueryDto> perfumes, List<Long> perfumeIds) {
-        List<HashtagResponseDto> hashtags = queryFactory
-                .select(Projections.constructor(
-                        HashtagResponseDto.class,
+        List<HashtagQueryDto> hashtags = queryFactory
+                .select(new QHashtagQueryDto(
                         hashtag.id,
                         perfume.id,
                         hashtag.tag
@@ -193,9 +194,8 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .where(perfume.id.in(perfumeIds))
                 .fetch();
 
-        List<ColorResponseDto> colors = queryFactory
-                .select(Projections.constructor(
-                        ColorResponseDto.class,
+        List<ColorQueryDto> colors = queryFactory
+                .select(new QColorQueryDto(
                         color.id,
                         perfume.id,
                         color.colorType
@@ -205,10 +205,10 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .where(perfume.id.in(perfumeIds))
                 .fetch();
 
-        Map<Long, List<HashtagResponseDto>> hashtagMap = hashtags.stream().collect(Collectors.groupingBy(HashtagResponseDto::getPerfumeId));
+        Map<Long, List<HashtagQueryDto>> hashtagMap = hashtags.stream().collect(Collectors.groupingBy(HashtagQueryDto::getPerfumeId));
         perfumes.forEach(perfumeSimpleQueryDto -> perfumeSimpleQueryDto.setHashtags(hashtagMap.get(perfumeSimpleQueryDto.getId())));
 
-        Map<Long, List<ColorResponseDto>> colorMap = colors.stream().collect(Collectors.groupingBy(ColorResponseDto::getPerfumeId));
+        Map<Long, List<ColorQueryDto>> colorMap = colors.stream().collect(Collectors.groupingBy(ColorQueryDto::getPerfumeId));
         perfumes.forEach(perfumeSimpleQueryDto -> perfumeSimpleQueryDto.setColors(colorMap.get(perfumeSimpleQueryDto.getId())));
     }
 

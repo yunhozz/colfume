@@ -1,13 +1,11 @@
-package colfume.domain.perfume.model.repository.dto;
+package colfume.domain.perfume.service.dto;
 
 import colfume.domain.perfume.model.entity.Hashtag;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class HashtagResponseDto {
 
     private Long id;

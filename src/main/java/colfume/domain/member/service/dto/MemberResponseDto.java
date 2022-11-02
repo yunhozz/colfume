@@ -1,7 +1,6 @@
 package colfume.domain.member.service.dto;
 
 import colfume.domain.member.model.entity.Member;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class MemberResponseDto {
 
     private Long id;

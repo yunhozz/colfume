@@ -1,9 +1,6 @@
 package colfume.domain.perfume.service.dto;
 
 import colfume.domain.perfume.model.entity.Perfume;
-import colfume.domain.perfume.model.repository.dto.ColorResponseDto;
-import colfume.domain.perfume.model.repository.dto.HashtagResponseDto;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +10,6 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class PerfumeResponseDto {
 
     private Long id;

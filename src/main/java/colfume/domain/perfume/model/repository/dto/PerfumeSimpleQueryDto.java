@@ -18,10 +18,10 @@ public class PerfumeSimpleQueryDto {
     private String imageUrl;
 
     // hashtag
-    private List<HashtagResponseDto> hashtags;
+    private List<HashtagQueryDto> hashtags;
 
     // color
-    private List<ColorResponseDto> colors;
+    private List<ColorQueryDto> colors;
 
     @QueryProjection
     public PerfumeSimpleQueryDto(Long id, String name, Integer volume, Integer price, String imageUrl) {
@@ -32,11 +32,11 @@ public class PerfumeSimpleQueryDto {
         this.imageUrl = imageUrl;
     }
 
-    public void setHashtags(List<HashtagResponseDto> hashtags) {
+    public void setHashtags(List<HashtagQueryDto> hashtags) {
         this.hashtags = hashtags;
     }
 
-    public void setColors(List<ColorResponseDto> colors) {
+    public void setColors(List<ColorQueryDto> colors) {
         this.colors = colors;
     }
 }

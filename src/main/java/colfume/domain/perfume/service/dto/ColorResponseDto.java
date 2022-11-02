@@ -1,14 +1,12 @@
-package colfume.domain.perfume.model.repository.dto;
+package colfume.domain.perfume.service.dto;
 
-import colfume.domain.perfume.model.entity.Color;
 import colfume.common.enums.ColorType;
-import lombok.AllArgsConstructor;
+import colfume.domain.perfume.model.entity.Color;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ColorResponseDto {
 
     private Long id;

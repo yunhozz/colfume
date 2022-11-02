@@ -1,7 +1,6 @@
 package colfume.domain.notification.service.dto;
 
 import colfume.domain.notification.model.entity.Notification;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class NotificationResponseDto {
 
     private Long id;

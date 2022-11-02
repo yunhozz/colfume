@@ -1,7 +1,6 @@
 package colfume.domain.evaluation.service.dto;
 
 import colfume.domain.evaluation.model.entity.Evaluation;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class EvaluationResponseDto {
 
     private Long id;

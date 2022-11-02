@@ -1,7 +1,6 @@
 package colfume.domain.bookmark.service.dto;
 
 import colfume.domain.bookmark.model.entity.Bookmark;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class BookmarkResponseDto {
 
     private Long id;
