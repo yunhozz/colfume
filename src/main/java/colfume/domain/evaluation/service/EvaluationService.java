@@ -22,6 +22,7 @@ public class EvaluationService {
     private final EvaluationRepository evaluationRepository;
     private final MemberRepository memberRepository;
     private final PerfumeRepository perfumeRepository;
+    private final EvaluationConverter converter;
 
     @Transactional
     public Long createEvaluation(EvaluationRequestDto evaluationRequestDto, Long writerId, Long perfumeId) {
@@ -29,8 +30,8 @@ public class EvaluationService {
         Perfume perfume = perfumeRepository.findById(perfumeId)
                 .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
 
-        EvaluationConverter evaluationConverter = new EvaluationConverter(writer, perfume);
-        Evaluation evaluation = evaluationConverter.convertToEntity(evaluationRequestDto);
+        converter.update(writer, perfume);
+        Evaluation evaluation = converter.convertToEntity(evaluationRequestDto);
 
         perfume.addEvaluationCount(); // 평가수 +1
         perfumeRepository.updateScoreForAdd(perfume.getId(), evaluationRequestDto.getScore()); // 평가 점수 update (추가)

@@ -7,17 +7,15 @@ import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.service.dto.ColorResponseDto;
 import colfume.domain.perfume.service.dto.HashtagResponseDto;
 import colfume.domain.perfume.service.dto.PerfumeResponseDto;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequestDto, PerfumeResponseDto> {
 
-    private final List<Hashtag> hashtags;
-    private final List<Color> colors;
+    private List<Hashtag> hashtags;
+    private List<Color> colors;
 
     @Override
     public Perfume convertToEntity(PerfumeRequestDto perfumeRequestDto) {
@@ -57,5 +55,10 @@ public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequest
                 hashtags,
                 colors
         );
+    }
+
+    public void update(List<Hashtag> hashtags, List<Color> colors) {
+        this.hashtags = hashtags;
+        this.colors = colors;
     }
 }

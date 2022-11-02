@@ -59,8 +59,8 @@ public class NotificationService {
         Member receiver = memberRepository.findById(receiverId)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
-        NotificationConverter notificationConverter = new NotificationConverter(sender, receiver);
-        Notification notification = notificationConverter.convertToEntity(notificationRequestDto);
+        converter.update(sender, receiver);
+        Notification notification = converter.convertToEntity(notificationRequestDto);
 
         Map<String, SseEmitter> emitters = emitterRepository.findEmittersWithUserId(String.valueOf(receiverId));
         emitters.forEach(

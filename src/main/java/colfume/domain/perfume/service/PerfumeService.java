@@ -33,7 +33,7 @@ public class PerfumeService {
         List<Color> colors = new ArrayList<>();
         colorTypes.forEach(colorType -> colors.add(new Color(colorType)));
 
-        PerfumeConverter converter = new PerfumeConverter(hashtags, colors);
+        converter.update(hashtags, colors);
         Perfume perfume = converter.convertToEntity(perfumeRequestDto);
 
         return perfumeRepository.save(perfume).getId(); // auto persist : hashtags, colors
