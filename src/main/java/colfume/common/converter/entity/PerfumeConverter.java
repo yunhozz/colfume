@@ -9,16 +9,22 @@ import colfume.domain.perfume.service.dto.HashtagResponseDto;
 import colfume.domain.perfume.service.dto.PerfumeResponseDto;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequestDto, PerfumeResponseDto> {
 
-    private List<Hashtag> hashtags;
-    private List<Color> colors;
-
     @Override
     public Perfume convertToEntity(PerfumeRequestDto perfumeRequestDto) {
+        List<Hashtag> hashtags = new ArrayList<>() {{
+            perfumeRequestDto.getTags().forEach(tag -> add(new Hashtag(tag)));
+        }};
+
+        List<Color> colors = new ArrayList<>() {{
+            perfumeRequestDto.getColorType().forEach(colorType -> add(new Color(colorType)));
+        }};
+
         return Perfume.create(
                 perfumeRequestDto.getName(),
                 perfumeRequestDto.getVolume(),
@@ -55,10 +61,5 @@ public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequest
                 hashtags,
                 colors
         );
-    }
-
-    public void update(List<Hashtag> hashtags, List<Color> colors) {
-        this.hashtags = hashtags;
-        this.colors = colors;
     }
 }

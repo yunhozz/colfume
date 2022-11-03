@@ -3,8 +3,6 @@ package colfume.domain.perfume.service;
 import colfume.api.dto.perfume.PerfumeRequestDto;
 import colfume.common.converter.entity.PerfumeConverter;
 import colfume.common.enums.ErrorCode;
-import colfume.domain.perfume.model.entity.Color;
-import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
 import colfume.domain.perfume.service.dto.PerfumeResponseDto;
@@ -13,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,15 +23,7 @@ public class PerfumeService {
 
     @Transactional
     public Long createPerfume(PerfumeRequestDto perfumeRequestDto) {
-        List<Hashtag> hashtags = new ArrayList<>();
-        perfumeRequestDto.getTags().forEach(tag -> hashtags.add(new Hashtag(tag)));
-
-        List<Color> colors = new ArrayList<>();
-        perfumeRequestDto.getColorType().forEach(colorType -> colors.add(new Color(colorType)));
-
-        converter.update(hashtags, colors);
         Perfume perfume = converter.convertToEntity(perfumeRequestDto);
-
         return perfumeRepository.save(perfume).getId(); // auto persist : hashtags, colors
     }
 
