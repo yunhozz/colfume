@@ -54,17 +54,19 @@ public class GlobalExceptionHandler {
     public Response handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("handleMethodArgumentNotValidException", e);
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
-        List<NotValidResponseDto> notValidResponseDtoList = new ArrayList<>();
 
-        fieldErrors.forEach(fieldError ->  {
-            NotValidResponseDto notValidResponseDto = NotValidResponseDto.builder()
-                    .field(fieldError.getField())
-                    .code(fieldError.getCode())
-                    .rejectValue(fieldError.getRejectedValue())
-                    .defaultMessage(fieldError.getDefaultMessage())
-                    .build();
-            notValidResponseDtoList.add(notValidResponseDto);
-        });
+        List<NotValidResponseDto> notValidResponseDtoList = new ArrayList<>() {{
+            fieldErrors.forEach(fieldError -> {
+                NotValidResponseDto notValidResponseDto = NotValidResponseDto.builder()
+                        .field(fieldError.getField())
+                        .code(fieldError.getCode())
+                        .rejectValue(fieldError.getRejectedValue())
+                        .defaultMessage(fieldError.getDefaultMessage())
+                        .build();
+
+                add(notValidResponseDto);
+            });
+        }};
 
         ErrorResponseDto error = new ErrorResponseDto(ErrorCode.NOT_VALID, notValidResponseDtoList);
         return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
