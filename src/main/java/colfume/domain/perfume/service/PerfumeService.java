@@ -2,7 +2,6 @@ package colfume.domain.perfume.service;
 
 import colfume.api.dto.perfume.PerfumeRequestDto;
 import colfume.common.converter.entity.PerfumeConverter;
-import colfume.common.enums.ColorType;
 import colfume.common.enums.ErrorCode;
 import colfume.domain.perfume.model.entity.Color;
 import colfume.domain.perfume.model.entity.Hashtag;
@@ -26,12 +25,12 @@ public class PerfumeService {
     private final PerfumeConverter converter;
 
     @Transactional
-    public Long createPerfume(PerfumeRequestDto perfumeRequestDto, List<String> tags, List<ColorType> colorTypes) {
+    public Long createPerfume(PerfumeRequestDto perfumeRequestDto) {
         List<Hashtag> hashtags = new ArrayList<>();
-        tags.forEach(tag -> hashtags.add(new Hashtag(tag)));
+        perfumeRequestDto.getTags().forEach(tag -> hashtags.add(new Hashtag(tag)));
 
         List<Color> colors = new ArrayList<>();
-        colorTypes.forEach(colorType -> colors.add(new Color(colorType)));
+        perfumeRequestDto.getColorType().forEach(colorType -> colors.add(new Color(colorType)));
 
         converter.update(hashtags, colors);
         Perfume perfume = converter.convertToEntity(perfumeRequestDto);

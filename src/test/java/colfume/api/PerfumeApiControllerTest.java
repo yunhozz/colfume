@@ -2,6 +2,7 @@ package colfume.api;
 
 import colfume.api.dto.perfume.PerfumeRequestDto;
 import colfume.api.dto.perfume.UpdateInfoRequestDto;
+import colfume.common.enums.ColorType;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
 import colfume.domain.perfume.service.PerfumeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,10 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static colfume.common.enums.ColorType.GREEN;
-import static colfume.common.enums.ColorType.ORANGE;
-import static colfume.common.enums.ColorType.RED;
-import static colfume.common.enums.ColorType.YELLOW;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -60,9 +57,9 @@ class PerfumeApiControllerTest {
         PerfumeRequestDto perfumeRequestDto1 = createPerfumeDto("test1", 30, 10000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test perfume1");
         PerfumeRequestDto perfumeRequestDto2 = createPerfumeDto("test2", 50, 20000, List.of("m3", "m4"), List.of("s3", "s4"), List.of("n3", "n4"), "test perfume2");
         PerfumeRequestDto perfumeRequestDto3 = createPerfumeDto("test3", 80, 30000, List.of("m5", "m6"), List.of("s5", "s6"), List.of("n5", "n6"), "test perfume3");
-        Long perfumeId1 = perfumeService.createPerfume(perfumeRequestDto1, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(RED, YELLOW));
-        Long perfumeId2 = perfumeService.createPerfume(perfumeRequestDto2, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(ORANGE, GREEN));
-        Long perfumeId3 = perfumeService.createPerfume(perfumeRequestDto3, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(RED, GREEN));
+        Long perfumeId1 = perfumeService.createPerfume(perfumeRequestDto1);
+        Long perfumeId2 = perfumeService.createPerfume(perfumeRequestDto2);
+        Long perfumeId3 = perfumeService.createPerfume(perfumeRequestDto3);
 
         //when
         ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/api/perfumes/{perfumeId}", perfumeId1)
@@ -87,9 +84,9 @@ class PerfumeApiControllerTest {
         PerfumeRequestDto perfumeRequestDto1 = createPerfumeDto("test1", 30, 10000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test perfume1");
         PerfumeRequestDto perfumeRequestDto2 = createPerfumeDto("test2", 50, 20000, List.of("m3", "m4"), List.of("s3", "s4"), List.of("n3", "n4"), "test perfume2");
         PerfumeRequestDto perfumeRequestDto3 = createPerfumeDto("test3", 80, 30000, List.of("m5", "m6"), List.of("s5", "s6"), List.of("n5", "n6"), "test perfume3");
-        Long perfumeId1 = perfumeService.createPerfume(perfumeRequestDto1, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(RED, YELLOW));
-        Long perfumeId2 = perfumeService.createPerfume(perfumeRequestDto2, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(ORANGE, GREEN));
-        Long perfumeId3 = perfumeService.createPerfume(perfumeRequestDto3, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(RED, GREEN));
+        Long perfumeId1 = perfumeService.createPerfume(perfumeRequestDto1);
+        Long perfumeId2 = perfumeService.createPerfume(perfumeRequestDto2);
+        Long perfumeId3 = perfumeService.createPerfume(perfumeRequestDto3);
 
         //when
         ResultActions result = mockMvc.perform(get("/api/perfumes")
@@ -117,7 +114,7 @@ class PerfumeApiControllerTest {
     @DisplayName("POST /api/perfumes")
     void createPerfume() throws Exception {
         //given
-        PerfumeRequestDto perfumeRequestDto = new PerfumeRequestDto("test", 50, 70000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test", null);
+        PerfumeRequestDto perfumeRequestDto = new PerfumeRequestDto("test", 50, 70000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test", null, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(ColorType.RED, ColorType.GREEN));
 
         //when
         ResultActions result = mockMvc.perform(post("/api/perfumes")
@@ -136,8 +133,8 @@ class PerfumeApiControllerTest {
     @DisplayName("PATCH /api/perfumes/info")
     void updatePerfumeInfo() throws Exception {
         //given
-        PerfumeRequestDto perfumeRequestDto = new PerfumeRequestDto("test", 50, 70000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test", null);
-        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(RED, GREEN));
+        PerfumeRequestDto perfumeRequestDto = new PerfumeRequestDto("test", 50, 70000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test", null, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(ColorType.RED, ColorType.GREEN));
+        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto);
         UpdateInfoRequestDto updateInfoRequestDto = new UpdateInfoRequestDto("update", 50000, "update");
 
         //when
@@ -156,8 +153,8 @@ class PerfumeApiControllerTest {
     @DisplayName("PATCH /api/perfumes/image")
     void updatePerfumeImage() throws Exception {
         //given
-        PerfumeRequestDto perfumeRequestDto = new PerfumeRequestDto("test", 50, 70000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test", null);
-        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(RED, GREEN));
+        PerfumeRequestDto perfumeRequestDto = new PerfumeRequestDto("test", 50, 70000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test", null, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(ColorType.RED, ColorType.GREEN));
+        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto);
 
         //when
         ResultActions result = mockMvc.perform(patch("/api/perfumes/image")
@@ -175,8 +172,8 @@ class PerfumeApiControllerTest {
     @DisplayName("DELETE /api/perfumes")
     void deletePerfume() throws Exception {
         //given
-        PerfumeRequestDto perfumeRequestDto = new PerfumeRequestDto("test", 50, 70000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test", null);
-        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(RED, GREEN));
+        PerfumeRequestDto perfumeRequestDto = new PerfumeRequestDto("test", 50, 70000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test", null, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(ColorType.RED, ColorType.GREEN));
+        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto);
 
         //when
         ResultActions result = mockMvc.perform(delete("/api/perfumes")

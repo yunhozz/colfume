@@ -1,6 +1,7 @@
 package colfume.domain.perfume.service;
 
 import colfume.api.dto.perfume.PerfumeRequestDto;
+import colfume.common.enums.ColorType;
 import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.HashtagRepository;
@@ -12,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static colfume.common.enums.ColorType.GREEN;
-import static colfume.common.enums.ColorType.RED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -35,7 +34,7 @@ class PerfumeServiceTest {
         PerfumeRequestDto perfumeRequestDto = createPerfumeDto("test", 30, 50000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test perfume");
 
         //when
-        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(RED, GREEN));
+        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto);
         Perfume perfume = perfumeRepository.findById(perfumeId).get();
         List<Hashtag> tags = hashtagRepository.findAll();
 
@@ -48,7 +47,7 @@ class PerfumeServiceTest {
     void updateInfo() throws Exception {
         //given
         PerfumeRequestDto perfumeRequestDto = createPerfumeDto("test", 30, 50000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test perfume");
-        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(RED, GREEN));
+        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto);
 
         //when
         perfumeService.updateInfo(perfumeId, "update", 30000, "update");
@@ -64,7 +63,7 @@ class PerfumeServiceTest {
     void updateImage() throws Exception {
         //given
         PerfumeRequestDto perfumeRequestDto = createPerfumeDto("test", 30, 50000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test perfume");
-        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(RED, GREEN));
+        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto);
 
         //when
         perfumeService.updateImage(perfumeId, "update-url");
@@ -79,7 +78,7 @@ class PerfumeServiceTest {
     void deletePerfume() throws Exception {
         //given
         PerfumeRequestDto perfumeRequestDto = createPerfumeDto("test", 30, 50000, List.of("m1", "m2"), List.of("s1", "s2"), List.of("n1", "n2"), "test perfume");
-        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto, List.of("#hashtag1", "#hashtag2", "#hashtag3"), List.of(RED, GREEN));
+        Long perfumeId = perfumeService.createPerfume(perfumeRequestDto);
 
         //when
         perfumeService.deletePerfume(perfumeId);
@@ -98,6 +97,8 @@ class PerfumeServiceTest {
                 .styles(styles)
                 .notes(notes)
                 .description(description)
+                .tags(List.of("#hashtag1", "#hashtag2", "#hashtag3"))
+                .colorType(List.of(ColorType.RED, ColorType.YELLOW))
                 .build();
     }
 }

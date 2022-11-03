@@ -5,7 +5,6 @@ import colfume.api.dto.perfume.PerfumeRequestDto;
 import colfume.api.dto.perfume.SearchDto;
 import colfume.api.dto.perfume.SortDto;
 import colfume.api.dto.perfume.UpdateInfoRequestDto;
-import colfume.common.enums.ColorType;
 import colfume.common.enums.SearchCondition;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
 import colfume.domain.perfume.service.PerfumeService;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/perfumes")
@@ -45,12 +43,12 @@ public class PerfumeApiController {
     }
 
     @PostMapping("/sort")
-    public Response getSortedPerfumes(@RequestBody SortDto sortDto, @RequestParam(required = false) Long perfumeId, @PageableDefault(size = 10) Pageable pageable) {
+    public Response getSortedPerfumes(@RequestBody SortDto sortDto, @RequestParam(required = false) Long perfumeId, Pageable pageable) {
         return Response.success(perfumeRepository.sortSimplePerfumePage(sortDto, perfumeId, pageable), HttpStatus.CREATED);
     }
 
     @PostMapping("/search")
-    public Response searchPerfumes(@RequestBody SearchDto searchDto, @RequestParam(required = false) Long perfumeId, @PageableDefault(size = 10) Pageable pageable) {
+    public Response searchPerfumes(@RequestBody SearchDto searchDto, @RequestParam(required = false) Long perfumeId, Pageable pageable) {
         if (searchDto.getCondition() == SearchCondition.LATEST) {
             return Response.success(perfumeRepository.searchByKeywordOrderByCreated(searchDto.getKeyword(), perfumeId, pageable), HttpStatus.CREATED);
         }
@@ -61,8 +59,8 @@ public class PerfumeApiController {
     }
 
     @PostMapping
-    public Response createPerfume(@Valid @RequestBody PerfumeRequestDto perfumeRequestDto, @RequestParam List<String> tags, @RequestParam List<ColorType> colorTypes) {
-        return Response.success(perfumeService.createPerfume(perfumeRequestDto, tags, colorTypes), HttpStatus.CREATED);
+    public Response createPerfume(@Valid @RequestBody PerfumeRequestDto perfumeRequestDto) {
+        return Response.success(perfumeService.createPerfume(perfumeRequestDto), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}/info")
