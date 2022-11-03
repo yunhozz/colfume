@@ -31,7 +31,6 @@ import static colfume.domain.perfume.model.entity.QColor.color;
 import static colfume.domain.perfume.model.entity.QHashtag.hashtag;
 import static colfume.domain.perfume.model.entity.QPerfume.perfume;
 
-// TODO : 커서 페이징 방식으로 구현
 @Repository
 @RequiredArgsConstructor
 public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
@@ -49,7 +48,6 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.imageUrl
                 ))
                 .from(perfume)
-                .join(perfume.colors, color)
                 .where(perfumeIdLt(perfumeId))
                 .orderBy(perfume.createdDate.desc())
                 .limit(pageable.getPageSize())
@@ -71,6 +69,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.price,
                         perfume.imageUrl
                 ))
+                .distinct() // perfume <> colors join 시 N+1 문제 방지
                 .from(perfume)
                 .join(perfume.colors, color)
                 .where(perfumeIdLt(perfumeId))
@@ -158,14 +157,15 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
     }
 
     private List<Long> extractPerfumeIdsOrderByKeywordDesc(String keyword, List<PerfumeSearchQueryDto> searchPerfumes) {
-        Map<PerfumeSearchQueryDto, Integer> numberOfKeywordMap = mappingByCountOfKeywordOrderByDesc(keyword, searchPerfumes);
+        Map<PerfumeSearchQueryDto, Integer> numberOfKeywordMap = mappingByCountOfKeyword(keyword, searchPerfumes);
         List<Map.Entry<PerfumeSearchQueryDto, Integer>> sortedEntryList = numberOfKeywordMap.entrySet().stream()
                 .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue())).toList();
 
-        return sortedEntryList.stream().map(entry -> entry.getKey().getId()).toList();
+        return sortedEntryList.stream()
+                .map(entry -> entry.getKey().getId()).toList();
     }
 
-    private Map<PerfumeSearchQueryDto, Integer> mappingByCountOfKeywordOrderByDesc(String keyword, List<PerfumeSearchQueryDto> searchPerfumes) {
+    private Map<PerfumeSearchQueryDto, Integer> mappingByCountOfKeyword(String keyword, List<PerfumeSearchQueryDto> searchPerfumes) {
         Map<PerfumeSearchQueryDto, Integer> numberOfKeywordMap = new HashMap<>();
 
         searchPerfumes.forEach(searchPerfume -> {
