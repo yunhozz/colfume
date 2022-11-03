@@ -1,12 +1,20 @@
 package colfume.domain.perfume.model.entity;
 
-import colfume.domain.BaseTime;
+import colfume.common.converter.enums.ColorTypeConverter;
 import colfume.common.enums.ColorType;
+import colfume.domain.BaseTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
@@ -21,7 +29,7 @@ public class Color extends BaseTime {
     @JoinColumn(name = "perfume_id")
     private Perfume perfume;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ColorTypeConverter.class)
     private ColorType colorType;
 
     public Color(ColorType colorType) {
