@@ -1,5 +1,6 @@
 package colfume.domain.notification.service;
 
+import colfume.api.dto.notification.NotificationRequestDto;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.notification.model.entity.Notification;
@@ -13,8 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.util.List;
 import java.util.Optional;
 
-import static colfume.common.dto.NotificationDto.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional

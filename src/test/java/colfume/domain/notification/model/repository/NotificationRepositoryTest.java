@@ -3,6 +3,7 @@ package colfume.domain.notification.model.repository;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.notification.model.entity.Notification;
+import colfume.domain.notification.model.repository.dto.NotificationQueryDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -42,7 +43,7 @@ class NotificationRepositoryTest {
         }
 
         //when
-        List<NotificationDto.NotificationQueryDto> result = notificationRepository.findWithReceiverId(receiver.getId());
+        List<NotificationQueryDto> result = notificationRepository.findWithReceiverId(receiver.getId());
 
         //then
         assertThat(result).isNotEmpty();
