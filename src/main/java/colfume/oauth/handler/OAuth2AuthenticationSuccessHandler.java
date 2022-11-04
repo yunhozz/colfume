@@ -58,8 +58,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(userPrincipal.getEmail(), userPrincipal.getRole());
 
         saveOrUpdateRefreshToken(userPrincipal, tokenResponseDto);
-        addAccessTokenOnResponse(response, tokenResponseDto);
-        addRefreshTokenOnCookie(request, response, tokenResponseDto);
+        addTokenOnResponseAndCookie(request, response, tokenResponseDto);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", tokenResponseDto.getAccessToken())
@@ -83,6 +82,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             UserRefreshToken userRefreshToken = optionalUserRefreshToken.get();
             userRefreshToken.updateRefreshToken(tokenResponseDto.getRefreshToken());
         }
+    }
+
+    private void addTokenOnResponseAndCookie(HttpServletRequest request, HttpServletResponse response, TokenResponseDto tokenResponseDto) {
+        addAccessTokenOnResponse(response, tokenResponseDto);
+        addRefreshTokenOnCookie(request, response, tokenResponseDto);
     }
 
     // 헤더에 jwt access 토큰 추가

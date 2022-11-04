@@ -56,8 +56,7 @@ public class MemberApiController {
 
         if (refreshToken != null) {
             tokenResponseDto = memberService.tokenReissue(refreshToken);
-            addAccessTokenOnResponse(response, tokenResponseDto);
-            addRefreshTokenOnCookie(request, response, tokenResponseDto);
+            addTokenOnResponseAndCookie(request, response, tokenResponseDto);
         }
         return Response.success(tokenResponseDto, HttpStatus.OK);
     }
@@ -70,8 +69,7 @@ public class MemberApiController {
     @PostMapping("/login")
     public Response login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request, HttpServletResponse response) {
         TokenResponseDto tokenResponseDto = memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
-        addAccessTokenOnResponse(response, tokenResponseDto);
-        addRefreshTokenOnCookie(request, response, tokenResponseDto);
+        addTokenOnResponseAndCookie(request, response, tokenResponseDto);
 
         return Response.success(tokenResponseDto, HttpStatus.CREATED);
     }
@@ -99,6 +97,11 @@ public class MemberApiController {
     public Response withdraw(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         memberService.withdraw(userPrincipal.getId());
         return Response.success(HttpStatus.NO_CONTENT);
+    }
+
+    private void addTokenOnResponseAndCookie(HttpServletRequest request, HttpServletResponse response, TokenResponseDto tokenResponseDto) {
+        addAccessTokenOnResponse(response, tokenResponseDto);
+        addRefreshTokenOnCookie(request, response, tokenResponseDto);
     }
 
     // 헤더에 jwt access 토큰 추가
