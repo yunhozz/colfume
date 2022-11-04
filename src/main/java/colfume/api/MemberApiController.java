@@ -65,7 +65,7 @@ public class MemberApiController {
     }
 
     @PostMapping("/login")
-    public Response login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public Response login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request, HttpServletResponse response) {
         TokenResponseDto tokenResponseDto = memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
         addAccessTokenOnResponse(response, tokenResponseDto);
         addRefreshTokenOnCookie(request, response, tokenResponseDto);
@@ -74,24 +74,24 @@ public class MemberApiController {
     }
 
     @PatchMapping("/password")
-    public Response updatePassword(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody PasswordRequestDto passwordRequestDto) {
-        memberService.updatePassword(user.getId(), passwordRequestDto.getPassword(), passwordRequestDto.getNewPw());
+    public Response updatePassword(@AuthenticationPrincipal UserPrincipal userPrincipal, @Valid @RequestBody PasswordRequestDto passwordRequestDto) {
+        memberService.updatePassword(userPrincipal.getId(), passwordRequestDto.getPassword(), passwordRequestDto.getNewPw());
         return Response.success(HttpStatus.CREATED);
     }
 
     @PatchMapping("/name")
-    public Response updateInfo(@AuthenticationPrincipal UserPrincipal user, @RequestParam(required = false) String name, @RequestParam(required = false) String imageUrl) {
+    public Response updateInfo(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam(required = false) String name, @RequestParam(required = false) String imageUrl) {
         if (!StringUtils.hasText(name)) {
             ErrorResponseDto error = new ErrorResponseDto(ErrorCode.NAME_NOT_INSERTED);
             return Response.failure(-1000, error, HttpStatus.BAD_REQUEST);
         }
-        memberService.updateInfo(user.getId(), name, imageUrl);
+        memberService.updateInfo(userPrincipal.getId(), name, imageUrl);
         return Response.success(HttpStatus.CREATED);
     }
 
     @DeleteMapping
-    public Response withdraw(@AuthenticationPrincipal UserPrincipal user) {
-        memberService.withdraw(user.getId());
+    public Response withdraw(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        memberService.withdraw(userPrincipal.getId());
         return Response.success(HttpStatus.NO_CONTENT);
     }
 
