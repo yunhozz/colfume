@@ -77,10 +77,10 @@ public class MemberService {
         if (!userRefreshToken.getRefreshToken().equals(refreshToken)) {
             throw new RefreshTokenNotCorrespondException(ErrorCode.REFRESH_TOKEN_NOT_CORRESPOND);
         }
-        TokenResponseDto tokenDto = jwtProvider.createTokenDto(member.getEmail(), member.getRole().getAuthority());
-        userRefreshToken.updateRefreshToken(tokenDto.getRefreshToken());
+        TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(member.getEmail(), member.getRole().getAuthority());
+        userRefreshToken.updateRefreshToken(tokenResponseDto.getRefreshToken());
 
-        return tokenDto;
+        return tokenResponseDto;
     }
 
     @Transactional

@@ -25,9 +25,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
+import java.util.Optional;
 
 import static colfume.oauth.handler.OAuth2AuthorizationRequestRepository.REFRESH_TOKEN;
 
@@ -51,13 +54,16 @@ public class MemberApiController {
 
     @GetMapping("/token/reissue")
     public Response tokenReissue(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = request.getHeader("Refresh");
-        TokenResponseDto tokenResponseDto = null;
+        Optional<Cookie> cookie = CookieUtils.getCookie(request, REFRESH_TOKEN);
 
-        if (refreshToken != null) {
-            tokenResponseDto = memberService.tokenReissue(refreshToken);
-            addTokenOnResponseAndCookie(request, response, tokenResponseDto);
+        if (cookie.isEmpty()) {
+            ErrorResponseDto error = new ErrorResponseDto(ErrorCode.COOKIE_NOT_FOUND);
+            return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
         }
+        String refreshToken = cookie.get().getValue();
+        TokenResponseDto tokenResponseDto = memberService.tokenReissue(refreshToken);
+        addTokenOnResponseAndCookie(request, response, tokenResponseDto);
+
         return Response.success(tokenResponseDto, HttpStatus.OK);
     }
 
