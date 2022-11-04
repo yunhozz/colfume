@@ -15,19 +15,16 @@ import java.util.List;
 public class ErrorResponseDto {
 
     private Integer status;
-    private String code;
     private String message;
     private List<NotValidResponseDto> fieldErrors;
 
     public ErrorResponseDto(ErrorCode errorCode) {
         status = errorCode.getStatus();
-        code = errorCode.getCode();
         message = errorCode.getMessage();
     }
 
     public ErrorResponseDto(ErrorCode errorCode, List<NotValidResponseDto> fieldErrors) {
         status = errorCode.getStatus();
-        code = errorCode.getCode();
         message = errorCode.getMessage();
         this.fieldErrors = fieldErrors;
     }
