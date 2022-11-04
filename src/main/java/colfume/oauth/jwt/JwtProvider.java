@@ -19,7 +19,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
@@ -63,7 +62,7 @@ public class JwtProvider {
                 .compact();
 
         return TokenResponseDto.builder()
-                .grantType("Bearer")
+                .grantType("Bearer ")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .accessTokenExpireDate(ACCESSTOKEN_VALID_MILLISECOND)
@@ -80,10 +79,6 @@ public class JwtProvider {
         UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
 
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
-
-    public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("Authorization");
     }
 
     public boolean validateToken(String token) {
