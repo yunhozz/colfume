@@ -43,8 +43,7 @@ public class SecurityConfig {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/**").permitAll();
 
         httpSecurity
                 .headers()

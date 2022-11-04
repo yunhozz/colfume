@@ -26,7 +26,7 @@ public class UserPrincipal implements UserDetails, OAuth2User {
         email = member.getEmail();
         password = member.getPassword();
         name = member.getName();
-        role = member.getRole().getKey();
+        role = member.getRole().getAuthority();
     }
 
     public UserPrincipal(Member member, Map<String, Object> attributes) {
@@ -34,7 +34,7 @@ public class UserPrincipal implements UserDetails, OAuth2User {
         email = member.getEmail();
         password = member.getPassword();
         name = member.getName();
-        role = member.getRole().getKey();
+        role = member.getRole().getAuthority();
         this.attributes = attributes;
     }
 

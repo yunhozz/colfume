@@ -58,7 +58,7 @@ public class MemberService {
         if (!member.isEmailVerified()) {
             throw new EmailNotVerifiedException(ErrorCode.EMAIL_NOT_VERIFIED);
         }
-        TokenResponseDto tokenDto = jwtProvider.createTokenDto(email, member.getRole().getKey());
+        TokenResponseDto tokenDto = jwtProvider.createTokenDto(email, member.getRole().getAuthority());
         userRefreshTokenRepository.save(new UserRefreshToken(member.getId(), tokenDto.getRefreshToken()));
 
         return tokenDto;
@@ -67,9 +67,6 @@ public class MemberService {
     // jwt token 재발급
     @Transactional
     public TokenResponseDto tokenReissue(String refreshToken) {
-        if (!jwtProvider.validateToken(refreshToken)) {
-            throw new IllegalStateException("검증되지 않은 jwt 토큰입니다.");
-        }
         Authentication authentication = jwtProvider.getAuthentication(refreshToken);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 

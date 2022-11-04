@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.ArrayList;
 import java.util.List;
 
-import static colfume.common.ErrorResponseDto.*;
+import static colfume.common.ErrorResponseDto.NotValidResponseDto;
 
 @Slf4j
 @RestControllerAdvice
