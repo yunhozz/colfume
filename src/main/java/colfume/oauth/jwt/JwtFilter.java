@@ -39,18 +39,11 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = request.getHeader("Authorization");
         log.info("jwt token = " + token);
 
-        if (!Strings.hasText(token)) {
-            return Optional.empty();
-        }
-        return checkParts(token);
+        return Strings.hasText(token) ? checkParts(token) : Optional.empty();
     }
 
     private Optional<String> checkParts(String token) {
         String[] parts = token.split(" ");
-
-        if (parts.length == 2 && parts[0].equals("Bearer")) {
-            return Optional.ofNullable(parts[1]);
-        }
-        return Optional.empty();
+        return parts.length == 2 && parts[0].equals("Bearer") ? Optional.ofNullable(parts[1]) : Optional.empty();
     }
 }
