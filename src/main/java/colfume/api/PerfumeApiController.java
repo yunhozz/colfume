@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -58,23 +59,27 @@ public class PerfumeApiController {
         return null;
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping
     public Response createPerfume(@Valid @RequestBody PerfumeRequestDto perfumeRequestDto) {
         return Response.success(perfumeService.createPerfume(perfumeRequestDto), HttpStatus.CREATED);
     }
 
+    @Secured("ROLE_ADMIN")
     @PatchMapping("/{id}/info")
     public Response updatePerfumeInfo(@PathVariable String id, @Valid @RequestBody UpdateInfoRequestDto updateInfoRequestDto) {
         perfumeService.updateInfo(Long.valueOf(id), updateInfoRequestDto.getName(), updateInfoRequestDto.getPrice(), updateInfoRequestDto.getDescription());
         return Response.success(HttpStatus.CREATED);
     }
 
+    @Secured("ROLE_ADMIN")
     @PatchMapping("/{id}/image")
     public Response updatePerfumeImage(@PathVariable String id, @RequestParam(required = false) String imageUrl) {
         perfumeService.updateImage(Long.valueOf(id), imageUrl);
         return Response.success(HttpStatus.CREATED);
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{id}")
     public Response deletePerfume(@PathVariable String id) {
         perfumeService.deletePerfume(Long.valueOf(id));
