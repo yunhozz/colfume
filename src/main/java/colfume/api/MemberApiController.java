@@ -49,7 +49,6 @@ public class MemberApiController {
         return Response.success(memberService.findMemberDtoList(), HttpStatus.OK);
     }
 
-    @Secured("ROLE_USER")
     @GetMapping("/token/reissue")
     public Response tokenReissue(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = request.getHeader("Refresh");
