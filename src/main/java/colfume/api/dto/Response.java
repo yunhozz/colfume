@@ -11,20 +11,20 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Response {
 
-    private HttpStatus status;
     private boolean success;
     private int code;
     private Result result;
+    private HttpStatus status;
 
     public static Response success(HttpStatus status) {
-        return new Response(status, true, 0, null);
+        return new Response(true, 0, null, status);
     }
 
     public static <T> Response success(T data, HttpStatus status) {
-        return new Response(status, true, 0, new Success<>(data));
+        return new Response(true, 0, new Success<>(data), status);
     }
 
     public static <T> Response failure(int code, T data, HttpStatus status) {
-        return new Response(status, false, code, new Failure<>(data));
+        return new Response(false, code, new Failure<>(data), status);
     }
 }
