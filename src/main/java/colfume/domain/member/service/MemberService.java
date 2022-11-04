@@ -69,15 +69,13 @@ public class MemberService {
     public TokenResponseDto tokenReissue(String refreshToken) {
         Authentication authentication = jwtProvider.getAuthentication(refreshToken);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-
-        Member member = findMemberByEmail(userPrincipal.getEmail());
-        UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(member.getId())
+        UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(userPrincipal.getId())
                 .orElseThrow(() -> new RefreshTokenNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
         if (!userRefreshToken.getRefreshToken().equals(refreshToken)) {
             throw new RefreshTokenNotCorrespondException(ErrorCode.REFRESH_TOKEN_NOT_CORRESPOND);
         }
-        TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(member.getEmail(), member.getRole().getAuthority());
+        TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(userPrincipal.getEmail(), userPrincipal.getRole());
         userRefreshToken.updateRefreshToken(tokenResponseDto.getRefreshToken());
 
         return tokenResponseDto;
