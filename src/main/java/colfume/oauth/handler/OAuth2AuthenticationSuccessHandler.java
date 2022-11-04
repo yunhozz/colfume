@@ -58,7 +58,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(userPrincipal.getEmail(), userPrincipal.getRole());
 
         saveOrUpdateRefreshToken(userPrincipal, tokenResponseDto);
-        addTokenOnResponse(response, tokenResponseDto);
+        addAccessTokenOnResponse(response, tokenResponseDto);
         addRefreshTokenOnCookie(request, response, tokenResponseDto);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
@@ -85,12 +85,13 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
     }
 
-    private void addTokenOnResponse(HttpServletResponse response, TokenResponseDto tokenResponseDto) {
+    // 헤더에 jwt access 토큰 추가
+    private void addAccessTokenOnResponse(HttpServletResponse response, TokenResponseDto tokenResponseDto) {
         response.setContentType("application/json;charset=UTF-8");
-        response.addHeader("Authorization", tokenResponseDto.getGrantType() + " " + tokenResponseDto.getAccessToken());
-        response.addHeader("Refresh", tokenResponseDto.getGrantType() + " " + tokenResponseDto.getRefreshToken());
+        response.addHeader("Authorization", tokenResponseDto.getGrantType() + tokenResponseDto.getAccessToken());
     }
 
+    // 쿠키에 jwt refresh 토큰 추가
     private void addRefreshTokenOnCookie(HttpServletRequest request, HttpServletResponse response, TokenResponseDto tokenResponseDto) {
         CookieUtils.deleteCookie(request, response, REFRESH_TOKEN);
         CookieUtils.addCookie(response, REFRESH_TOKEN, tokenResponseDto.getRefreshToken(), (int) tokenResponseDto.getRefreshTokenExpireDate() / 3600);

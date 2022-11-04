@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import static colfume.oauth.handler.OAuth2AuthorizationRequestRepository.REFRESH_TOKEN;
+
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
@@ -51,7 +53,8 @@ public class MemberApiController {
 
         if (refreshToken != null) {
             tokenResponseDto = memberService.tokenReissue(refreshToken);
-            addTokenInResponse(response, tokenResponseDto);
+            addAccessTokenOnResponse(response, tokenResponseDto);
+            addRefreshTokenOnCookie(request, response, tokenResponseDto);
         }
         return Response.success(tokenResponseDto, HttpStatus.OK);
     }
@@ -64,7 +67,8 @@ public class MemberApiController {
     @PostMapping("/login")
     public Response login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         TokenResponseDto tokenResponseDto = memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
-        addTokenInResponse(response, tokenResponseDto);
+        addAccessTokenOnResponse(response, tokenResponseDto);
+        addRefreshTokenOnCookie(request, response, tokenResponseDto);
 
         return Response.success(tokenResponseDto, HttpStatus.CREATED);
     }
@@ -91,9 +95,15 @@ public class MemberApiController {
         return Response.success(HttpStatus.NO_CONTENT);
     }
 
-    private void addTokenInResponse(HttpServletResponse response, TokenResponseDto tokenResponseDto) {
+    // 헤더에 jwt access 토큰 추가
+    private void addAccessTokenOnResponse(HttpServletResponse response, TokenResponseDto tokenResponseDto) {
         response.setContentType("application/json;charset=UTF-8");
-        response.addHeader("Authentication", tokenResponseDto.getAccessToken());
-        response.addHeader("Refresh", tokenResponseDto.getRefreshToken());
+        response.addHeader("Authorization", tokenResponseDto.getGrantType() + tokenResponseDto.getAccessToken());
+    }
+
+    // 쿠키에 jwt refresh 토큰 추가
+    private void addRefreshTokenOnCookie(HttpServletRequest request, HttpServletResponse response, TokenResponseDto tokenResponseDto) {
+        CookieUtils.deleteCookie(request, response, REFRESH_TOKEN);
+        CookieUtils.addCookie(response, REFRESH_TOKEN, tokenResponseDto.getRefreshToken(), (int) tokenResponseDto.getRefreshTokenExpireDate() / 3600);
     }
 }
