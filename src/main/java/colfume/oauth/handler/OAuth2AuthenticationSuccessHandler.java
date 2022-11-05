@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -36,14 +37,14 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-        String targetUrl = determineTargetUrl(request, response, authentication);
+        String targetUri = determineTargetUrl(request, response, authentication);
 
         if (response.isCommitted()) {
-            log.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+            log.debug("Response has already been committed. Unable to redirect to " + targetUri);
             return;
         }
         clearAuthenticationAttributes(request, response);
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        getRedirectStrategy().sendRedirect(request, response, targetUri);
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
@@ -53,14 +54,18 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         if (redirectUri.isPresent()) {
             throw new IllegalStateException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
-        String targetUrl = redirectUri.orElse("/");
+        String targetUri = redirectUri.orElse(getDefaultTargetUrl());
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(userPrincipal.getEmail(), userPrincipal.getRole());
 
         saveOrUpdateRefreshToken(userPrincipal, tokenResponseDto);
         addTokenOnResponseAndCookie(request, response, tokenResponseDto);
 
-        return UriComponentsBuilder.fromUriString(targetUrl)
+        // 테스트를 위한 세션 생성 후 토큰 저장
+        HttpSession session = request.getSession();
+        session.setAttribute("token", tokenResponseDto.getAccessToken());
+
+        return UriComponentsBuilder.fromUriString(targetUri)
                 .queryParam("token", tokenResponseDto.getAccessToken())
                 .build().toUriString();
     }
