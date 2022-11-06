@@ -1,5 +1,6 @@
 package colfume.domain.perfume.model.repository.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class HashtagQueryDto {
 
     private Long id;
+    @JsonIgnore
     private Long perfumeId;
     private String tag;
 

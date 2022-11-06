@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 public class HashtagResponseDto {
 
     private Long id;
-    private Long perfumeId;
     private String tag;
 
     public HashtagResponseDto(Hashtag hashtag) {
         id = hashtag.getId();
-        perfumeId = hashtag.getPerfume().getId();
         tag = hashtag.getTag();
     }
 }

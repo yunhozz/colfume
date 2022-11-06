@@ -10,12 +10,10 @@ import lombok.NoArgsConstructor;
 public class ColorResponseDto {
 
     private Long id;
-    private Long perfumeId;
     private ColorType colorType;
 
     public ColorResponseDto(Color color) {
         id = color.getId();
-        perfumeId = color.getPerfume().getId();
         colorType = color.getColorType();
     }
 }
