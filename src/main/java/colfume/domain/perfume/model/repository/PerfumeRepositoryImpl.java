@@ -143,7 +143,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .from(perfume)
                 .where(perfumeIdLt(perfumeId))
                 .where(perfume.id.in(perfumeIds))
-                .orderBy(orderByFieldList(perfumeIds)) // IN 절 순서 보장
+                .orderBy(byFieldList(perfumeIds)) // IN 절 순서 보장
                 .fetch();
 
         joinQueryWithHashtagAndColor(perfumes, perfumeIds);
@@ -247,7 +247,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
         return null;
     }
 
-    private OrderSpecifier<?> orderByFieldList(List<Long> perfumeIds) {
+    private OrderSpecifier<?> byFieldList(List<Long> perfumeIds) {
         return Expressions.stringTemplate("FIELD({0}, {1})", perfume.id, perfumeIds).asc();
     }
 }
