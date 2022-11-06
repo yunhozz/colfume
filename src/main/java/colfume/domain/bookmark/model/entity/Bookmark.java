@@ -3,13 +3,17 @@ package colfume.domain.bookmark.model.entity;
 import colfume.domain.BaseTime;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.perfume.model.entity.Perfume;
-import colfume.common.enums.ErrorCode;
-import colfume.domain.evaluation.service.exception.AlreadyDeletedException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
@@ -38,11 +42,21 @@ public class Bookmark extends BaseTime {
         this.redirectUrl = redirectUrl;
     }
 
+    public void create() {
+        if (isDeleted) {
+            isDeleted = false;
+
+        } else {
+            throw new IllegalStateException("이미 생성한 북마크입니다.");
+        }
+    }
+
     public void delete() {
         if (!isDeleted) {
             isDeleted = true;
+
         } else {
-            throw new AlreadyDeletedException(ErrorCode.ALREADY_DELETED);
+            throw new IllegalStateException("이미 삭제된 북마크입니다.");
         }
     }
 }
