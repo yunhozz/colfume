@@ -7,13 +7,16 @@ import colfume.oauth.model.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/bookmarks")
@@ -24,8 +27,11 @@ public class BookmarkApiController {
     private final BookmarkRepository bookmarkRepository;
 
     @GetMapping("/{id}")
-    public Response getPerfumeIdForRedirectUrl(@PathVariable String id) {
-        return Response.success(bookmarkRepository.findPerfumeIdByBookmarkId(Long.valueOf(id)), HttpStatus.OK);
+    public Response getRedirectUrl(@PathVariable String id, HttpServletResponse response) throws IOException {
+        Long perfumeId = bookmarkService.findPerfumeIdByBookmarkId(Long.valueOf(id));
+        response.sendRedirect("/api/perfumes/" + perfumeId);
+
+        return Response.success(HttpStatus.OK);
     }
 
     @GetMapping
@@ -39,7 +45,7 @@ public class BookmarkApiController {
         return Response.success(bookmarkService.makeBookmark(userPrincipal.getId(), Long.valueOf(perfumeId), redirectUrl), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}")
     public Response deleteBookmark(@PathVariable String id) {
         bookmarkService.deleteBookmark(Long.valueOf(id));
         return Response.success(HttpStatus.NO_CONTENT);
