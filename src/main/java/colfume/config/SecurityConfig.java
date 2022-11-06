@@ -43,7 +43,8 @@ public class SecurityConfig {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/**").permitAll();
+                .antMatchers("/api/bookmarks/**").hasRole("USER")
+                .anyRequest().permitAll();
 
         httpSecurity
                 .headers()
