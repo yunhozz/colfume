@@ -2,9 +2,10 @@ package colfume.common;
 
 import colfume.api.dto.Response;
 import colfume.common.enums.ErrorCode;
+import colfume.domain.bookmark.service.exception.BookmarkAlreadyCreatedException;
+import colfume.domain.bookmark.service.exception.BookmarkNotFoundException;
 import colfume.domain.chat.service.exception.ChatroomNotFoundException;
 import colfume.domain.chat.service.exception.ChatroomPermissionException;
-import colfume.domain.evaluation.service.exception.AlreadyDeletedException;
 import colfume.domain.evaluation.service.exception.CrudNotAuthenticationException;
 import colfume.domain.member.service.exception.ConfirmationTokenNotFoundException;
 import colfume.domain.member.service.exception.EmailDuplicateException;
@@ -50,6 +51,12 @@ public class GlobalExceptionHandler {
         return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public Response handleIllegalStateException(IllegalStateException e) {
+        log.error("handleIllegalStateException", e);
+        return Response.failure(-1000, e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("handleMethodArgumentNotValidException", e);
@@ -69,14 +76,6 @@ public class GlobalExceptionHandler {
         }};
 
         ErrorResponseDto error = new ErrorResponseDto(ErrorCode.NOT_VALID, notValidResponseDtoList);
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
-    }
-
-    @ExceptionHandler(AlreadyDeletedException.class)
-    public Response handleAlreadyDeletedException(AlreadyDeletedException e) {
-        log.error("handleAlreadyDeletedException", e);
-        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
-
         return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
     }
 
@@ -195,6 +194,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ChatroomPermissionException.class)
     public Response handleChatroomPermissionException(ChatroomPermissionException e) {
         log.error("handleChatroomPermissionException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+    }
+
+    @ExceptionHandler(BookmarkNotFoundException.class)
+    public Response handleBookmarkNotFoundException(BookmarkNotFoundException e) {
+        log.error("handleBookmarkNotFoundException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+    }
+
+    @ExceptionHandler(BookmarkAlreadyCreatedException.class)
+    public Response handleBookmarkAlreadyCreatedException(BookmarkAlreadyCreatedException e) {
+        log.error("handleBookmarkAlreadyCreatedException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
         return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));

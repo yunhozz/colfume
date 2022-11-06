@@ -39,7 +39,13 @@ public enum ErrorCode {
     // chat
     CHATROOM_NOT_FOUND(400, "찾으려는 채팅방이 존재하지 않습니다."),
     CHATROOM_NOT_PERMISSION(400, "채팅방 수정 권한이 없습니다."),
-    CHATROOM_TITLE_NOT_INSERTED(400, "채팅방 이름을 입력해주세요.");
+    CHATROOM_TITLE_NOT_INSERTED(400, "채팅방 이름을 입력해주세요."),
+
+    // bookmark
+    BOOKMARK_NOT_FOUND(400, "찾으려는 북마크가 존재하지 않습니다."),
+    BOOKMARK_ALREADY_CREATED(400, "이미 생성된 북마크입니다."),
+
+    ;
 
     private final int status;
     private final String message;
