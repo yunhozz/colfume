@@ -3,14 +3,19 @@ package colfume.domain.evaluation.model.entity;
 import colfume.domain.BaseTime;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.perfume.model.entity.Perfume;
-import colfume.common.enums.ErrorCode;
-import colfume.domain.evaluation.service.exception.AlreadyDeletedException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
@@ -53,7 +58,7 @@ public class Evaluation extends BaseTime {
         if (!isDeleted) {
             isDeleted = true;
         } else {
-            throw new AlreadyDeletedException(ErrorCode.ALREADY_DELETED);
+            throw new IllegalStateException("이미 삭제된 평가입니다.");
         }
     }
 }

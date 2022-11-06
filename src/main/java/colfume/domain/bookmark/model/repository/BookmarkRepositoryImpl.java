@@ -23,17 +23,15 @@ public class BookmarkRepositoryImpl implements BookmarkRepositoryCustom {
         return queryFactory
                 .select(new QBookmarkQueryDto(
                         bookmark.id,
-                        bookmark.createdDate,
                         perfume.id,
                         perfume.name,
-                        perfume.imageUrl,
-                        member.id
+                        perfume.imageUrl
                 ))
                 .from(bookmark)
-                .join(bookmark.perfume, perfume)
                 .join(bookmark.member, member)
+                .join(bookmark.perfume, perfume)
                 .where(member.id.eq(userId), bookmark.isDeleted.isFalse())
-                .orderBy(bookmark.createdDate.desc())
+                .orderBy(bookmark.lastModifiedDate.desc())
                 .fetch();
     }
 }

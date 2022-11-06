@@ -141,7 +141,6 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.imageUrl
                 ))
                 .from(perfume)
-                .join(perfume.hashtags, hashtag)
                 .where(perfumeIdLt(perfumeId))
                 .where(perfume.id.in(perfumeIds))
                 .orderBy(orderByFieldList(perfumeIds)) // IN 절 순서 보장
@@ -166,16 +165,14 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
     }
 
     private Map<PerfumeSearchQueryDto, Integer> mappingByCountOfKeyword(String keyword, List<PerfumeSearchQueryDto> searchPerfumes) {
-        Map<PerfumeSearchQueryDto, Integer> numberOfKeywordMap = new HashMap<>();
-
-        searchPerfumes.forEach(searchPerfume -> {
-            int count = 0;
-            count += countKeyword(searchPerfume.getName(), keyword);
-            count += countKeyword(searchPerfume.getDescription(), keyword);
-            numberOfKeywordMap.put(searchPerfume, count);
-        });
-
-        return numberOfKeywordMap;
+        return new HashMap<>() {{
+            searchPerfumes.forEach(searchPerfume -> {
+                int count = 0;
+                count += countKeyword(searchPerfume.getName(), keyword);
+                count += countKeyword(searchPerfume.getDescription(), keyword);
+                put(searchPerfume, count);
+            });
+        }};
     }
 
     private int countKeyword(String str, String keyword) {
