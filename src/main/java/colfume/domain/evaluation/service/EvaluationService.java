@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class EvaluationService {
@@ -54,19 +56,20 @@ public class EvaluationService {
     }
 
     @Transactional
-    public void deleteEvaluation(Long evaluationId, Long userId) {
-        Evaluation evaluation = findEvaluation(evaluationId);
-        if (!evaluation.getWriter().getId().equals(userId)) {
-            throw new CrudNotAuthenticationException(ErrorCode.NOT_AUTHENTICATED);
-        }
+    public void delete(Long evaluationId, Long userId) {
+        Evaluation evaluation = validateAuthorization(evaluationId, userId);
         Perfume perfume = evaluation.getPerfume();
-        evaluation.delete(); // soft delete
-        perfume.subtractEvaluationCount(); // 평가수 -1
+
+        evaluation.delete(); // perfume.subtractEvaluationCount()
         perfumeRepository.updateScoreForSubtract(perfume.getId(), evaluation.getScore()); // 평가 점수 update (삭제)
     }
 
-    private Evaluation findEvaluation(Long evaluationId) {
-        return evaluationRepository.findById(evaluationId)
-                .orElseThrow();
+    private Evaluation validateAuthorization(Long evaluationId, Long userId) {
+        Optional<Evaluation> optionalEvaluation = evaluationRepository.findWithPerfumeByIdAndUserId(evaluationId, userId);
+
+        if (optionalEvaluation.isEmpty()) {
+            throw new CrudNotAuthenticationException(ErrorCode.NOT_AUTHENTICATED);
+        }
+        return optionalEvaluation.get();
     }
 }
