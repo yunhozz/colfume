@@ -40,12 +40,17 @@ public class EvaluationService {
     }
 
     @Transactional
-    public void update(Long evaluationId, Long userId, String content, int score) {
-        Evaluation evaluation = findEvaluation(evaluationId);
-        if (!evaluation.getWriter().getId().equals(userId)) {
-            throw new CrudNotAuthenticationException(ErrorCode.NOT_AUTHENTICATED);
-        }
-        evaluation.update(content, score);
+    public void update(Long evaluationId, Long userId, EvaluationRequestDto evaluationRequestDto) {
+        Evaluation evaluation = validateAuthorization(evaluationId, userId);
+        Perfume perfume = evaluation.getPerfume();
+        double oldScore = evaluation.getScore();
+
+        /*
+         * clearAutomatically = true 만 선언했을 때, 해당 JPQL 과 관련된 엔티티들만 flush 함 -> evaluation 에 대한 update 쿼리는 나가지 않음
+         * 따라서, flushAutomatically = true 를 추가적으로 선언하여 모든 변경 내용을 다 flush 하게 만듬
+         */
+        evaluation.update(evaluationRequestDto.getContent(), evaluationRequestDto.getScore());
+        perfumeRepository.updateScoreForModify(perfume.getId(), oldScore, evaluationRequestDto.getScore()); // 평가 점수 update (수정)
     }
 
     @Transactional

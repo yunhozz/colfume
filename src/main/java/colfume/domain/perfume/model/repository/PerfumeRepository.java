@@ -10,9 +10,13 @@ public interface PerfumeRepository extends JpaRepository<Perfume, Long>, Perfume
 
     @Modifying(clearAutomatically = true)
     @Query("update Perfume p set p.score = ((p.score * (p.evaluationCount - 1)) + :score) / p.evaluationCount where p.id = :id")
-    void updateScoreForAdd(@Param("id") Long perfumeId, @Param("score") int score); // 평가 추가시 반영
+    void updateScoreForAdd(@Param("id") Long id, @Param("score") double score); // 평가 추가시 반영
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("update Perfume p set p.score = (p.score * p.evaluationCount - :os + :ns) / p.evaluationCount where p.id = :id")
+    void updateScoreForModify(@Param("id") Long id, @Param("os") double oldScore, @Param("ns") double newScore); // 평가 업데이트시 반영
 
     @Modifying(clearAutomatically = true)
     @Query("update Perfume p set p.score = ((p.score * (p.evaluationCount + 1)) - :score) / p.evaluationCount where p.id = :id")
-    void updateScoreForSubtract(@Param("id") Long perfumeId, @Param("score") int score); // 평가 삭제시 반영
+    void updateScoreForSubtract(@Param("id") Long id, @Param("score") double score); // 평가 삭제시 반영
 }
