@@ -45,6 +45,9 @@ public enum ErrorCode {
     BOOKMARK_NOT_FOUND(400, "찾으려는 북마크가 존재하지 않습니다."),
     BOOKMARK_ALREADY_CREATED(400, "이미 생성된 북마크입니다."),
 
+    // evaluation
+    EVALUATION_NOT_FOUND(400, "찾으려는 평가가 존재하지 않습니다."),
+
     ;
 
     private final int status;

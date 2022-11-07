@@ -7,6 +7,7 @@ import colfume.domain.bookmark.service.exception.BookmarkNotFoundException;
 import colfume.domain.chat.service.exception.ChatroomNotFoundException;
 import colfume.domain.chat.service.exception.ChatroomPermissionException;
 import colfume.domain.evaluation.service.exception.CrudNotAuthenticationException;
+import colfume.domain.evaluation.service.exception.EvaluationNotFoundException;
 import colfume.domain.member.service.exception.ConfirmationTokenNotFoundException;
 import colfume.domain.member.service.exception.EmailDuplicateException;
 import colfume.domain.member.service.exception.EmailNotFoundException;
@@ -210,6 +211,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BookmarkAlreadyCreatedException.class)
     public Response handleBookmarkAlreadyCreatedException(BookmarkAlreadyCreatedException e) {
         log.error("handleBookmarkAlreadyCreatedException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+    }
+
+    @ExceptionHandler(EvaluationNotFoundException.class)
+    public Response handleEvaluationNotFoundException(EvaluationNotFoundException e) {
+        log.error("handleEvaluationNotFoundException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
         return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
