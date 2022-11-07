@@ -30,22 +30,21 @@ public class BookmarkService {
         Perfume perfume = perfumeRepository.findById(perfumeId)
                 .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
 
-        Bookmark bookmark = validateAndSaveBookmark(redirectUrl, member, perfume);
-        perfume.addLikes(); // 좋아요 수 +1
+        Bookmark bookmark = validateAndSaveBookmark(member, perfume, redirectUrl);
 
         return bookmark.getId();
     }
 
     @Transactional
     public void deleteBookmark(Long bookmarkId) {
-        Bookmark bookmark = findBookmark(bookmarkId);
-        bookmark.delete(); // soft delete
-        bookmark.getPerfume().subtractLikes(); // 좋아요 수 -1
+        Bookmark bookmark = bookmarkRepository.findWithPerfumeById(bookmarkId)
+                .orElseThrow(() -> new BookmarkNotFoundException(ErrorCode.BOOKMARK_NOT_FOUND));
+        bookmark.delete(); // perfume.subtractLikes()
     }
 
     @Transactional(readOnly = true)
     public Long findPerfumeIdByBookmarkId(Long bookmarkId) {
-        return bookmarkRepository.findPerfumeIdByBookmarkId(bookmarkId)
+        return bookmarkRepository.findPerfumeIdById(bookmarkId)
                 .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
     }
 
@@ -53,7 +52,7 @@ public class BookmarkService {
      * 향수에 대한 북마크가 이미 존재할 때 : 삭제된 상태면 create 상태로 변경, 아니면 예외 발생
      * 향수에 대한 북마크가 없을 때 : 북마크를 새로 생성 후 레포지토리에 저장
      */
-    private Bookmark validateAndSaveBookmark(String redirectUrl, Member member, Perfume perfume) {
+    private Bookmark validateAndSaveBookmark(Member member, Perfume perfume, String redirectUrl) {
         Optional<Bookmark> optionalBookmark = bookmarkRepository.findByMemberAndPerfume(member, perfume);
         Bookmark bookmark;
 
@@ -61,19 +60,15 @@ public class BookmarkService {
             bookmark = optionalBookmark.get();
 
             if (bookmark.isDeleted()) {
-                bookmark.create();
+                bookmark.create(); // perfume.addLikes()
 
             } else throw new BookmarkAlreadyCreatedException(ErrorCode.BOOKMARK_ALREADY_CREATED);
 
         } else {
             bookmark = new Bookmark(member, perfume, redirectUrl);
             bookmarkRepository.save(bookmark);
+            perfume.addLikes();
         }
         return bookmark;
-    }
-
-    private Bookmark findBookmark(Long bookmarkId) {
-        return bookmarkRepository.findById(bookmarkId)
-                .orElseThrow(() -> new BookmarkNotFoundException(ErrorCode.BOOKMARK_NOT_FOUND));
     }
 }

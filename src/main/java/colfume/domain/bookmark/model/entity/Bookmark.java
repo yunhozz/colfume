@@ -42,6 +42,7 @@ public class Bookmark extends BaseTime {
     public void create() {
         if (isDeleted) {
             isDeleted = false;
+            perfume.addLikes();
 
         } else {
             throw new IllegalStateException("이미 생성한 북마크입니다.");
@@ -51,6 +52,7 @@ public class Bookmark extends BaseTime {
     public void delete() {
         if (!isDeleted) {
             isDeleted = true;
+            perfume.subtractLikes();
 
         } else {
             throw new IllegalStateException("이미 삭제된 북마크입니다.");

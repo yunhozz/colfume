@@ -11,8 +11,11 @@ import java.util.Optional;
 
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long>, BookmarkRepositoryCustom {
 
+    @Query("select b from Bookmark b join fetch b.perfume p where b.id = :id")
+    Optional<Bookmark> findWithPerfumeById(@Param("id") Long id);
+
     @Query("select p.id from Bookmark b join b.perfume p where b.id = :id")
-    Optional<Long> findPerfumeIdByBookmarkId(@Param("id") Long bookmarkId);
+    Optional<Long> findPerfumeIdById(@Param("id") Long id);
 
     Optional<Bookmark> findByMemberAndPerfume(Member member, Perfume perfume);
 }

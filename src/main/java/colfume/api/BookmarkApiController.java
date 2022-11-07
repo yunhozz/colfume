@@ -48,6 +48,6 @@ public class BookmarkApiController {
     @PatchMapping("/{id}")
     public Response deleteBookmark(@PathVariable String id) {
         bookmarkService.deleteBookmark(Long.valueOf(id));
-        return Response.success(HttpStatus.NO_CONTENT);
+        return Response.success(HttpStatus.CREATED);
     }
 }
