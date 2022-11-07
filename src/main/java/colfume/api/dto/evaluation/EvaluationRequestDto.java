@@ -16,5 +16,5 @@ public class EvaluationRequestDto {
     private String content;
 
     @NotNull(message = "별점을 입력해주세요.")
-    private Integer score;
+    private Double score;
 }

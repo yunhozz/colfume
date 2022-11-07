@@ -13,7 +13,7 @@ public class EvaluationQueryDto {
     // evaluation
     private Long id;
     private String content;
-    private Integer score;
+    private Double score;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
 

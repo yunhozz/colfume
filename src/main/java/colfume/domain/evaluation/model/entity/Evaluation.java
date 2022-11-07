@@ -31,22 +31,22 @@ public class Evaluation extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     private Perfume perfume;
 
+    @Column(length = 100)
     private String content;
 
-    @Column(columnDefinition = "tinyint")
-    private int score;
+    private double score;
 
     private boolean isDeleted;
 
     @Builder
-    private Evaluation(Member writer, Perfume perfume, String content, int score) {
+    private Evaluation(Member writer, Perfume perfume, String content, double score) {
         this.writer = writer;
         this.perfume = perfume;
         this.content = content;
         this.score = score;
     }
 
-    public void update(String content, int score) {
+    public void update(String content, double score) {
         this.content = content;
         this.score = score;
     }
@@ -54,6 +54,8 @@ public class Evaluation extends BaseTime {
     public void delete() {
         if (!isDeleted) {
             isDeleted = true;
+            content = "관리자 또는 작성자에 의해 삭제되었습니다.";
+            perfume.subtractEvaluationCount();
         } else {
             throw new IllegalStateException("이미 삭제된 평가입니다.");
         }

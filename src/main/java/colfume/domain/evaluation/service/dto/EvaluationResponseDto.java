@@ -15,7 +15,7 @@ public class EvaluationResponseDto {
     private Long writerId;
     private Long perfumeId;
     private String content;
-    private Integer score;
+    private Double score;
     private Boolean isDeleted;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;

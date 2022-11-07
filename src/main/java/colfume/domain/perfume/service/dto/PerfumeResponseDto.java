@@ -21,6 +21,9 @@ public class PerfumeResponseDto {
     private List<String> notes;
     private String description;
     private String imageUrl;
+    private int numOfLikes;
+    private int evaluationCount;
+    private double score;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
     private List<HashtagResponseDto> hashtags;
