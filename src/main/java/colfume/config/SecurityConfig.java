@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/bookmarks/**").hasRole("USER")
+                .antMatchers("/api/evaluations/**").hasRole("USER")
                 .anyRequest().permitAll();
 
         httpSecurity
