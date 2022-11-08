@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface EvaluationRepositoryCustom {
 
-    List<EvaluationQueryDto> findEvaluationListByPerfumeId(Long perfumeId);
+    List<EvaluationQueryDto> findListByPerfumeId(Long perfumeId);
 }

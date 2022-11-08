@@ -29,7 +29,7 @@ public class EvaluationApiController {
 
     @GetMapping
     public Response getEvaluationListByPerfume(@RequestParam String perfumeId) {
-        return Response.success(evaluationRepository.findEvaluationListByPerfumeId(Long.valueOf(perfumeId)), HttpStatus.OK);
+        return Response.success(evaluationRepository.findListByPerfumeId(Long.valueOf(perfumeId)), HttpStatus.OK);
     }
 
     @PostMapping

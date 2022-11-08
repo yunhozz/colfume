@@ -24,7 +24,7 @@ public class EvaluationRepositoryImpl implements EvaluationRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<EvaluationQueryDto> findEvaluationListByPerfumeId(Long perfumeId) {
+    public List<EvaluationQueryDto> findListByPerfumeId(Long perfumeId) {
         QMember writer = new QMember("writer");
 
         List<EvaluationQueryDto> evaluationList = queryFactory
