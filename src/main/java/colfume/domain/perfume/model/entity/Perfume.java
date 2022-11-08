@@ -103,6 +103,10 @@ public class Perfume extends BaseTime {
         evaluationCount--;
     }
 
+    public void scoreToZero() {
+        score = 0;
+    }
+
     // 연관관계 편의 메소드
     private void addHashtag(Hashtag hashtag) {
         hashtags.add(hashtag);

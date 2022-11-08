@@ -6,6 +6,7 @@ import colfume.common.enums.ErrorCode;
 import colfume.domain.evaluation.model.entity.Evaluation;
 import colfume.domain.evaluation.model.repository.EvaluationRepository;
 import colfume.domain.evaluation.service.exception.CrudNotAuthenticationException;
+import colfume.domain.evaluation.service.exception.EvaluationAlreadyExistException;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.perfume.model.entity.Perfume;
@@ -32,9 +33,7 @@ public class EvaluationService {
         Perfume perfume = perfumeRepository.findById(perfumeId)
                 .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
 
-        converter.update(writer, perfume);
-        Evaluation evaluation = converter.convertToEntity(evaluationRequestDto);
-
+        Evaluation evaluation = validateAndSaveEvaluation(writer, perfume, evaluationRequestDto);
         perfume.addEvaluationCount(); // 평가수 +1
         perfumeRepository.updateScoreForAdd(perfume.getId(), evaluationRequestDto.getScore()); // 평가 점수 update (추가)
 
@@ -59,9 +58,38 @@ public class EvaluationService {
     public void delete(Long evaluationId, Long userId) {
         Evaluation evaluation = validateAuthorization(evaluationId, userId);
         Perfume perfume = evaluation.getPerfume();
-
         evaluation.delete(); // perfume.subtractEvaluationCount()
-        perfumeRepository.updateScoreForSubtract(perfume.getId(), evaluation.getScore()); // 평가 점수 update (삭제)
+
+        if (perfume.getEvaluationCount() == 0) {
+            perfume.scoreToZero();
+
+        } else {
+            perfumeRepository.updateScoreForSubtract(perfume.getId(), evaluation.getScore()); // 평가 점수 update (삭제)
+        }
+    }
+
+    /**
+     * 향수에 대한 평가가 이미 존재할 때 : 삭제된 상태면 create 상태로 변경 & update, 아니면 예외 발생
+     * 향수에 대한 평가가 없을 때 : 평가를 새로 생성 후 레포지토리에 저장
+     */
+    private Evaluation validateAndSaveEvaluation(Member writer, Perfume perfume, EvaluationRequestDto evaluationRequestDto) {
+        Optional<Evaluation> optionalEvaluation = evaluationRepository.findByWriterAndPerfume(writer, perfume);
+        Evaluation evaluation;
+
+        if (optionalEvaluation.isPresent()) {
+            evaluation = optionalEvaluation.get();
+
+            if (evaluation.isDeleted()) {
+                evaluation.updateAfterDeleted(evaluationRequestDto.getContent(), evaluationRequestDto.getScore());
+
+            } else throw new EvaluationAlreadyExistException(ErrorCode.EVALUATION_ALREADY_EXIST);
+
+        } else {
+            converter.update(writer, perfume);
+            evaluation = converter.convertToEntity(evaluationRequestDto);
+            evaluationRepository.save(evaluation);
+        }
+        return evaluation;
     }
 
     private Evaluation validateAuthorization(Long evaluationId, Long userId) {

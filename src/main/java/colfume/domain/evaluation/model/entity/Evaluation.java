@@ -51,11 +51,17 @@ public class Evaluation extends BaseTime {
         this.score = score;
     }
 
+    public void updateAfterDeleted(String content, double score) {
+        update(content, score);
+        isDeleted = false;
+    }
+
     public void delete() {
         if (!isDeleted) {
             isDeleted = true;
             content = "관리자 또는 작성자에 의해 삭제되었습니다.";
             perfume.subtractEvaluationCount();
+
         } else {
             throw new IllegalStateException("이미 삭제된 평가입니다.");
         }
