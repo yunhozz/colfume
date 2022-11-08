@@ -47,10 +47,11 @@ public class EvaluationService {
         double oldScore = evaluation.getScore();
 
         /*
-         * clearAutomatically = true 만 선언했을 때, 해당 JPQL 과 관련된 엔티티들만 flush 함 -> evaluation 에 대한 update 쿼리는 나가지 않음
-         * 따라서, flushAutomatically = true 를 추가적으로 선언하여 모든 변경 내용을 다 flush 하게 만듬
+         * 벌크성 쿼리의 clearAutomatically = true 옵션에 의해 영속성 컨텍스트를 무시하고 db 에 바로 업데이트 쿼리를 날리고 1차 캐시를 초기화
+         * 트랜잭션이 끝나고 1차 캐시에 남아있던 evaluation 의 update 쿼리가 commit 되지 못하고 무시됨
+         * 따라서, flushAutomatically = true 를 추가적으로 선언하여 모든 변경 내용을 강제로 flush 하게 만듬
          */
-        evaluation.update(evaluationRequestDto.getContent(), evaluationRequestDto.getScore());
+        evaluation.update(evaluationRequestDto.getContent(), evaluationRequestDto.getScore()); // 벌크성 쿼리에 의해 무시됨
         perfumeRepository.updateScoreForModify(perfume.getId(), oldScore, evaluationRequestDto.getScore()); // 평가 점수 update (수정)
     }
 
@@ -60,6 +61,10 @@ public class EvaluationService {
         Perfume perfume = evaluation.getPerfume();
         evaluation.delete(); // perfume.subtractEvaluationCount()
 
+        /*
+         * 원래대로라면 벌크성 쿼리에 의해 evaluation.delete() 가 무시되는 것이 맞음
+         * 하지만, delete() 메소드 안의 perfume.subtractEvaluationCount() 이 실행되어야 하기 때문에 evaluation 의 변경내용이 무시되지 못함
+         */
         if (perfume.getEvaluationCount() == 0) {
             perfume.scoreToZero();
 
