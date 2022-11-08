@@ -6,7 +6,10 @@ import colfume.domain.bookmark.service.exception.BookmarkAlreadyCreatedException
 import colfume.domain.bookmark.service.exception.BookmarkNotFoundException;
 import colfume.domain.chat.service.exception.ChatroomNotFoundException;
 import colfume.domain.chat.service.exception.ChatroomPermissionException;
+import colfume.domain.evaluation.service.exception.CommentNotFoundException;
 import colfume.domain.evaluation.service.exception.CrudNotAuthenticationException;
+import colfume.domain.evaluation.service.exception.EvaluationAlreadyDeletedException;
+import colfume.domain.evaluation.service.exception.EvaluationAlreadyExistException;
 import colfume.domain.evaluation.service.exception.EvaluationNotFoundException;
 import colfume.domain.member.service.exception.ConfirmationTokenNotFoundException;
 import colfume.domain.member.service.exception.EmailDuplicateException;
@@ -219,6 +222,30 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EvaluationNotFoundException.class)
     public Response handleEvaluationNotFoundException(EvaluationNotFoundException e) {
         log.error("handleEvaluationNotFoundException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    public Response handleCommentNotFoundException(CommentNotFoundException e) {
+        log.error("handleCommentNotFoundException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+    }
+
+    @ExceptionHandler(EvaluationAlreadyDeletedException.class)
+    public Response handleEvaluationAlreadyDeletedException(EvaluationAlreadyDeletedException e) {
+        log.error("handleEvaluationAlreadyDeletedException", e);
+        ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
+
+        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+    }
+
+    @ExceptionHandler(EvaluationAlreadyExistException.class)
+    public Response handleEvaluationAlreadyExistException(EvaluationAlreadyExistException e) {
+        log.error("handleEvaluationAlreadyExistException", e);
         ErrorResponseDto error = new ErrorResponseDto(e.getErrorCode());
 
         return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));

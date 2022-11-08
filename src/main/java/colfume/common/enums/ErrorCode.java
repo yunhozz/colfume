@@ -47,6 +47,8 @@ public enum ErrorCode {
 
     // evaluation
     EVALUATION_NOT_FOUND(400, "찾으려는 평가가 존재하지 않습니다."),
+    COMMENT_NOT_FOUND(400, "찾으려는 댓글이 존재하지 않습니다."),
+    EVALUATION_ALREADY_EXIST(400, "이미 작성한 평가가 존재합니다."),
 
     ;
 
