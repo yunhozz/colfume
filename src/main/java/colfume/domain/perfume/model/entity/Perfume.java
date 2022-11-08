@@ -6,12 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +41,15 @@ public class Perfume extends BaseTime {
     private int price; // 가격
 
     @ElementCollection
+    @CollectionTable(name = "perfume_moods", joinColumns = @JoinColumn(name = "perfume_id"))
     private List<String> moods = new ArrayList<>(); // 무드
 
     @ElementCollection
+    @CollectionTable(name = "perfume_styles", joinColumns = @JoinColumn(name = "perfume_id"))
     private List<String> styles = new ArrayList<>(); // 스타일
 
     @ElementCollection
+    @CollectionTable(name = "perfume_notes", joinColumns = @JoinColumn(name = "perfume_id"))
     private List<String> notes = new ArrayList<>(); // 노트
 
     @Column(length = 500)
