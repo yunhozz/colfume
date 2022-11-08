@@ -11,9 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class PerfumeService {
@@ -49,13 +46,6 @@ public class PerfumeService {
     public PerfumeResponseDto findPerfumeDto(Long perfumeId) {
         Perfume perfume = findPerfume(perfumeId);
         return converter.convertToDto(perfume);
-    }
-
-    @Transactional(readOnly = true)
-    public List<PerfumeResponseDto> findPerfumeDtoList() {
-        return perfumeRepository.findAll().stream()
-                .map(converter::convertToDto)
-                .collect(Collectors.toList());
     }
 
     private Perfume findPerfume(Long perfumeId) {
