@@ -13,6 +13,7 @@ import colfume.domain.perfume.model.repository.dto.QPerfumeSimpleQueryDto;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static colfume.domain.bookmark.model.entity.QBookmark.bookmark;
+import static colfume.domain.member.model.entity.QMember.member;
 import static colfume.domain.perfume.model.entity.QColor.color;
 import static colfume.domain.perfume.model.entity.QHashtag.hashtag;
 import static colfume.domain.perfume.model.entity.QPerfume.perfume;
@@ -38,16 +41,22 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<PerfumeSimpleQueryDto> findSimplePerfumePage(Long perfumeId, Pageable pageable) {
+    public Page<PerfumeSimpleQueryDto> findSimplePerfumePage(Long perfumeId, Long userId, Pageable pageable) {
         List<PerfumeSimpleQueryDto> perfumes = queryFactory
                 .select(new QPerfumeSimpleQueryDto(
                         perfume.id,
                         perfume.name,
                         perfume.volume,
                         perfume.price,
-                        perfume.imageUrl
+                        perfume.imageUrl,
+                        new CaseBuilder()
+                                .when(bookmark.isNotNull().and(member.id.eq(userId)))
+                                .then(true)
+                                .otherwise(false)
                 ))
                 .from(perfume)
+                .leftJoin(bookmark).on(perfume.eq(bookmark.perfume))
+                .leftJoin(member).on(bookmark.member.eq(member))
                 .where(perfumeIdLt(perfumeId))
                 .orderBy(perfume.createdDate.desc())
                 .limit(pageable.getPageSize())
@@ -60,17 +69,23 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
     }
 
     @Override
-    public Page<PerfumeSimpleQueryDto> sortSimplePerfumePage(SortDto sortDto, Long perfumeId, Pageable pageable) {
+    public Page<PerfumeSimpleQueryDto> sortSimplePerfumePage(SortDto sortDto, Long perfumeId, Long userId, Pageable pageable) {
         List<PerfumeSimpleQueryDto> perfumes = queryFactory
                 .select(new QPerfumeSimpleQueryDto(
                         perfume.id,
                         perfume.name,
                         perfume.volume,
                         perfume.price,
-                        perfume.imageUrl
+                        perfume.imageUrl,
+                        new CaseBuilder()
+                                .when(bookmark.isNotNull().and(member.id.eq(userId)))
+                                .then(true)
+                                .otherwise(false)
                 ))
                 .distinct() // perfume <> colors join 시 N+1 문제 방지
                 .from(perfume)
+                .leftJoin(bookmark).on(perfume.eq(bookmark.perfume))
+                .leftJoin(member).on(bookmark.member.eq(member))
                 .join(perfume.colors, color)
                 .where(perfumeIdLt(perfumeId))
                 .where(
@@ -91,16 +106,23 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
     }
 
     @Override
-    public Page<PerfumeSimpleQueryDto> searchByKeywordOrderByCreated(String keyword, Long perfumeId, Pageable pageable) {
+    public Page<PerfumeSimpleQueryDto> searchByKeywordOrderByCreated(String keyword, Long perfumeId, Long userId, Pageable pageable) {
         List<PerfumeSimpleQueryDto> perfumes = queryFactory
                 .select(new QPerfumeSimpleQueryDto(
                         perfume.id,
                         perfume.name,
                         perfume.volume,
                         perfume.price,
-                        perfume.imageUrl
+                        perfume.imageUrl,
+                        new CaseBuilder()
+                                .when(bookmark.isNotNull().and(member.id.eq(userId)))
+                                .then(true)
+                                .otherwise(false)
                 ))
+                .distinct()
                 .from(perfume)
+                .leftJoin(bookmark).on(perfume.eq(bookmark.perfume))
+                .leftJoin(member).on(bookmark.member.eq(member))
                 .join(perfume.hashtags, hashtag)
                 .where(perfumeIdLt(perfumeId))
                 .where(byKeyword(keyword))
@@ -116,7 +138,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
 
     // TODO : @ElementCollection 인 컬럼을 querydsl 로 어떻게 처리할지?
     @Override
-    public Page<PerfumeSimpleQueryDto> searchByKeywordOrderByAccuracy(String keyword, Long perfumeId, Pageable pageable) {
+    public Page<PerfumeSimpleQueryDto> searchByKeywordOrderByAccuracy(String keyword, Long perfumeId, Long userId, Pageable pageable) {
         List<PerfumeSearchQueryDto> searchPerfumes = queryFactory
                 .select(Projections.constructor(
                         PerfumeSearchQueryDto.class,
@@ -125,6 +147,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.description,
                         hashtag.tag
                 ))
+                .distinct()
                 .from(perfume)
                 .join(perfume.hashtags, hashtag)
                 .where(byKeyword(keyword))
@@ -138,9 +161,15 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.name,
                         perfume.volume,
                         perfume.price,
-                        perfume.imageUrl
+                        perfume.imageUrl,
+                        new CaseBuilder()
+                                .when(bookmark.isNotNull().and(member.id.eq(userId)))
+                                .then(true)
+                                .otherwise(false)
                 ))
                 .from(perfume)
+                .leftJoin(bookmark).on(perfume.eq(bookmark.perfume))
+                .leftJoin(member).on(bookmark.member.eq(member))
                 .where(perfumeIdLt(perfumeId))
                 .where(perfume.id.in(perfumeIds))
                 .orderBy(byFieldList(perfumeIds)) // IN 절 순서 보장
@@ -170,6 +199,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 int count = 0;
                 count += countKeyword(searchPerfume.getName(), keyword);
                 count += countKeyword(searchPerfume.getDescription(), keyword);
+                count += countKeyword(searchPerfume.getTag(), keyword);
                 put(searchPerfume, count);
             });
         }};

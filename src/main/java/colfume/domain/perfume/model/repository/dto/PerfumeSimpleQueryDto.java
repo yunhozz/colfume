@@ -16,6 +16,7 @@ public class PerfumeSimpleQueryDto {
     private Integer volume;
     private Integer price;
     private String imageUrl;
+    private boolean isBookmarked;
 
     // hashtag
     private List<HashtagQueryDto> hashtags;
@@ -24,12 +25,13 @@ public class PerfumeSimpleQueryDto {
     private List<ColorQueryDto> colors;
 
     @QueryProjection
-    public PerfumeSimpleQueryDto(Long id, String name, Integer volume, Integer price, String imageUrl) {
+    public PerfumeSimpleQueryDto(Long id, String name, Integer volume, Integer price, String imageUrl, boolean isBookmarked) {
         this.id = id;
         this.name = name;
         this.volume = volume;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.isBookmarked = isBookmarked;
     }
 
     public void setHashtags(List<HashtagQueryDto> hashtags) {

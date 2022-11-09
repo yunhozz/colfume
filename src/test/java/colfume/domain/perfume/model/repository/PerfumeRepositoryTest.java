@@ -59,7 +59,7 @@ class PerfumeRepositoryTest {
         PageRequest pageable = PageRequest.ofSize(30);
 
         //when
-        Page<PerfumeSimpleQueryDto> result = perfumeRepository.findSimplePerfumePage(0L, pageable);
+        Page<PerfumeSimpleQueryDto> result = perfumeRepository.findSimplePerfumePage(1L, 1L, pageable);
 
         //then
         assertThat(result.getNumberOfElements()).isEqualTo(5);
@@ -71,7 +71,7 @@ class PerfumeRepositoryTest {
         PageRequest pageable = PageRequest.ofSize(30);
 
         //when
-        Page<PerfumeSimpleQueryDto> result = perfumeRepository.searchByKeywordOrderByCreated("tag1", 0L, pageable);
+        Page<PerfumeSimpleQueryDto> result = perfumeRepository.searchByKeywordOrderByCreated("tag1", 1L, 1L, pageable);
 
         //then
         assertThat(result.getNumberOfElements()).isEqualTo(10);
@@ -83,7 +83,7 @@ class PerfumeRepositoryTest {
         PageRequest pageable = PageRequest.ofSize(30);
 
         //when
-        Page<PerfumeSimpleQueryDto> result = perfumeRepository.searchByKeywordOrderByAccuracy("tag1", 0L, pageable);
+        Page<PerfumeSimpleQueryDto> result = perfumeRepository.searchByKeywordOrderByAccuracy("tag1", 1L, 1L, pageable);
 
         //then
         assertThat(result.getNumberOfElements()).isEqualTo(10);

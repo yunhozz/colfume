@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface PerfumeRepositoryCustom {
 
-    Page<PerfumeSimpleQueryDto> findSimplePerfumePage(Long perfumeId, Pageable pageable);
-    Page<PerfumeSimpleQueryDto> sortSimplePerfumePage(SortDto sortDto, Long perfumeId, Pageable pageable);
-    Page<PerfumeSimpleQueryDto> searchByKeywordOrderByCreated(String keyword, Long perfumeId, Pageable pageable);
-    Page<PerfumeSimpleQueryDto> searchByKeywordOrderByAccuracy(String keyword, Long perfumeId, Pageable pageable);
+    Page<PerfumeSimpleQueryDto> findSimplePerfumePage(Long perfumeId, Long userId, Pageable pageable);
+    Page<PerfumeSimpleQueryDto> sortSimplePerfumePage(SortDto sortDto, Long perfumeId, Long userId, Pageable pageable);
+    Page<PerfumeSimpleQueryDto> searchByKeywordOrderByCreated(String keyword, Long perfumeId, Long userId, Pageable pageable);
+    Page<PerfumeSimpleQueryDto> searchByKeywordOrderByAccuracy(String keyword, Long perfumeId, Long userId, Pageable pageable);
 }

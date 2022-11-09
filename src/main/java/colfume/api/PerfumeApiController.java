@@ -8,11 +8,13 @@ import colfume.api.dto.perfume.UpdateInfoRequestDto;
 import colfume.common.enums.SearchCondition;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
 import colfume.domain.perfume.service.PerfumeService;
+import colfume.oauth.model.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,22 +41,22 @@ public class PerfumeApiController {
     }
 
     @GetMapping
-    public Response getPerfumes(@RequestParam(required = false) Long perfumeId, @PageableDefault(size = 10) Pageable pageable) {
-        return Response.success(perfumeRepository.findSimplePerfumePage(perfumeId, pageable), HttpStatus.OK);
+    public Response getPerfumes(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam(required = false) Long perfumeId, @PageableDefault(size = 10) Pageable pageable) {
+        return Response.success(perfumeRepository.findSimplePerfumePage(perfumeId, userPrincipal.getId(), pageable), HttpStatus.OK);
     }
 
     @PostMapping("/sort")
-    public Response getSortedPerfumes(@RequestBody SortDto sortDto, @RequestParam(required = false) Long perfumeId, Pageable pageable) {
-        return Response.success(perfumeRepository.sortSimplePerfumePage(sortDto, perfumeId, pageable), HttpStatus.CREATED);
+    public Response getSortedPerfumes(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody SortDto sortDto, @RequestParam(required = false) Long perfumeId, Pageable pageable) {
+        return Response.success(perfumeRepository.sortSimplePerfumePage(sortDto, perfumeId, userPrincipal.getId(), pageable), HttpStatus.CREATED);
     }
 
     @PostMapping("/search")
-    public Response searchPerfumes(@RequestBody SearchDto searchDto, @RequestParam(required = false) Long perfumeId, Pageable pageable) {
+    public Response searchPerfumes(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody SearchDto searchDto, @RequestParam(required = false) Long perfumeId, Pageable pageable) {
         if (searchDto.getCondition() == SearchCondition.LATEST) {
-            return Response.success(perfumeRepository.searchByKeywordOrderByCreated(searchDto.getKeyword(), perfumeId, pageable), HttpStatus.CREATED);
+            return Response.success(perfumeRepository.searchByKeywordOrderByCreated(searchDto.getKeyword(), perfumeId, userPrincipal.getId(), pageable), HttpStatus.CREATED);
         }
         if (searchDto.getCondition() == SearchCondition.ACCURACY) {
-            return Response.success(perfumeRepository.searchByKeywordOrderByAccuracy(searchDto.getKeyword(), perfumeId, pageable), HttpStatus.CREATED);
+            return Response.success(perfumeRepository.searchByKeywordOrderByAccuracy(searchDto.getKeyword(), perfumeId, userPrincipal.getId(), pageable), HttpStatus.CREATED);
         }
         return null;
     }
