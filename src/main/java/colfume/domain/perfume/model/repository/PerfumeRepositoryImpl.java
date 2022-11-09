@@ -76,7 +76,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.imageUrl,
                         isBookmarkExist(userId)
                 ))
-                .distinct() // perfume <> colors join 시 N+1 문제 방지
+                .distinct() // sortDto 의 colorTypes 에 여러 데이터가 존재할 경우 N+1 문제가 발생하기 때문
                 .from(perfume)
                 .leftJoin(bookmark).on(perfume.eq(bookmark.perfume))
                 .leftJoin(member).on(bookmark.member.eq(member))
@@ -110,7 +110,6 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.imageUrl,
                         isBookmarkExist(userId)
                 ))
-                .distinct()
                 .from(perfume)
                 .leftJoin(bookmark).on(perfume.eq(bookmark.perfume))
                 .leftJoin(member).on(bookmark.member.eq(member))
@@ -138,7 +137,6 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.description,
                         hashtag.tag
                 ))
-                .distinct()
                 .from(perfume)
                 .join(perfume.hashtags, hashtag)
                 .where(byKeyword(keyword))
