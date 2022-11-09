@@ -50,7 +50,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.price,
                         perfume.imageUrl,
                         new CaseBuilder()
-                                .when(bookmark.isNotNull().and(member.id.eq(userId)))
+                                .when(bookmark.isNotNull().and(member.id.eq(userId)).and(bookmark.isDeleted.isFalse()))
                                 .then(true)
                                 .otherwise(false)
                 ))
@@ -78,7 +78,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.price,
                         perfume.imageUrl,
                         new CaseBuilder()
-                                .when(bookmark.isNotNull().and(member.id.eq(userId)))
+                                .when(bookmark.isNotNull().and(member.id.eq(userId)).and(bookmark.isDeleted.isFalse()))
                                 .then(true)
                                 .otherwise(false)
                 ))
@@ -115,7 +115,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.price,
                         perfume.imageUrl,
                         new CaseBuilder()
-                                .when(bookmark.isNotNull().and(member.id.eq(userId)))
+                                .when(bookmark.isNotNull().and(member.id.eq(userId)).and(bookmark.isDeleted.isFalse()))
                                 .then(true)
                                 .otherwise(false)
                 ))
@@ -163,7 +163,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.price,
                         perfume.imageUrl,
                         new CaseBuilder()
-                                .when(bookmark.isNotNull().and(member.id.eq(userId)))
+                                .when(bookmark.isNotNull().and(member.id.eq(userId)).and(bookmark.isDeleted.isFalse()))
                                 .then(true)
                                 .otherwise(false)
                 ))
