@@ -49,10 +49,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.volume,
                         perfume.price,
                         perfume.imageUrl,
-                        new CaseBuilder()
-                                .when(bookmark.isNotNull().and(member.id.eq(userId)).and(bookmark.isDeleted.isFalse()))
-                                .then(true)
-                                .otherwise(false)
+                        isBookmarkExist(userId)
                 ))
                 .from(perfume)
                 .leftJoin(bookmark).on(perfume.eq(bookmark.perfume))
@@ -77,10 +74,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.volume,
                         perfume.price,
                         perfume.imageUrl,
-                        new CaseBuilder()
-                                .when(bookmark.isNotNull().and(member.id.eq(userId)).and(bookmark.isDeleted.isFalse()))
-                                .then(true)
-                                .otherwise(false)
+                        isBookmarkExist(userId)
                 ))
                 .distinct() // perfume <> colors join 시 N+1 문제 방지
                 .from(perfume)
@@ -114,10 +108,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.volume,
                         perfume.price,
                         perfume.imageUrl,
-                        new CaseBuilder()
-                                .when(bookmark.isNotNull().and(member.id.eq(userId)).and(bookmark.isDeleted.isFalse()))
-                                .then(true)
-                                .otherwise(false)
+                        isBookmarkExist(userId)
                 ))
                 .distinct()
                 .from(perfume)
@@ -162,10 +153,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.volume,
                         perfume.price,
                         perfume.imageUrl,
-                        new CaseBuilder()
-                                .when(bookmark.isNotNull().and(member.id.eq(userId)).and(bookmark.isDeleted.isFalse()))
-                                .then(true)
-                                .otherwise(false)
+                        isBookmarkExist(userId)
                 ))
                 .from(perfume)
                 .leftJoin(bookmark).on(perfume.eq(bookmark.perfume))
@@ -237,6 +225,13 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
 
         Map<Long, List<ColorQueryDto>> colorMap = colors.stream().collect(Collectors.groupingBy(ColorQueryDto::getPerfumeId));
         perfumes.forEach(perfumeSimpleQueryDto -> perfumeSimpleQueryDto.setColors(colorMap.get(perfumeSimpleQueryDto.getId())));
+    }
+
+    private BooleanExpression isBookmarkExist(Long userId) {
+        return new CaseBuilder()
+                .when(bookmark.isNotNull().and(member.id.eq(userId)).and(bookmark.isDeleted.isFalse()))
+                .then(true)
+                .otherwise(false);
     }
 
     private BooleanExpression perfumeIdLt(Long perfumeId) {
