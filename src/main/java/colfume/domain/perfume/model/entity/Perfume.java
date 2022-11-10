@@ -42,15 +42,15 @@ public class Perfume extends BaseTime {
 
     @ElementCollection
     @CollectionTable(name = "perfume_moods", joinColumns = @JoinColumn(name = "perfume_id"))
-    private List<String> moods = new ArrayList<>(); // 무드
+    private List<Mood> moods = new ArrayList<>(); // 무드
 
     @ElementCollection
     @CollectionTable(name = "perfume_styles", joinColumns = @JoinColumn(name = "perfume_id"))
-    private List<String> styles = new ArrayList<>(); // 스타일
+    private List<Style> styles = new ArrayList<>(); // 스타일
 
     @ElementCollection
     @CollectionTable(name = "perfume_notes", joinColumns = @JoinColumn(name = "perfume_id"))
-    private List<String> notes = new ArrayList<>(); // 노트
+    private List<Note> notes = new ArrayList<>(); // 노트
 
     @Column(length = 500)
     private String description; // 설명
@@ -63,7 +63,7 @@ public class Perfume extends BaseTime {
 
     private double score; // 평가 점수
 
-    private Perfume(String name, int volume, int price, List<String> moods, List<String> styles, List<String> notes, String description, String imageUrl) {
+    private Perfume(String name, int volume, int price, List<Mood> moods, List<Style> styles, List<Note> notes, String description, String imageUrl) {
         this.name = name;
         this.volume = volume;
         this.price = price;
@@ -74,7 +74,7 @@ public class Perfume extends BaseTime {
         this.imageUrl = imageUrl;
     }
 
-    public static Perfume create(String name, int volume, int price, List<String> moods, List<String> styles, List<String> notes, String description, String imageUrl, List<Hashtag> hashtags, List<Color> colors) {
+    public static Perfume create(String name, int volume, int price, List<Mood> moods, List<Style> styles, List<Note> notes, String description, String imageUrl, List<Hashtag> hashtags, List<Color> colors) {
         Perfume perfume = new Perfume(name, volume, price, moods, styles, notes, description, imageUrl);
         hashtags.forEach(perfume::addHashtag);
         colors.forEach(perfume::addColor);
@@ -112,13 +112,11 @@ public class Perfume extends BaseTime {
         score = 0;
     }
 
-    // 연관관계 편의 메소드
     private void addHashtag(Hashtag hashtag) {
         hashtags.add(hashtag);
         hashtag.updatePerfume(this);
     }
 
-    // 연관관계 편의 메소드
     private void addColor(Color color) {
         colors.add(color);
         color.updatePerfume(this);
