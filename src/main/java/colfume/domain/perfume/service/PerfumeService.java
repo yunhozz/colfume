@@ -5,7 +5,6 @@ import colfume.common.converter.entity.PerfumeConverter;
 import colfume.common.enums.ErrorCode;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
-import colfume.domain.perfume.service.dto.PerfumeResponseDto;
 import colfume.domain.perfume.service.exception.PerfumeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,12 +39,6 @@ public class PerfumeService {
     public void deletePerfume(Long perfumeId) {
         Perfume perfume = findPerfume(perfumeId);
         perfumeRepository.delete(perfume);
-    }
-
-    @Transactional(readOnly = true)
-    public PerfumeResponseDto findPerfumeDto(Long perfumeId) {
-        Perfume perfume = findPerfume(perfumeId);
-        return converter.convertToDto(perfume);
     }
 
     private Perfume findPerfume(Long perfumeId) {

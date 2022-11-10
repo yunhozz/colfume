@@ -46,23 +46,19 @@ public class PerfumeQueryDto {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public void setMoods(List<MoodQueryDto> moods) {
-        this.moods = moods;
-    }
-
-    public void setStyles(List<StyleQueryDto> styles) {
-        this.styles = styles;
-    }
-
-    public void setNotes(List<NoteQueryDto> notes) {
-        this.notes = notes;
-    }
-
     public void setHashtags(List<HashtagQueryDto> hashtags) {
         this.hashtags = hashtags;
     }
 
     public void setColors(List<ColorQueryDto> colors) {
         this.colors = colors;
+    }
+
+    public void setFields(List<MoodQueryDto> moods, List<StyleQueryDto> styles, List<NoteQueryDto> notes, List<HashtagQueryDto> hashtags, List<ColorQueryDto> colors) {
+        this.moods = moods;
+        this.styles = styles;
+        this.notes = notes;
+        setHashtags(hashtags);
+        setColors(colors);
     }
 }

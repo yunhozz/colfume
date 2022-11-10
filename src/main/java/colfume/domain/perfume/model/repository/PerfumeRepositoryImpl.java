@@ -287,11 +287,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .where(perfume.id.eq(perfumeId))
                 .fetch();
 
-        perfumeDto.setMoods(moods);
-        perfumeDto.setStyles(styles);
-        perfumeDto.setNotes(notes);
-        perfumeDto.setHashtags(hashtags);
-        perfumeDto.setColors(colors);
+        perfumeDto.setFields(moods, styles, notes, hashtags, colors);
     }
 
     private void joinPerfumesWithHashtagAndColor(List<PerfumeSimpleQueryDto> perfumes, List<Long> perfumeIds) {
