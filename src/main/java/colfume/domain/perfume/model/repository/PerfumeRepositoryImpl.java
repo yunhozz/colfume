@@ -62,7 +62,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
         List<Long> perfumeIds = extractPerfumeIds(perfumes);
         joinQueryWithHashtagAndColor(perfumes, perfumeIds);
 
-        return new PageImpl<>(perfumes, pageable, perfumes.size());
+        return new PageImpl<>(perfumes, pageable, totalCount());
     }
 
     @Override
@@ -96,7 +96,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
         List<Long> perfumeIds = extractPerfumeIds(perfumes);
         joinQueryWithHashtagAndColor(perfumes, perfumeIds);
 
-        return new PageImpl<>(perfumes, pageable, perfumes.size());
+        return new PageImpl<>(perfumes, pageable, totalCount());
     }
 
     @Override
@@ -123,7 +123,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
         List<Long> perfumeIds = extractPerfumeIds(perfumes);
         joinQueryWithHashtagAndColor(perfumes, perfumeIds);
 
-        return new PageImpl<>(perfumes, pageable, perfumes.size());
+        return new PageImpl<>(perfumes, pageable, totalCount());
     }
 
     // TODO : @ElementCollection 인 컬럼을 querydsl 로 어떻게 처리할지?
@@ -163,7 +163,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
 
         joinQueryWithHashtagAndColor(perfumes, perfumeIds);
 
-        return new PageImpl<>(perfumes, pageable, perfumes.size());
+        return new PageImpl<>(perfumes, pageable, totalCount());
     }
 
     private List<Long> extractPerfumeIds(List<PerfumeSimpleQueryDto> perfumes) {
@@ -223,6 +223,13 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
 
         Map<Long, List<ColorQueryDto>> colorMap = colors.stream().collect(Collectors.groupingBy(ColorQueryDto::getPerfumeId));
         perfumes.forEach(perfumeSimpleQueryDto -> perfumeSimpleQueryDto.setColors(colorMap.get(perfumeSimpleQueryDto.getId())));
+    }
+
+    private Long totalCount() {
+        return queryFactory
+                .select(perfume.count())
+                .from(perfume)
+                .fetchOne();
     }
 
     private BooleanExpression isBookmarkExist(Long userId) {
