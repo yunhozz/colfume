@@ -116,7 +116,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.imageUrl,
                         isBookmarkExist(userId)
                 ))
-                .distinct() // sortDto 의 colorTypes 에 여러 데이터가 존재할 경우 N+1 문제가 발생하기 때문
+                .distinct() // SortDto 의 colorTypes 에 여러 데이터가 존재할 경우에 의한 N+1 문제 제거
                 .from(perfume)
                 .leftJoin(bookmark).on(perfume.eq(bookmark.perfume))
                 .leftJoin(member).on(bookmark.member.eq(member))
@@ -150,9 +150,13 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.imageUrl,
                         isBookmarkExist(userId)
                 ))
+                .distinct() // OneToMany, ElementCollection 에 의한 N+1 문제 제거
                 .from(perfume)
                 .leftJoin(bookmark).on(perfume.eq(bookmark.perfume))
                 .leftJoin(member).on(bookmark.member.eq(member))
+                .join(perfume.moods, mood)
+                .join(perfume.styles, style)
+                .join(perfume.notes, note)
                 .join(perfume.hashtags, hashtag)
                 .where(perfumeIdLt(perfumeId))
                 .where(byKeyword(keyword))
@@ -173,9 +177,16 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                         perfume.id,
                         perfume.name,
                         perfume.description,
+                        mood.moodValue,
+                        style.styleValue,
+                        note.noteValue,
                         hashtag.tag
                 ))
+                .distinct() // OneToMany, ElementCollection 에 의한 N+1 문제 제거
                 .from(perfume)
+                .join(perfume.moods, mood)
+                .join(perfume.styles, style)
+                .join(perfume.notes, note)
                 .join(perfume.hashtags, hashtag)
                 .where(byKeyword(keyword))
                 .fetch();
@@ -225,6 +236,9 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 count += countKeyword(searchPerfume.getName(), keyword);
                 count += countKeyword(searchPerfume.getDescription(), keyword);
                 count += countKeyword(searchPerfume.getTag(), keyword);
+                count += countKeyword(searchPerfume.getMood(), keyword);
+                count += countKeyword(searchPerfume.getStyle(), keyword);
+                count += countKeyword(searchPerfume.getNote(), keyword);
                 put(searchPerfume, count);
             });
         }};
@@ -339,7 +353,14 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
     }
 
     private BooleanExpression byKeyword(String keyword) {
-        return StringUtils.hasText(keyword) ? perfume.name.contains(keyword).or(hashtag.tag.contains(keyword)) : null;
+        if (StringUtils.hasText(keyword)) {
+            return perfume.name.contains(keyword)
+                    .or(hashtag.tag.contains(keyword))
+                    .or(mood.moodValue.contains(keyword))
+                    .or(style.styleValue.contains(keyword))
+                    .or(note.noteValue.contains(keyword));
+        }
+        return null;
     }
 
     private BooleanExpression volumeGoe(Integer volumeGoe) {
