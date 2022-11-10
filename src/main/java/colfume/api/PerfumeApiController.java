@@ -36,8 +36,8 @@ public class PerfumeApiController {
     private final PerfumeRepository perfumeRepository;
 
     @GetMapping("/{id}")
-    public Response getPerfume(@PathVariable String id) {
-        return Response.success(perfumeService.findPerfumeDto(Long.valueOf(id)), HttpStatus.OK);
+    public Response getPerfume(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable String id) {
+        return Response.success(perfumeRepository.findPerfumeById(Long.valueOf(id), userPrincipal.getId()), HttpStatus.OK);
     }
 
     @GetMapping

@@ -5,13 +5,21 @@ import colfume.common.enums.ColorType;
 import colfume.common.enums.SortCondition;
 import colfume.domain.perfume.model.repository.dto.ColorQueryDto;
 import colfume.domain.perfume.model.repository.dto.HashtagQueryDto;
+import colfume.domain.perfume.model.repository.dto.MoodQueryDto;
+import colfume.domain.perfume.model.repository.dto.NoteQueryDto;
+import colfume.domain.perfume.model.repository.dto.PerfumeQueryDto;
 import colfume.domain.perfume.model.repository.dto.PerfumeSearchQueryDto;
 import colfume.domain.perfume.model.repository.dto.PerfumeSimpleQueryDto;
 import colfume.domain.perfume.model.repository.dto.QColorQueryDto;
 import colfume.domain.perfume.model.repository.dto.QHashtagQueryDto;
+import colfume.domain.perfume.model.repository.dto.QMoodQueryDto;
+import colfume.domain.perfume.model.repository.dto.QNoteQueryDto;
+import colfume.domain.perfume.model.repository.dto.QPerfumeQueryDto;
+import colfume.domain.perfume.model.repository.dto.QPerfumeSearchQueryDto;
 import colfume.domain.perfume.model.repository.dto.QPerfumeSimpleQueryDto;
+import colfume.domain.perfume.model.repository.dto.QStyleQueryDto;
+import colfume.domain.perfume.model.repository.dto.StyleQueryDto;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
@@ -32,13 +40,45 @@ import static colfume.domain.bookmark.model.entity.QBookmark.bookmark;
 import static colfume.domain.member.model.entity.QMember.member;
 import static colfume.domain.perfume.model.entity.QColor.color;
 import static colfume.domain.perfume.model.entity.QHashtag.hashtag;
+import static colfume.domain.perfume.model.entity.QMood.mood;
+import static colfume.domain.perfume.model.entity.QNote.note;
 import static colfume.domain.perfume.model.entity.QPerfume.perfume;
+import static colfume.domain.perfume.model.entity.QStyle.style;
 
 @Repository
 @RequiredArgsConstructor
 public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public PerfumeQueryDto findPerfumeById(Long id, Long userId) {
+        PerfumeQueryDto perfumeDto = queryFactory
+                .select(new QPerfumeQueryDto(
+                        perfume.id,
+                        perfume.name,
+                        perfume.volume,
+                        perfume.price,
+                        perfume.description,
+                        perfume.imageUrl,
+                        perfume.numOfLikes,
+                        perfume.evaluationCount,
+                        perfume.score,
+                        isBookmarkExist(userId),
+                        perfume.createdDate,
+                        perfume.lastModifiedDate
+                ))
+                .from(perfume)
+                .leftJoin(bookmark).on(perfume.eq(bookmark.perfume))
+                .leftJoin(member).on(bookmark.member.eq(member))
+                .where(perfume.id.eq(id))
+                .fetchOne();
+
+        Long perfumeId = perfumeDto.getId();
+        joinPerfumeWithTables(perfumeDto, perfumeId);
+
+        return perfumeDto;
+    }
 
     @Override
     public Page<PerfumeSimpleQueryDto> findSimplePerfumePage(Long perfumeId, Long userId, Pageable pageable) {
@@ -60,7 +100,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .fetch();
 
         List<Long> perfumeIds = extractPerfumeIds(perfumes);
-        joinQueryWithHashtagAndColor(perfumes, perfumeIds);
+        joinPerfumesWithHashtagAndColor(perfumes, perfumeIds);
 
         return new PageImpl<>(perfumes, pageable, totalCount());
     }
@@ -94,7 +134,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .fetch();
 
         List<Long> perfumeIds = extractPerfumeIds(perfumes);
-        joinQueryWithHashtagAndColor(perfumes, perfumeIds);
+        joinPerfumesWithHashtagAndColor(perfumes, perfumeIds);
 
         return new PageImpl<>(perfumes, pageable, totalCount());
     }
@@ -121,17 +161,15 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .fetch();
 
         List<Long> perfumeIds = extractPerfumeIds(perfumes);
-        joinQueryWithHashtagAndColor(perfumes, perfumeIds);
+        joinPerfumesWithHashtagAndColor(perfumes, perfumeIds);
 
         return new PageImpl<>(perfumes, pageable, totalCount());
     }
 
-    // TODO : @ElementCollection 인 컬럼을 querydsl 로 어떻게 처리할지?
     @Override
     public Page<PerfumeSimpleQueryDto> searchByKeywordOrderByAccuracy(String keyword, Long perfumeId, Long userId, Pageable pageable) {
         List<PerfumeSearchQueryDto> searchPerfumes = queryFactory
-                .select(Projections.constructor(
-                        PerfumeSearchQueryDto.class,
+                .select(new QPerfumeSearchQueryDto(
                         perfume.id,
                         perfume.name,
                         perfume.description,
@@ -161,13 +199,14 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .orderBy(byFieldList(perfumeIds)) // IN 절 순서 보장
                 .fetch();
 
-        joinQueryWithHashtagAndColor(perfumes, perfumeIds);
+        joinPerfumesWithHashtagAndColor(perfumes, perfumeIds);
 
         return new PageImpl<>(perfumes, pageable, totalCount());
     }
 
     private List<Long> extractPerfumeIds(List<PerfumeSimpleQueryDto> perfumes) {
-        return perfumes.stream().map(PerfumeSimpleQueryDto::getId).toList();
+        return perfumes.stream()
+                .map(PerfumeSimpleQueryDto::getId).toList();
     }
 
     private List<Long> extractPerfumeIdsOrderByKeywordDesc(String keyword, List<PerfumeSearchQueryDto> searchPerfumes) {
@@ -195,7 +234,67 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
         return str.length() - str.replace(keyword, "").length();
     }
 
-    private void joinQueryWithHashtagAndColor(List<PerfumeSimpleQueryDto> perfumes, List<Long> perfumeIds) {
+    private void joinPerfumeWithTables(PerfumeQueryDto perfumeDto, Long perfumeId) {
+        List<MoodQueryDto> moods = queryFactory
+                .select(new QMoodQueryDto(
+                        perfume.id,
+                        mood.moodValue
+                ))
+                .from(perfume)
+                .join(perfume.moods, mood)
+                .where(perfume.id.eq(perfumeId))
+                .fetch();
+
+        List<StyleQueryDto> styles = queryFactory
+                .select(new QStyleQueryDto(
+                        perfume.id,
+                        style.styleValue
+                ))
+                .from(perfume)
+                .join(perfume.styles, style)
+                .where(perfume.id.eq(perfumeId))
+                .fetch();
+
+        List<NoteQueryDto> notes = queryFactory
+                .select(new QNoteQueryDto(
+                        perfume.id,
+                        note.noteValue
+                ))
+                .from(perfume)
+                .join(perfume.notes, note)
+                .where(perfume.id.eq(perfumeId))
+                .fetch();
+
+        List<HashtagQueryDto> hashtags = queryFactory
+                .select(new QHashtagQueryDto(
+                        hashtag.id,
+                        perfume.id,
+                        hashtag.tag
+                ))
+                .from(hashtag)
+                .join(hashtag.perfume, perfume)
+                .where(perfume.id.eq(perfumeId))
+                .fetch();
+
+        List<ColorQueryDto> colors = queryFactory
+                .select(new QColorQueryDto(
+                        color.id,
+                        perfume.id,
+                        color.colorType
+                ))
+                .from(color)
+                .join(color.perfume, perfume)
+                .where(perfume.id.eq(perfumeId))
+                .fetch();
+
+        perfumeDto.setMoods(moods);
+        perfumeDto.setStyles(styles);
+        perfumeDto.setNotes(notes);
+        perfumeDto.setHashtags(hashtags);
+        perfumeDto.setColors(colors);
+    }
+
+    private void joinPerfumesWithHashtagAndColor(List<PerfumeSimpleQueryDto> perfumes, List<Long> perfumeIds) {
         List<HashtagQueryDto> hashtags = queryFactory
                 .select(new QHashtagQueryDto(
                         hashtag.id,
