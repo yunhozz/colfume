@@ -43,8 +43,9 @@ public class SecurityConfig {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/bookmarks/**").hasRole("USER")
-                .antMatchers("/api/evaluations/**").hasRole("USER")
+                .antMatchers("/api/bookmarks/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/api/evaluations/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/api/comments/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().permitAll();
 
         httpSecurity
