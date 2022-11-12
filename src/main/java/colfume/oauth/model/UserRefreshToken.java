@@ -38,6 +38,10 @@ public class UserRefreshToken extends BaseTime {
         this.refreshToken = refreshToken;
     }
 
+    public boolean isRefreshTokenNotEqualsWith(String refreshToken) {
+        return !refreshToken.equals(this.refreshToken);
+    }
+
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }

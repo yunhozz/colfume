@@ -12,10 +12,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MemberConverter implements EntityConverter<Member, MemberRequestDto, MemberResponseDto> {
 
-    private final BCryptPasswordEncoder encoder;
-
     @Override
     public Member convertToEntity(MemberRequestDto memberRequestDto) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return Member.builder()
                 .email(memberRequestDto.getEmail())
                 .password(encoder.encode(memberRequestDto.getPassword()))
@@ -27,6 +26,15 @@ public class MemberConverter implements EntityConverter<Member, MemberRequestDto
 
     @Override
     public MemberResponseDto convertToDto(Member member) {
-        return new MemberResponseDto(member.getId(), member.getEmail(), member.getPassword(), member.getName(), member.getImageUrl(), member.getCreatedDate(), member.getLastModifiedDate());
+        return new MemberResponseDto(
+                member.getId(),
+                member.getEmail(),
+                member.getPassword(),
+                member.getName(),
+                member.getImageUrl(),
+                member.getRole().getAuthority(),
+                member.getCreatedDate(),
+                member.getLastModifiedDate()
+        );
     }
 }

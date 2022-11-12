@@ -30,7 +30,11 @@ public class MailCode extends BaseTime {
         this.isVerified = isVerified;
     }
 
-    public void verified() {
+    public boolean isCodeNotEqualsWith(String code) {
+        return !code.equals(this.code);
+    }
+
+    public void verify() {
         isVerified = true;
     }
 }

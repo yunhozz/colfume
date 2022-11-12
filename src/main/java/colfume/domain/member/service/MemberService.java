@@ -21,7 +21,6 @@ import colfume.oauth.model.UserRefreshToken;
 import colfume.oauth.model.UserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,15 +35,13 @@ public class MemberService {
     private final UserRefreshTokenRepository userRefreshTokenRepository;
     private final JwtProvider jwtProvider;
     private final MemberConverter converter;
-    private final BCryptPasswordEncoder encoder;
 
     @Transactional
     public Long join(MemberRequestDto memberRequestDto) {
-        if (memberRepository.findAll().stream().anyMatch(m -> m.getEmail().equals(memberRequestDto.getEmail()))) {
+        if (memberRepository.findAll().stream().anyMatch(m -> m.isEmailEqualsWith(memberRequestDto.getEmail()))) {
             throw new EmailDuplicateException(ErrorCode.EMAIL_DUPLICATE);
         }
         Member member = converter.convertToEntity(memberRequestDto);
-
         return memberRepository.save(member).getId();
     }
 
@@ -52,10 +49,10 @@ public class MemberService {
     public TokenResponseDto login(String email, String password) {
         Member member = findMemberByEmail(email);
 
-        if (!encoder.matches(password, member.getPassword())) {
+        if (member.isPasswordNotEqualsWith(password)) {
             throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
         }
-        if (!member.isEmailVerified()) {
+        if (member.isEmailNotVerified()) {
             throw new EmailNotVerifiedException(ErrorCode.EMAIL_NOT_VERIFIED);
         }
         TokenResponseDto tokenDto = jwtProvider.createTokenDto(email, member.getRole().getAuthority());
@@ -72,7 +69,7 @@ public class MemberService {
         UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(userPrincipal.getId())
                 .orElseThrow(() -> new RefreshTokenNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
-        if (!userRefreshToken.getRefreshToken().equals(refreshToken)) {
+        if (userRefreshToken.isRefreshTokenNotEqualsWith(refreshToken)) {
             throw new RefreshTokenNotCorrespondException(ErrorCode.REFRESH_TOKEN_NOT_CORRESPOND);
         }
         TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(userPrincipal.getEmail(), userPrincipal.getRole());
@@ -88,10 +85,10 @@ public class MemberService {
         }
         Member member = findMember(userId);
 
-        if (!encoder.matches(password, member.getPassword())) {
+        if (member.isPasswordNotEqualsWith(password)) {
             throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
         }
-        member.updatePassword(encoder.encode(newPw));
+        member.updatePassword(newPw);
     }
 
     @Transactional

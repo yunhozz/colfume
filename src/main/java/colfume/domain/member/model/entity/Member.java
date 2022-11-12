@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,16 +57,30 @@ public class Member extends BaseTime {
         return this;
     }
 
+    public boolean isEmailEqualsWith(String email) {
+        return email.equals(this.email);
+    }
+
+    public boolean isPasswordNotEqualsWith(String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return !encoder.matches(password, this.password);
+    }
+
+    public boolean isEmailNotVerified() {
+        return !isEmailVerified;
+    }
+
     public void updateInfo(String name, String imageUrl) {
         this.name = name;
         this.imageUrl = imageUrl;
     }
 
     public void updatePassword(String password) {
-        this.password = password;
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        this.password = encoder.encode(password);
     }
 
-    public void emailVerified() {
+    public void emailVerify() {
         isEmailVerified = true;
     }
 }

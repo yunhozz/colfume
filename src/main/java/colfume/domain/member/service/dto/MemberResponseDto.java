@@ -16,6 +16,7 @@ public class MemberResponseDto {
     private String password;
     private String name;
     private String imageUrl;
+    private String role;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
 }

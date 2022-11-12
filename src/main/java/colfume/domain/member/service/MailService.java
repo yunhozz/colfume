@@ -47,6 +47,7 @@ public class MailService {
             message.setSubject("회원가입 인증 메일입니다."); // 제목 설정
             message.setText("<a href=\"localhost:8080/member/confirm-email?tokenId=" + confirmationTokenId + "\">" + "여기</a>를 눌러 인증을 완료하세요.", "UTF-8", "html"); // 내용 설정
             message.setFrom(new InternetAddress("qkrdbsgh1121@naver.com")); // 송신 이메일 설정
+
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
@@ -81,6 +82,7 @@ public class MailService {
             message.setSubject("회원가입 인증 메일입니다.");
             message.setText(msgg, "UTF-8", "html");
             message.setFrom(new InternetAddress("qkrdbsgh1121@naver.com"));
+
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
@@ -94,7 +96,7 @@ public class MailService {
         Member member = findMember(confirmationToken.getUserId());
 
         confirmationToken.useToken(); // 토큰 만료
-        member.emailVerified(); // 이메일 인증 성공
+        member.emailVerify(); // 이메일 인증 성공
     }
 
     // 회원가입 도중 이메일로 전송된 코드로 인증
@@ -102,10 +104,11 @@ public class MailService {
     public void confirmCode(String email, String code) {
         MailCode mailCode = mailCodeRepository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
-        if (!mailCode.getCode().equals(code)) {
+
+        if (mailCode.isCodeNotEqualsWith(code)) {
             throw new EmailNotVerifiedException(ErrorCode.EMAIL_NOT_VERIFIED);
         }
-        mailCode.verified(); // 코드 검증 성공
+        mailCode.verify(); // 코드 검증 성공
     }
 
     private String createCode() {
