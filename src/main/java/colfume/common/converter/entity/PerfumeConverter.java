@@ -3,7 +3,10 @@ package colfume.common.converter.entity;
 import colfume.api.dto.perfume.PerfumeRequestDto;
 import colfume.domain.perfume.model.entity.Color;
 import colfume.domain.perfume.model.entity.Hashtag;
+import colfume.domain.perfume.model.entity.Mood;
+import colfume.domain.perfume.model.entity.Note;
 import colfume.domain.perfume.model.entity.Perfume;
+import colfume.domain.perfume.model.entity.Style;
 import colfume.domain.perfume.service.dto.ColorResponseDto;
 import colfume.domain.perfume.service.dto.HashtagResponseDto;
 import colfume.domain.perfume.service.dto.PerfumeResponseDto;
@@ -17,6 +20,18 @@ public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequest
 
     @Override
     public Perfume convertToEntity(PerfumeRequestDto perfumeRequestDto) {
+        List<Mood> moods = new ArrayList<>() {{
+            perfumeRequestDto.getMoods().forEach(mood -> add(new Mood(mood)));
+        }};
+
+        List<Style> styles = new ArrayList<>() {{
+            perfumeRequestDto.getStyles().forEach(style -> add(new Style(style)));
+        }};
+
+        List<Note> notes = new ArrayList<>() {{
+            perfumeRequestDto.getNotes().forEach(note -> add(new Note(note)));
+        }};
+
         List<Hashtag> hashtags = new ArrayList<>() {{
             perfumeRequestDto.getTags().forEach(tag -> add(new Hashtag(tag)));
         }};
@@ -29,9 +44,9 @@ public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequest
                 perfumeRequestDto.getName(),
                 perfumeRequestDto.getVolume(),
                 perfumeRequestDto.getPrice(),
-                perfumeRequestDto.getMoods(),
-                perfumeRequestDto.getStyles(),
-                perfumeRequestDto.getNotes(),
+                moods,
+                styles,
+                notes,
                 perfumeRequestDto.getDescription(),
                 perfumeRequestDto.getImageUrl(),
                 hashtags,
@@ -41,8 +56,21 @@ public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequest
 
     @Override
     public PerfumeResponseDto convertToDto(Perfume perfume) {
+        List<String> moods = new ArrayList<>() {{
+            perfume.getMoods().forEach(mood -> add(mood.getMoodValue()));
+        }};
+
+        List<String> styles = new ArrayList<>() {{
+            perfume.getStyles().forEach(style -> add(style.getStyleValue()));
+        }};
+
+        List<String> notes = new ArrayList<>() {{
+            perfume.getNotes().forEach(note -> add(note.getNoteValue()));
+        }};
+
         List<HashtagResponseDto> hashtags = perfume.getHashtags().stream()
                 .map(HashtagResponseDto::new).toList();
+
         List<ColorResponseDto> colors = perfume.getColors().stream()
                 .map(ColorResponseDto::new).toList();
 
@@ -51,9 +79,9 @@ public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequest
                 perfume.getName(),
                 perfume.getVolume(),
                 perfume.getPrice(),
-                perfume.getMoods(),
-                perfume.getStyles(),
-                perfume.getNotes(),
+                moods,
+                styles,
+                notes,
                 perfume.getDescription(),
                 perfume.getImageUrl(),
                 perfume.getNumOfLikes(),
