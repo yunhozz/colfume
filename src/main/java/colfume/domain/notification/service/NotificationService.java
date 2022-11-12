@@ -9,7 +9,6 @@ import colfume.domain.member.service.exception.MemberNotFoundException;
 import colfume.domain.notification.model.entity.Notification;
 import colfume.domain.notification.model.repository.EmitterRepository;
 import colfume.domain.notification.model.repository.NotificationRepository;
-import colfume.domain.notification.model.repository.dto.NotificationQueryDto;
 import colfume.domain.notification.service.dto.NotificationResponseDto;
 import colfume.domain.notification.service.exception.NotificationNotFoundException;
 import colfume.domain.notification.service.exception.NotificationSendFailException;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -91,12 +89,6 @@ public class NotificationService {
         return converter.convertToDto(notification);
     }
 
-    @Transactional(readOnly = true)
-    public List<NotificationQueryDto> findNotificationDtoWithReceiverId(Long receiverId) {
-        Member receiver = memberRepository.getReferenceById(receiverId);
-        return notificationRepository.findWithReceiverId(receiver.getId());
-    }
-
     private Notification findNotification(Long notificationId) {
         return notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new NotificationNotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND));
@@ -116,6 +108,7 @@ public class NotificationService {
                             .data(data)
                             .build()
             );
+
         } catch (IOException e) {
             emitterRepository.deleteById(emitterId);
             throw new NotificationSendFailException(ErrorCode.NOTIFICATION_SEND_FAIL);

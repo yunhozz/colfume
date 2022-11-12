@@ -2,6 +2,7 @@ package colfume.api;
 
 import colfume.api.dto.Response;
 import colfume.api.dto.notification.NotificationRequestDto;
+import colfume.domain.notification.model.repository.NotificationRepository;
 import colfume.domain.notification.service.NotificationService;
 import colfume.oauth.model.UserPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +26,11 @@ import javax.validation.Valid;
 public class NotificationApiController {
 
     private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
 
     @GetMapping
     public Response getNotificationsWithReceiverId(@AuthenticationPrincipal UserPrincipal user) {
-        return Response.success(notificationService.findNotificationDtoWithReceiverId(user.getId()), HttpStatus.OK);
+        return Response.success(notificationRepository.findWithReceiverId(user.getId()), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
