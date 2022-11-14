@@ -23,6 +23,7 @@ public class EvaluationRepositoryImpl implements EvaluationRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
+    // 향수 상세페이지 -> 평가 -> 평가 목록과 각각의 댓글 목록, 대댓글은 조회 x
     @Override
     public List<EvaluationQueryDto> findListByPerfumeId(Long perfumeId) {
         QMember writer = new QMember("writer");
@@ -61,7 +62,10 @@ public class EvaluationRepositoryImpl implements EvaluationRepositoryCustom {
                 .from(comment)
                 .join(comment.evaluation, evaluation)
                 .join(comment.writer, writer)
-                .where(evaluation.id.in(evaluationIds))
+                .where(
+                        evaluation.id.in(evaluationIds),
+                        comment.parent.isNull() // 대댓글 조회 x
+                )
                 .orderBy(comment.createdDate.asc())
                 .fetch();
 
