@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor
@@ -18,7 +19,7 @@ public class PerfumeResponseDto {
     private Integer price;
     private List<String> moods;
     private List<String> styles;
-    private List<String> notes;
+    private Map<String, String> notes;
     private String description;
     private String imageUrl;
     private int numOfLikes;

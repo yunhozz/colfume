@@ -1,6 +1,7 @@
 package colfume.api.dto.perfume;
 
 import colfume.common.enums.ColorType;
+import colfume.domain.perfume.model.entity.Note;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -26,11 +28,14 @@ public class PerfumeRequestDto {
     @NotNull(message = "가격을 입력해주세요.")
     private Integer price;
 
+    @NotEmpty(message = "적어도 하나의 무드를 입력해주세요.")
     private List<String> moods;
 
+    @NotEmpty(message = "적어도 하나의 스타일을 입력해주세요.")
     private List<String> styles;
 
-    private List<String> notes;
+    @NotEmpty(message = "적어도 하나의 노트를 입력해주세요.")
+    private Map<Note.Stage, String> notes;
 
     @NotBlank(message = "설명을 입력해주세요.")
     private String description;

@@ -272,6 +272,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
         List<NoteQueryDto> notes = queryFactory
                 .select(new QNoteQueryDto(
                         perfume.id,
+                        note.stage,
                         note.noteValue
                 ))
                 .from(perfume)

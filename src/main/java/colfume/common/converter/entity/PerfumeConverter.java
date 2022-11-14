@@ -13,7 +13,9 @@ import colfume.domain.perfume.service.dto.PerfumeResponseDto;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequestDto, PerfumeResponseDto> {
@@ -29,7 +31,7 @@ public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequest
         }};
 
         List<Note> notes = new ArrayList<>() {{
-            perfumeRequestDto.getNotes().forEach(note -> add(new Note(note)));
+            perfumeRequestDto.getNotes().forEach((stage, note) -> add(new Note(stage, note)));
         }};
 
         List<Hashtag> hashtags = new ArrayList<>() {{
@@ -64,8 +66,8 @@ public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequest
             perfume.getStyles().forEach(style -> add(style.getStyleValue()));
         }};
 
-        List<String> notes = new ArrayList<>() {{
-            perfume.getNotes().forEach(note -> add(note.getNoteValue()));
+        Map<String, String> notes = new HashMap<>() {{
+            perfume.getNotes().forEach(note -> put(note.getStage().name(), note.getNoteValue()));
         }};
 
         List<HashtagResponseDto> hashtags = perfume.getHashtags().stream()
