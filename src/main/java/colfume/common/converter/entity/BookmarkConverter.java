@@ -14,6 +14,13 @@ public class BookmarkConverter implements EntityConverter<Bookmark, Object, Book
 
     @Override
     public BookmarkResponseDto convertToDto(Bookmark bookmark) {
-        return new BookmarkResponseDto(bookmark.getId(), bookmark.getMember().getId(), bookmark.getPerfume().getId(), bookmark.getRedirectUrl(), bookmark.isDeleted(), bookmark.getCreatedDate());
+        return new BookmarkResponseDto(
+                bookmark.getId(),
+                bookmark.getMember().getId(),
+                bookmark.getPerfume().getId(),
+                bookmark.getRedirectUrl(),
+                bookmark.isDeleted(),
+                bookmark.getCreatedDate()
+        );
     }
 }

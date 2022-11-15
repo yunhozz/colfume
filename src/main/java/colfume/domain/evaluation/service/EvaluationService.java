@@ -37,7 +37,7 @@ public class EvaluationService {
         perfume.addEvaluationCount(); // 평가수 +1
         perfumeRepository.updateScoreForAdd(perfume.getId(), evaluationRequestDto.getScore()); // 평가 점수 update (추가)
 
-        return evaluationRepository.save(evaluation).getId();
+        return evaluation.getId();
     }
 
     @Transactional
