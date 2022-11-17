@@ -25,7 +25,6 @@ public class EvaluationService {
     private final EvaluationRepository evaluationRepository;
     private final MemberRepository memberRepository;
     private final PerfumeRepository perfumeRepository;
-    private final EvaluationConverter converter;
 
     @Transactional
     public Long createEvaluation(EvaluationRequestDto evaluationRequestDto, Long writerId, Long perfumeId) {
@@ -90,7 +89,7 @@ public class EvaluationService {
             } else throw new EvaluationAlreadyExistException(ErrorCode.EVALUATION_ALREADY_EXIST);
 
         } else {
-            converter.update(writer, perfume);
+            EvaluationConverter<Member, Perfume> converter = new EvaluationConverter<>(writer, perfume);
             evaluation = converter.convertToEntity(evaluationRequestDto);
             evaluationRepository.save(evaluation);
         }

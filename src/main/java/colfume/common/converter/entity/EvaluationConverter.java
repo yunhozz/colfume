@@ -5,13 +5,13 @@ import colfume.domain.evaluation.model.entity.Evaluation;
 import colfume.domain.evaluation.service.dto.EvaluationResponseDto;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.perfume.model.entity.Perfume;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
 
-@Component
-public class EvaluationConverter implements EntityConverter<Evaluation, EvaluationRequestDto, EvaluationResponseDto> {
+@RequiredArgsConstructor
+public class EvaluationConverter<W extends Member, P extends Perfume> implements EntityConverter<Evaluation, EvaluationRequestDto, EvaluationResponseDto> {
 
-    private Member writer;
-    private Perfume perfume;
+    private final W writer;
+    private final P perfume;
 
     @Override
     public Evaluation convertToEntity(EvaluationRequestDto evaluationRequestDto) {
@@ -35,10 +35,5 @@ public class EvaluationConverter implements EntityConverter<Evaluation, Evaluati
                 evaluation.getCreatedDate(),
                 evaluation.getLastModifiedDate()
         );
-    }
-
-    public void update(Member writer, Perfume perfume) {
-        this.writer = writer;
-        this.perfume = perfume;
     }
 }

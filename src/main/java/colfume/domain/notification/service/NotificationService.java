@@ -29,7 +29,6 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final EmitterRepository emitterRepository;
     private final MemberRepository memberRepository;
-    private final NotificationConverter converter;
 
     private final static Long DEFAULT_TIMEOUT = 60 * 60 * 1000L; // 1 hour
 
@@ -57,7 +56,7 @@ public class NotificationService {
         Member receiver = memberRepository.findById(receiverId)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
-        converter.update(sender, receiver);
+        NotificationConverter<Member, Member> converter = new NotificationConverter<>(sender, receiver);
         Notification notification = converter.convertToEntity(notificationRequestDto);
 
         Map<String, SseEmitter> emitters = emitterRepository.findEmittersWithUserId(String.valueOf(receiverId));
@@ -85,7 +84,10 @@ public class NotificationService {
 
     @Transactional(readOnly = true)
     public NotificationResponseDto findNotificationDto(Long notificationId) {
-        Notification notification = findNotification(notificationId);
+        Notification notification = notificationRepository.findWithSenderAndReceiverById(notificationId)
+                .orElseThrow(() -> new NotificationNotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND));
+        NotificationConverter<Member, Member> converter = new NotificationConverter<>(notification.getSender(), notification.getReceiver());
+
         return converter.convertToDto(notification);
     }
 

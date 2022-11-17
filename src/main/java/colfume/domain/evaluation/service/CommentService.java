@@ -29,7 +29,6 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final EvaluationRepository evaluationRepository;
     private final MemberRepository memberRepository;
-    private final CommentConverter converter;
 
     @Transactional
     public Long createComment(CommentRequestDto commentRequestDto, Long writerId, Long evaluationId) {
@@ -41,7 +40,7 @@ public class CommentService {
             throw new EvaluationAlreadyDeletedException(ErrorCode.ALREADY_DELETED);
         }
 
-        converter.update(writer, evaluation);
+        CommentConverter<Member, Evaluation> converter = new CommentConverter<>(writer, evaluation);
         Comment comment = converter.convertToEntity(commentRequestDto);
 
         return commentRepository.save(comment).getId();
@@ -53,7 +52,7 @@ public class CommentService {
                 .orElseThrow(() -> new CommentNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
         Member writer = memberRepository.getReferenceById(writerId);
 
-        converter.update(writer, parent.getEvaluation());
+        CommentConverter<Member, Evaluation> converter = new CommentConverter<>(writer, parent.getEvaluation());
         Comment child = converter.convertToChildEntity(commentRequestDto, parent);
 
         return commentRepository.save(child).getId();
@@ -65,10 +64,34 @@ public class CommentService {
         comment.updateContent(commentRequestDto.getContent());
     }
 
+    // TODO: 2022-11-14 삭제 로직 고민 
     @Transactional
     public void deleteComment(Long commentId, Long userId) {
         Comment comment = validateAuthorization(commentId, userId);
-        commentRepository.delete(comment);
+
+        if (comment.hasParent()) {
+            Comment parent = comment.getParent();
+
+        } else {
+            commentRepository.delete(comment);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public CommentResponseDto findDtoById(Long commentId) {
+        Comment comment = commentRepository.findWithWriterAndEvaluationById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
+        CommentConverter<Member, Evaluation> converter = new CommentConverter<>(comment.getWriter(), comment.getEvaluation());
+
+        return converter.convertToDto(comment);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommentResponseDto> findChildrenDtoByParentId(Long parentId) {
+        return commentRepository.findChildrenByParentId(parentId).stream().map(child -> {
+            CommentConverter<Member, Evaluation> converter = new CommentConverter<>(child.getWriter(), child.getEvaluation());
+            return converter.convertToDto(child);
+        }).collect(Collectors.toList());
     }
 
     private Comment validateAuthorization(Long commentId, Long userId) {
@@ -78,10 +101,5 @@ public class CommentService {
             throw new CrudNotAuthenticationException(ErrorCode.NOT_AUTHENTICATED);
         }
         return optionalComment.get();
-    }
-
-    private Comment findComment(Long commentId) {
-        return commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
     }
 }
