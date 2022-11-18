@@ -100,16 +100,24 @@ public class Perfume extends BaseTime {
         numOfLikes--;
     }
 
-    public void addEvaluationCount() {
+    public void updateScoreForAdd(double score) {
         evaluationCount++;
+        this.score = (this.score * (evaluationCount - 1) + score) / evaluationCount;
     }
 
-    public void subtractEvaluationCount() {
+    public void updateScoreForModify(double score) {
+        this.score = (this.score * evaluationCount - this.score + score) / evaluationCount;
+    }
+
+    public void updateScoreForSubtract(double score) {
         evaluationCount--;
-    }
 
-    public void scoreToZero() {
-        score = 0;
+        if (evaluationCount == 0) {
+            this.score = 0;
+
+        } else {
+            this.score = (this.score * (evaluationCount + 1) - score) / evaluationCount;
+        }
     }
 
     private void addHashtag(Hashtag hashtag) {

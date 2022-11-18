@@ -33,8 +33,7 @@ public class EvaluationService {
                 .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
 
         Evaluation evaluation = validateAndSaveEvaluation(writer, perfume, evaluationRequestDto);
-        perfume.addEvaluationCount(); // 평가수 +1
-        perfumeRepository.updateScoreForAdd(perfume.getId(), evaluationRequestDto.getScore()); // 평가 점수 update (추가)
+        perfume.updateScoreForAdd(evaluationRequestDto.getScore());
 
         return evaluation.getId();
     }
@@ -42,34 +41,26 @@ public class EvaluationService {
     @Transactional
     public void update(Long evaluationId, Long userId, EvaluationRequestDto evaluationRequestDto) {
         Evaluation evaluation = validateAuthorization(evaluationId, userId);
-        Perfume perfume = evaluation.getPerfume();
-        double oldScore = evaluation.getScore();
+        evaluation.update(evaluationRequestDto.getContent(), evaluationRequestDto.getScore()); // perfume.updateScoreForModify()
+//        perfumeRepository.updateScoreForModify(perfume.getId(), oldScore, evaluationRequestDto.getScore()); // 평가 점수 update (수정)
 
         /*
          * 벌크성 쿼리의 clearAutomatically = true 옵션에 의해 영속성 컨텍스트를 무시하고 db 에 바로 업데이트 쿼리를 날리고 1차 캐시를 초기화
          * 트랜잭션이 끝나고 1차 캐시에 남아있던 evaluation 의 update 쿼리가 commit 되지 못하고 무시됨
          * 따라서, flushAutomatically = true 를 추가적으로 선언하여 모든 변경 내용을 강제로 flush 하게 만듬
          */
-        evaluation.update(evaluationRequestDto.getContent(), evaluationRequestDto.getScore()); // 벌크성 쿼리에 의해 무시됨
-        perfumeRepository.updateScoreForModify(perfume.getId(), oldScore, evaluationRequestDto.getScore()); // 평가 점수 update (수정)
     }
 
     @Transactional
     public void delete(Long evaluationId, Long userId) {
         Evaluation evaluation = validateAuthorization(evaluationId, userId);
-        Perfume perfume = evaluation.getPerfume();
-        evaluation.delete(); // perfume.subtractEvaluationCount()
+        evaluation.delete(); // perfume.updateScoreForSubtract()
+//        perfumeRepository.updateScoreForSubtract(perfume.getId(), evaluation.getScore()); // 평가 점수 update (삭제)
 
         /*
          * 원래대로라면 벌크성 쿼리에 의해 evaluation.delete() 가 무시되는 것이 맞음
          * 하지만, delete() 메소드 안의 perfume.subtractEvaluationCount() 이 실행되어야 하기 때문에 evaluation 의 변경내용이 무시되지 못함
          */
-        if (perfume.getEvaluationCount() == 0) {
-            perfume.scoreToZero();
-
-        } else {
-            perfumeRepository.updateScoreForSubtract(perfume.getId(), evaluation.getScore()); // 평가 점수 update (삭제)
-        }
     }
 
     /**
@@ -93,6 +84,7 @@ public class EvaluationService {
             evaluation = converter.convertToEntity(evaluationRequestDto);
             evaluationRepository.save(evaluation);
         }
+
         return evaluation;
     }
 
@@ -102,6 +94,7 @@ public class EvaluationService {
         if (optionalEvaluation.isEmpty()) {
             throw new CrudNotAuthenticationException(ErrorCode.NOT_AUTHENTICATED);
         }
+
         return optionalEvaluation.get();
     }
 }

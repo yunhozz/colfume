@@ -49,6 +49,7 @@ public class Evaluation extends BaseTime {
     public void update(String content, double score) {
         this.content = content;
         this.score = score;
+        perfume.updateScoreForModify(score);
     }
 
     public void updateAfterDeleted(String content, double score) {
@@ -60,7 +61,7 @@ public class Evaluation extends BaseTime {
         if (!isDeleted) {
             isDeleted = true;
             content = "관리자 또는 작성자에 의해 삭제되었습니다.";
-            perfume.subtractEvaluationCount();
+            perfume.updateScoreForSubtract(score);
 
         } else {
             throw new IllegalStateException("이미 삭제된 평가입니다.");
