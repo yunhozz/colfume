@@ -4,13 +4,13 @@ import colfume.api.dto.notification.NotificationRequestDto;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.notification.model.entity.Notification;
 import colfume.domain.notification.service.dto.NotificationResponseDto;
-import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
-public class NotificationConverter<S extends Member, R extends Member> implements EntityConverter<Notification, NotificationRequestDto, NotificationResponseDto> {
+@Component
+public class NotificationConverter implements EntityConverter<Notification, NotificationRequestDto, NotificationResponseDto> {
 
-    private final S sender;
-    private final R receiver;
+    private Member sender;
+    private Member receiver;
 
     @Override
     public Notification convertToEntity(NotificationRequestDto notificationRequestDto) {
@@ -33,5 +33,10 @@ public class NotificationConverter<S extends Member, R extends Member> implement
                 notification.isChecked(),
                 notification.getCreatedDate()
         );
+    }
+
+    public void setEntities(Member sender, Member receiver) {
+        this.sender = sender;
+        this.receiver = receiver;
     }
 }

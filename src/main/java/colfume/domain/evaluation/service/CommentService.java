@@ -29,6 +29,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final EvaluationRepository evaluationRepository;
     private final MemberRepository memberRepository;
+    private final CommentConverter converter;
 
     @Transactional
     public Long createComment(CommentRequestDto commentRequestDto, Long writerId, Long evaluationId) {
@@ -40,7 +41,7 @@ public class CommentService {
             throw new EvaluationAlreadyDeletedException(ErrorCode.ALREADY_DELETED);
         }
 
-        CommentConverter<Member, Evaluation> converter = new CommentConverter<>(writer, evaluation);
+        converter.setEntities(writer, evaluation);
         Comment comment = converter.convertToEntity(commentRequestDto);
 
         return commentRepository.save(comment).getId();
@@ -48,11 +49,11 @@ public class CommentService {
 
     @Transactional
     public Long createChildComment(CommentRequestDto commentRequestDto, Long parentId, Long writerId) {
+        Member writer = memberRepository.getReferenceById(writerId);
         Comment parent = commentRepository.findWithEvaluationById(parentId)
                 .orElseThrow(() -> new CommentNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
-        Member writer = memberRepository.getReferenceById(writerId);
 
-        CommentConverter<Member, Evaluation> converter = new CommentConverter<>(writer, parent.getEvaluation());
+        converter.setEntities(writer, parent.getEvaluation());
         Comment child = converter.convertToChildEntity(commentRequestDto, parent);
 
         return commentRepository.save(child).getId();
@@ -81,17 +82,15 @@ public class CommentService {
     public CommentResponseDto findDtoById(Long commentId) {
         Comment comment = commentRepository.findWithWriterAndEvaluationById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
-        CommentConverter<Member, Evaluation> converter = new CommentConverter<>(comment.getWriter(), comment.getEvaluation());
 
         return converter.convertToDto(comment);
     }
 
     @Transactional(readOnly = true)
     public List<CommentResponseDto> findChildrenDtoByParentId(Long parentId) {
-        return commentRepository.findChildrenByParentId(parentId).stream().map(child -> {
-            CommentConverter<Member, Evaluation> converter = new CommentConverter<>(child.getWriter(), child.getEvaluation());
-            return converter.convertToDto(child);
-        }).collect(Collectors.toList());
+        return commentRepository.findChildrenByParentId(parentId).stream()
+                .map(converter::convertToDto)
+                .collect(Collectors.toList());
     }
 
     private Comment validateAuthorization(Long commentId, Long userId) {
