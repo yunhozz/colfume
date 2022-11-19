@@ -10,6 +10,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,10 +28,10 @@ public class Perfume extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "perfume", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "perfume", cascade = CascadeType.ALL)
     private List<Hashtag> hashtags = new ArrayList<>(); // 해시태그
 
-    @OneToMany(mappedBy = "perfume", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "perfume", cascade = CascadeType.ALL)
     private List<Color> colors = new ArrayList<>(); // 색깔
 
     @Column(length = 30)
@@ -40,15 +41,15 @@ public class Perfume extends BaseTime {
 
     private int price; // 가격
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "perfume_moods", joinColumns = @JoinColumn(name = "perfume_id"))
     private List<Mood> moods = new ArrayList<>(); // 무드
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "perfume_styles", joinColumns = @JoinColumn(name = "perfume_id"))
     private List<Style> styles = new ArrayList<>(); // 스타일
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "perfume_notes", joinColumns = @JoinColumn(name = "perfume_id"))
     private List<Note> notes = new ArrayList<>(); // 노트
 
