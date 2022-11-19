@@ -36,7 +36,7 @@ public class Comment extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     private Comment parent; // self join
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> children = new ArrayList<>(); // 대댓글
 
     @Column(length = 50)
@@ -53,11 +53,10 @@ public class Comment extends BaseTime {
     }
 
     public static Comment createChild(Comment parent, Member writer, Evaluation evaluation, String content) {
-        Comment comment = createParent(writer, evaluation, content);
-        comment.setParent(parent);
-        comment.getChildren().add(parent);
+        Comment child = createParent(writer, evaluation, content);
+        child.setParent(parent);
 
-        return comment;
+        return child;
     }
 
     public boolean hasParent() {
@@ -70,5 +69,6 @@ public class Comment extends BaseTime {
 
     private void setParent(Comment parent) {
         this.parent = parent;
+        parent.getChildren().add(this);
     }
 }
