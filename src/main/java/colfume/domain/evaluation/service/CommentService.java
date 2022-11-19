@@ -41,7 +41,7 @@ public class CommentService {
             throw new EvaluationAlreadyDeletedException(ErrorCode.ALREADY_DELETED);
         }
 
-        converter.setEntities(writer, evaluation);
+        converter.setEntitiesForParent(writer, evaluation);
         Comment comment = converter.convertToEntity(commentRequestDto);
 
         return commentRepository.save(comment).getId();
@@ -53,8 +53,8 @@ public class CommentService {
         Comment parent = commentRepository.findWithEvaluationById(parentId)
                 .orElseThrow(() -> new CommentNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
-        converter.setEntities(writer, parent.getEvaluation());
-        Comment child = converter.convertToChildEntity(commentRequestDto, parent);
+        converter.setEntitiesForChild(writer, parent);
+        Comment child = converter.convertToChildEntity(commentRequestDto);
 
         return commentRepository.save(child).getId();
     }
@@ -65,30 +65,16 @@ public class CommentService {
         comment.updateContent(commentRequestDto.getContent());
     }
 
-    // TODO: 2022-11-14 삭제 로직 고민 
+    // TODO: 2022-11-19 삭제 로직 고민
     @Transactional
     public void deleteComment(Long commentId, Long userId) {
         Comment comment = validateAuthorization(commentId, userId);
-
-        if (comment.hasParent()) {
-            Comment parent = comment.getParent();
-
-        } else {
-            commentRepository.delete(comment);
-        }
+        commentRepository.delete(comment); // cascade delete: children
     }
 
     @Transactional(readOnly = true)
-    public CommentResponseDto findDtoById(Long commentId) {
-        Comment comment = commentRepository.findWithWriterAndEvaluationById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
-
-        return converter.convertToDto(comment);
-    }
-
-    @Transactional(readOnly = true)
-    public List<CommentResponseDto> findChildrenDtoByParentId(Long parentId) {
-        return commentRepository.findChildrenByParentId(parentId).stream()
+    public List<CommentResponseDto> findDtoListByEvaluationId(Long evaluationId) {
+        return commentRepository.findListByEvaluationId(evaluationId).stream()
                 .map(converter::convertToDto)
                 .collect(Collectors.toList());
     }
