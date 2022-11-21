@@ -37,6 +37,7 @@ public class BookmarkService {
                 .ifPresentOrElse(bookmark -> {
                     if (bookmark.isDeleted()) {
                         bookmark.create();
+                        id[0] = bookmark.getId();
 
                     } else throw new BookmarkAlreadyCreatedException(ErrorCode.BOOKMARK_ALREADY_CREATED);
 
