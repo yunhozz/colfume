@@ -6,6 +6,7 @@ import colfume.common.enums.ErrorCode;
 import colfume.domain.evaluation.model.entity.Evaluation;
 import colfume.domain.evaluation.model.repository.EvaluationRepository;
 import colfume.domain.evaluation.service.exception.CrudNotAuthenticationException;
+import colfume.domain.evaluation.service.exception.EvaluationAlreadyDeletedException;
 import colfume.domain.evaluation.service.exception.EvaluationAlreadyExistException;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
@@ -16,8 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class EvaluationService {
@@ -27,16 +26,31 @@ public class EvaluationService {
     private final PerfumeRepository perfumeRepository;
     private final EvaluationConverter converter;
 
+    /**
+     * 향수에 대한 평가가 이미 존재할 때 : 삭제된 상태면 create 가능, 아니면 예외 발생
+     * 향수에 대한 평가가 없을 때 : 평가를 새로 생성 후 레포지토리에 저장
+     */
     @Transactional
     public Long createEvaluation(EvaluationRequestDto evaluationRequestDto, Long writerId, Long perfumeId) {
         Member writer = memberRepository.getReferenceById(writerId);
         Perfume perfume = perfumeRepository.findById(perfumeId)
                 .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
+        final Long[] id = {null};
 
-        Evaluation evaluation = validateAndSaveEvaluation(writer, perfume, evaluationRequestDto);
+        evaluationRepository.findByWriterAndPerfume(writer, perfume)
+                .ifPresentOrElse(evaluation -> {
+                    if (evaluation.isDeleted()) {
+                        id[0] = saveEvaluation(writer, perfume, evaluationRequestDto);
+
+                    } else throw new EvaluationAlreadyExistException(ErrorCode.EVALUATION_ALREADY_EXIST);
+
+                }, () -> {
+                    id[0] = saveEvaluation(writer, perfume, evaluationRequestDto);
+                });
+
         perfume.updateScoreForAdd(evaluationRequestDto.getScore());
 
-        return evaluation.getId();
+        return id[0];
     }
 
     @Transactional
@@ -64,38 +78,22 @@ public class EvaluationService {
          */
     }
 
-    /**
-     * 향수에 대한 평가가 이미 존재할 때 : 삭제된 상태면 create 상태로 변경 & update, 아니면 예외 발생
-     * 향수에 대한 평가가 없을 때 : 평가를 새로 생성 후 레포지토리에 저장
-     */
-    private Evaluation validateAndSaveEvaluation(Member writer, Perfume perfume, EvaluationRequestDto evaluationRequestDto) {
-        Optional<Evaluation> optionalEvaluation = evaluationRepository.findByWriterAndPerfume(writer, perfume);
-        Evaluation evaluation;
+    private Long saveEvaluation(Member writer, Perfume perfume, EvaluationRequestDto evaluationRequestDto) {
+        converter.setEntities(writer, perfume);
+        Evaluation evaluation = converter.convertToEntity(evaluationRequestDto);
+        evaluationRepository.save(evaluation);
 
-        if (optionalEvaluation.isPresent()) {
-            evaluation = optionalEvaluation.get();
-
-            if (evaluation.isDeleted()) {
-                evaluation.updateAfterDeleted(evaluationRequestDto.getContent(), evaluationRequestDto.getScore());
-
-            } else throw new EvaluationAlreadyExistException(ErrorCode.EVALUATION_ALREADY_EXIST);
-
-        } else {
-            converter.setEntities(writer, perfume);
-            evaluation = converter.convertToEntity(evaluationRequestDto);
-            evaluationRepository.save(evaluation);
-        }
-
-        return evaluation;
+        return evaluation.getId();
     }
 
     private Evaluation validateAuthorization(Long evaluationId, Long userId) {
-        Optional<Evaluation> optionalEvaluation = evaluationRepository.findWithPerfumeByIdAndUserId(evaluationId, userId);
+        Evaluation evaluation = evaluationRepository.findWithPerfumeByIdAndUserId(evaluationId, userId)
+                .orElseThrow(() -> new CrudNotAuthenticationException(ErrorCode.NOT_AUTHENTICATED));
 
-        if (optionalEvaluation.isEmpty()) {
-            throw new CrudNotAuthenticationException(ErrorCode.NOT_AUTHENTICATED);
+        if (evaluation.isDeleted()) {
+            throw new EvaluationAlreadyDeletedException(ErrorCode.EVALUATION_ALREADY_DELETED);
         }
 
-        return optionalEvaluation.get();
+        return evaluation;
     }
 }
