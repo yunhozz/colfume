@@ -52,11 +52,6 @@ public class Evaluation extends BaseTime {
         perfume.updateScoreForModify(score);
     }
 
-    public void updateAfterDeleted(String content, double score) {
-        update(content, score);
-        isDeleted = false;
-    }
-
     public void delete() {
         if (!isDeleted) {
             isDeleted = true;
