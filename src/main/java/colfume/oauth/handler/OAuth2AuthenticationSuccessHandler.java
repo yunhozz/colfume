@@ -48,13 +48,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
-                .map(Cookie::getValue);
+        final String[] targetUri = {null};
+        CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+                .map(Cookie::getValue)
+                .ifPresentOrElse(redirectUri -> {
+                    throw new IllegalStateException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
+                }, () -> {
+                    targetUri[0] = getDefaultTargetUrl();
+                });
 
-        if (redirectUri.isPresent()) {
-            throw new IllegalStateException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
-        }
-        String targetUri = redirectUri.orElse(getDefaultTargetUrl());
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(userPrincipal.getEmail(), userPrincipal.getRole());
 
@@ -65,7 +67,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         HttpSession session = request.getSession();
         session.setAttribute("token", tokenResponseDto.getAccessToken());
 
-        return UriComponentsBuilder.fromUriString(targetUri)
+        return UriComponentsBuilder.fromUriString(targetUri[0])
                 .queryParam("token", tokenResponseDto.getAccessToken())
                 .build().toUriString();
     }
