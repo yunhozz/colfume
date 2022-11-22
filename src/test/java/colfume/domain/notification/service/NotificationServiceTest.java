@@ -24,6 +24,9 @@ class NotificationServiceTest {
     NotificationService notificationService;
 
     @Autowired
+    ConnectService connectService;
+
+    @Autowired
     NotificationRepository notificationRepository;
 
     @Autowired
@@ -36,7 +39,7 @@ class NotificationServiceTest {
         memberRepository.save(member);
 
         //when
-        SseEmitter emitter = notificationService.connect(member.getId(), "");
+        SseEmitter emitter = connectService.connect(member.getId(), "");
 
         //then
         assertThat(emitter).isNotNull();

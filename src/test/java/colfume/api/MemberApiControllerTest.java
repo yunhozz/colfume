@@ -3,6 +3,7 @@ package colfume.api;
 import colfume.domain.member.dto.request.LoginRequestDto;
 import colfume.domain.member.dto.request.MemberRequestDto;
 import colfume.domain.member.dto.request.PasswordRequestDto;
+import colfume.domain.member.service.AuthService;
 import colfume.oauth.jwt.JwtProvider;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
@@ -46,6 +47,9 @@ class MemberApiControllerTest {
 
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private AuthService authService;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -169,7 +173,7 @@ class MemberApiControllerTest {
         memberRepository.save(member2);
         memberRepository.save(member3);
 
-        TokenResponseDto token = memberService.login("email1@gmail.com", "123");
+        TokenResponseDto token = authService.login("email1@gmail.com", "123");
         PasswordRequestDto passwordRequestDto = new PasswordRequestDto("123", "123123");
 
         //when
@@ -195,7 +199,7 @@ class MemberApiControllerTest {
         memberRepository.save(member2);
         memberRepository.save(member3);
 
-        TokenResponseDto token = memberService.login("email1@gmail.com", "123");
+        TokenResponseDto token = authService.login("email1@gmail.com", "123");
 
         //when
         ResultActions result = mockMvc.perform(patch("/api/members/name")
@@ -220,7 +224,7 @@ class MemberApiControllerTest {
         memberRepository.save(member2);
         memberRepository.save(member3);
 
-        TokenResponseDto token = memberService.login("email1@gmail.com", "123");
+        TokenResponseDto token = authService.login("email1@gmail.com", "123");
 
         //when
         ResultActions result = mockMvc.perform(delete("/api/members")

@@ -1,15 +1,15 @@
 package colfume.domain.notification.service;
 
-import colfume.domain.notification.dto.request.NotificationRequestDto;
 import colfume.common.converter.entity.NotificationConverter;
 import colfume.common.enums.ErrorCode;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.exception.MemberNotFoundException;
+import colfume.domain.notification.dto.request.NotificationRequestDto;
+import colfume.domain.notification.dto.response.NotificationResponseDto;
 import colfume.domain.notification.model.entity.Notification;
 import colfume.domain.notification.model.repository.EmitterRepository;
 import colfume.domain.notification.model.repository.NotificationRepository;
-import colfume.domain.notification.dto.response.NotificationResponseDto;
 import colfume.domain.notification.service.exception.NotificationNotFoundException;
 import colfume.domain.notification.service.exception.NotificationSendFailException;
 import lombok.RequiredArgsConstructor;
@@ -30,26 +30,6 @@ public class NotificationService {
     private final EmitterRepository emitterRepository;
     private final MemberRepository memberRepository;
     private final NotificationConverter converter;
-
-    private final static Long DEFAULT_TIMEOUT = 60 * 60 * 1000L; // 1 hour
-
-    @Transactional
-    public SseEmitter connect(Long userId, String lastEventId) {
-        String emitterId = String.valueOf(userId) + System.currentTimeMillis();
-        SseEmitter emitter = emitterRepository.saveEmitter(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
-
-        emitter.onCompletion(() -> complete(emitterId));
-        emitter.onTimeout(() -> complete(emitterId));
-        sendToClient(emitter, emitterId, "EventStream Created. [user id = " + userId + "]");
-
-        if (lastEventId != null) {
-            Map<String, Object> events = emitterRepository.findEventCachesWithUserId(String.valueOf(userId));
-            events.entrySet().stream()
-                    .filter(entry -> entry.getKey().compareTo(lastEventId) > 0)
-                    .forEach(entry -> sendToClient(emitter, entry.getKey(), entry.getValue()));
-        }
-        return emitter;
-    }
 
     @Transactional
     public Long sendNotification(NotificationRequestDto notificationRequestDto, Long senderId, Long receiverId) {
@@ -94,11 +74,6 @@ public class NotificationService {
     private Notification findNotification(Long notificationId) {
         return notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new NotificationNotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND));
-    }
-
-    private void complete(String emitterId) {
-        log.info("emitter completed");
-        emitterRepository.deleteById(emitterId);
     }
 
     private void sendToClient(SseEmitter emitter, String emitterId, Object data) {

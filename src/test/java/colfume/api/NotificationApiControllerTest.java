@@ -1,11 +1,10 @@
 package colfume.api;
 
-import colfume.domain.notification.dto.request.NotificationRequestDto;
+import colfume.common.dto.TokenResponseDto;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
-import colfume.domain.member.service.MemberService;
-import colfume.common.dto.TokenResponseDto;
-import colfume.domain.notification.model.repository.NotificationRepository;
+import colfume.domain.member.service.AuthService;
+import colfume.domain.notification.dto.request.NotificationRequestDto;
 import colfume.domain.notification.service.NotificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -42,10 +41,7 @@ class NotificationApiControllerTest {
     NotificationService notificationService;
 
     @Autowired
-    NotificationRepository notificationRepository;
-
-    @Autowired
-    MemberService memberService;
+    AuthService authService;
 
     @Autowired
     MemberRepository memberRepository;
@@ -96,7 +92,7 @@ class NotificationApiControllerTest {
             Thread.sleep(10);
         }
 
-        TokenResponseDto token = memberService.login("receiver@gmail.com", "123");
+        TokenResponseDto token = authService.login("receiver@gmail.com", "123");
 
         //when
         ResultActions result = mockMvc.perform(get("/api/notifications")
@@ -129,7 +125,7 @@ class NotificationApiControllerTest {
         memberRepository.save(receiver);
 
         NotificationRequestDto notificationRequestDto = new NotificationRequestDto("test", null);
-        TokenResponseDto token = memberService.login("sender@gmail.com", "123");
+        TokenResponseDto token = authService.login("sender@gmail.com", "123");
 
         //when
         ResultActions result = mockMvc.perform(post("/api/notifications")
