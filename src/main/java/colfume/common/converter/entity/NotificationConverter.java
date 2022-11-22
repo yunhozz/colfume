@@ -1,9 +1,9 @@
 package colfume.common.converter.entity;
 
-import colfume.api.dto.notification.NotificationRequestDto;
+import colfume.domain.notification.dto.request.NotificationRequestDto;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.notification.model.entity.Notification;
-import colfume.domain.notification.service.dto.NotificationResponseDto;
+import colfume.domain.notification.dto.response.NotificationResponseDto;
 import org.springframework.stereotype.Component;
 
 @Component

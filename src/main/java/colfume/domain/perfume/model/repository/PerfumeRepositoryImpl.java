@@ -1,24 +1,24 @@
 package colfume.domain.perfume.model.repository;
 
-import colfume.api.dto.perfume.SortDto;
 import colfume.common.enums.ColorType;
 import colfume.common.enums.SortCondition;
-import colfume.domain.perfume.model.repository.dto.ColorQueryDto;
-import colfume.domain.perfume.model.repository.dto.HashtagQueryDto;
-import colfume.domain.perfume.model.repository.dto.MoodQueryDto;
-import colfume.domain.perfume.model.repository.dto.NoteQueryDto;
-import colfume.domain.perfume.model.repository.dto.PerfumeQueryDto;
-import colfume.domain.perfume.model.repository.dto.PerfumeSearchQueryDto;
-import colfume.domain.perfume.model.repository.dto.PerfumeSimpleQueryDto;
-import colfume.domain.perfume.model.repository.dto.QColorQueryDto;
-import colfume.domain.perfume.model.repository.dto.QHashtagQueryDto;
-import colfume.domain.perfume.model.repository.dto.QMoodQueryDto;
-import colfume.domain.perfume.model.repository.dto.QNoteQueryDto;
-import colfume.domain.perfume.model.repository.dto.QPerfumeQueryDto;
-import colfume.domain.perfume.model.repository.dto.QPerfumeSearchQueryDto;
-import colfume.domain.perfume.model.repository.dto.QPerfumeSimpleQueryDto;
-import colfume.domain.perfume.model.repository.dto.QStyleQueryDto;
-import colfume.domain.perfume.model.repository.dto.StyleQueryDto;
+import colfume.domain.perfume.dto.query.ColorQueryDto;
+import colfume.domain.perfume.dto.query.HashtagQueryDto;
+import colfume.domain.perfume.dto.query.MoodQueryDto;
+import colfume.domain.perfume.dto.query.NoteQueryDto;
+import colfume.domain.perfume.dto.query.PerfumeQueryDto;
+import colfume.domain.perfume.dto.query.PerfumeSearchQueryDto;
+import colfume.domain.perfume.dto.query.PerfumeSimpleQueryDto;
+import colfume.domain.perfume.dto.query.QColorQueryDto;
+import colfume.domain.perfume.dto.query.QHashtagQueryDto;
+import colfume.domain.perfume.dto.query.QMoodQueryDto;
+import colfume.domain.perfume.dto.query.QNoteQueryDto;
+import colfume.domain.perfume.dto.query.QPerfumeQueryDto;
+import colfume.domain.perfume.dto.query.QPerfumeSearchQueryDto;
+import colfume.domain.perfume.dto.query.QPerfumeSimpleQueryDto;
+import colfume.domain.perfume.dto.query.QStyleQueryDto;
+import colfume.domain.perfume.dto.query.StyleQueryDto;
+import colfume.domain.perfume.dto.request.SortRequestDto;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -106,7 +106,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
     }
 
     @Override
-    public Page<PerfumeSimpleQueryDto> sortSimplePerfumePage(SortDto sortDto, Long perfumeId, Long userId, Pageable pageable) {
+    public Page<PerfumeSimpleQueryDto> sortSimplePerfumePage(SortRequestDto sortRequestDto, Long perfumeId, Long userId, Pageable pageable) {
         List<PerfumeSimpleQueryDto> perfumes = queryFactory
                 .select(new QPerfumeSimpleQueryDto(
                         perfume.id,
@@ -123,13 +123,13 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
                 .join(perfume.colors, color)
                 .where(perfumeIdLt(perfumeId))
                 .where(
-                        volumeGoe(sortDto.getVolumeGoe()),
-                        volumeLoe(sortDto.getVolumeLoe()),
-                        priceGoe(sortDto.getPriceGoe()),
-                        priceLoe(sortDto.getPriceLoe()),
-                        byColors(sortDto.getColorTypes())
+                        volumeGoe(sortRequestDto.getVolumeGoe()),
+                        volumeLoe(sortRequestDto.getVolumeLoe()),
+                        priceGoe(sortRequestDto.getPriceGoe()),
+                        priceLoe(sortRequestDto.getPriceLoe()),
+                        byColors(sortRequestDto.getColorTypes())
                 )
-                .orderBy(bySorting(sortDto.getCondition()))
+                .orderBy(bySorting(sortRequestDto.getCondition()))
                 .limit(pageable.getPageSize())
                 .fetch();
 

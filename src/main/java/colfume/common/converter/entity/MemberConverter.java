@@ -1,9 +1,9 @@
 package colfume.common.converter.entity;
 
-import colfume.api.dto.member.MemberRequestDto;
+import colfume.domain.member.dto.request.MemberRequestDto;
 import colfume.common.enums.Role;
 import colfume.domain.member.model.entity.Member;
-import colfume.domain.member.service.dto.MemberResponseDto;
+import colfume.domain.member.dto.response.MemberResponseDto;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 

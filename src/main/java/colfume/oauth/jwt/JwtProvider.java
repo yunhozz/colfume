@@ -1,6 +1,6 @@
 package colfume.oauth.jwt;
 
-import colfume.domain.member.service.dto.TokenResponseDto;
+import colfume.common.dto.TokenResponseDto;
 import colfume.oauth.model.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

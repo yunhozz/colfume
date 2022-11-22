@@ -1,13 +1,13 @@
 package colfume.api;
 
-import colfume.api.dto.member.LoginRequestDto;
-import colfume.api.dto.member.MemberRequestDto;
-import colfume.api.dto.member.PasswordRequestDto;
+import colfume.domain.member.dto.request.LoginRequestDto;
+import colfume.domain.member.dto.request.MemberRequestDto;
+import colfume.domain.member.dto.request.PasswordRequestDto;
 import colfume.oauth.jwt.JwtProvider;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.MemberService;
-import colfume.domain.member.service.dto.TokenResponseDto;
+import colfume.common.dto.TokenResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

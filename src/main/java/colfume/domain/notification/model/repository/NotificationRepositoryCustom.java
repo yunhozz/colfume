@@ -1,6 +1,6 @@
 package colfume.domain.notification.model.repository;
 
-import colfume.domain.notification.model.repository.dto.NotificationQueryDto;
+import colfume.domain.notification.dto.query.NotificationQueryDto;
 
 import java.util.List;
 

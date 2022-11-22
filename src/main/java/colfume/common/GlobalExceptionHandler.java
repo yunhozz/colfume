@@ -1,6 +1,7 @@
 package colfume.common;
 
-import colfume.api.dto.Response;
+import colfume.common.dto.ErrorResponseDto;
+import colfume.common.dto.Response;
 import colfume.common.enums.ErrorCode;
 import colfume.domain.bookmark.service.exception.BookmarkAlreadyCreatedException;
 import colfume.domain.bookmark.service.exception.BookmarkNotFoundException;
@@ -33,7 +34,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.ArrayList;
 import java.util.List;
 
-import static colfume.common.ErrorResponseDto.NotValidResponseDto;
+import static colfume.common.dto.ErrorResponseDto.NotValidResponseDto;
 
 @Slf4j
 @RestControllerAdvice

@@ -1,7 +1,7 @@
 package colfume.common.converter.entity;
 
 import colfume.domain.bookmark.model.entity.Bookmark;
-import colfume.domain.bookmark.service.dto.BookmarkResponseDto;
+import colfume.domain.bookmark.dto.response.BookmarkResponseDto;
 import org.springframework.stereotype.Component;
 
 @Component

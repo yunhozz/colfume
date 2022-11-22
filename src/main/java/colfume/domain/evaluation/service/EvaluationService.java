@@ -1,6 +1,6 @@
 package colfume.domain.evaluation.service;
 
-import colfume.api.dto.evaluation.EvaluationRequestDto;
+import colfume.domain.evaluation.dto.request.EvaluationRequestDto;
 import colfume.common.converter.entity.EvaluationConverter;
 import colfume.common.enums.ErrorCode;
 import colfume.domain.evaluation.model.entity.Evaluation;

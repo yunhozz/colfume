@@ -3,7 +3,7 @@ package colfume.domain.perfume.model.repository;
 import colfume.domain.perfume.model.entity.Color;
 import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Perfume;
-import colfume.domain.perfume.model.repository.dto.PerfumeSimpleQueryDto;
+import colfume.domain.perfume.dto.query.PerfumeSimpleQueryDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

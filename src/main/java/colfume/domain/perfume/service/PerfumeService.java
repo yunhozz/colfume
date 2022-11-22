@@ -1,6 +1,6 @@
 package colfume.domain.perfume.service;
 
-import colfume.api.dto.perfume.PerfumeRequestDto;
+import colfume.domain.perfume.dto.request.PerfumeRequestDto;
 import colfume.common.converter.entity.PerfumeConverter;
 import colfume.common.enums.ErrorCode;
 import colfume.domain.perfume.model.entity.Perfume;

@@ -1,6 +1,6 @@
 package colfume.domain.evaluation.model.repository;
 
-import colfume.domain.evaluation.model.repository.dto.EvaluationQueryDto;
+import colfume.domain.evaluation.dto.query.EvaluationQueryDto;
 
 import java.util.List;
 

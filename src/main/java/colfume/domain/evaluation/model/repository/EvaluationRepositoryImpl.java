@@ -1,9 +1,9 @@
 package colfume.domain.evaluation.model.repository;
 
-import colfume.domain.evaluation.model.repository.dto.CommentQueryDto;
-import colfume.domain.evaluation.model.repository.dto.EvaluationQueryDto;
-import colfume.domain.evaluation.model.repository.dto.QCommentQueryDto;
-import colfume.domain.evaluation.model.repository.dto.QEvaluationQueryDto;
+import colfume.domain.evaluation.dto.query.CommentQueryDto;
+import colfume.domain.evaluation.dto.query.EvaluationQueryDto;
+import colfume.domain.evaluation.dto.query.QCommentQueryDto;
+import colfume.domain.evaluation.dto.query.QEvaluationQueryDto;
 import colfume.domain.member.model.entity.QMember;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

@@ -1,10 +1,10 @@
 package colfume.api;
 
-import colfume.api.dto.notification.NotificationRequestDto;
+import colfume.domain.notification.dto.request.NotificationRequestDto;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.MemberService;
-import colfume.domain.member.service.dto.TokenResponseDto;
+import colfume.common.dto.TokenResponseDto;
 import colfume.domain.notification.model.repository.NotificationRepository;
 import colfume.domain.notification.service.NotificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;

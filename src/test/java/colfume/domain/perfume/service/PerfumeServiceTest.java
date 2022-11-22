@@ -1,6 +1,6 @@
 package colfume.domain.perfume.service;
 
-import colfume.api.dto.perfume.PerfumeRequestDto;
+import colfume.domain.perfume.dto.request.PerfumeRequestDto;
 import colfume.common.enums.ColorType;
 import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Perfume;

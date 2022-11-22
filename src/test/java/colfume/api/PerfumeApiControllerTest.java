@@ -1,7 +1,7 @@
 package colfume.api;
 
-import colfume.api.dto.perfume.PerfumeRequestDto;
-import colfume.api.dto.perfume.UpdateInfoRequestDto;
+import colfume.domain.perfume.dto.request.PerfumeRequestDto;
+import colfume.domain.perfume.dto.request.UpdateInfoRequestDto;
 import colfume.common.enums.ColorType;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
 import colfume.domain.perfume.service.PerfumeService;

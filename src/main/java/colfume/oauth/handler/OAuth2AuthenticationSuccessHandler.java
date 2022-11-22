@@ -1,7 +1,7 @@
 package colfume.oauth.handler;
 
 import colfume.common.util.CookieUtils;
-import colfume.domain.member.service.dto.TokenResponseDto;
+import colfume.common.dto.TokenResponseDto;
 import colfume.oauth.model.UserPrincipal;
 import colfume.oauth.jwt.JwtProvider;
 import colfume.oauth.model.UserRefreshToken;

@@ -1,6 +1,6 @@
 package colfume.domain.notification.service;
 
-import colfume.api.dto.notification.NotificationRequestDto;
+import colfume.domain.notification.dto.request.NotificationRequestDto;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.notification.model.entity.Notification;

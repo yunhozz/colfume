@@ -1,15 +1,15 @@
 package colfume.common.converter.entity;
 
-import colfume.api.dto.perfume.PerfumeRequestDto;
+import colfume.domain.perfume.dto.request.PerfumeRequestDto;
 import colfume.domain.perfume.model.entity.Color;
 import colfume.domain.perfume.model.entity.Hashtag;
 import colfume.domain.perfume.model.entity.Mood;
 import colfume.domain.perfume.model.entity.Note;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.entity.Style;
-import colfume.domain.perfume.service.dto.ColorResponseDto;
-import colfume.domain.perfume.service.dto.HashtagResponseDto;
-import colfume.domain.perfume.service.dto.PerfumeResponseDto;
+import colfume.domain.perfume.dto.response.ColorResponseDto;
+import colfume.domain.perfume.dto.response.HashtagResponseDto;
+import colfume.domain.perfume.dto.response.PerfumeResponseDto;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
