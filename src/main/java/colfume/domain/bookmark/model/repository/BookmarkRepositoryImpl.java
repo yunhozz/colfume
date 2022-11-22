@@ -1,7 +1,7 @@
 package colfume.domain.bookmark.model.repository;
 
-import colfume.domain.bookmark.model.repository.dto.BookmarkQueryDto;
-import colfume.domain.bookmark.model.repository.dto.QBookmarkQueryDto;
+import colfume.domain.bookmark.dto.query.BookmarkQueryDto;
+import colfume.domain.bookmark.dto.query.QBookmarkQueryDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
