@@ -1,11 +1,11 @@
 package colfume.domain.chat.service;
 
 import colfume.common.enums.ErrorCode;
+import colfume.domain.chat.dto.ChatroomResponseDto;
 import colfume.domain.chat.model.entity.Chat;
 import colfume.domain.chat.model.entity.Chatroom;
 import colfume.domain.chat.model.repository.ChatRepository;
 import colfume.domain.chat.model.repository.ChatroomRepository;
-import colfume.domain.chat.dto.ChatroomResponseDto;
 import colfume.domain.chat.service.exception.ChatroomNotFoundException;
 import colfume.domain.chat.service.exception.ChatroomPermissionException;
 import colfume.domain.member.model.entity.Member;

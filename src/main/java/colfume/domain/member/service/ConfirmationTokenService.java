@@ -1,8 +1,8 @@
 package colfume.domain.member.service;
 
+import colfume.common.enums.ErrorCode;
 import colfume.domain.member.model.entity.ConfirmationToken;
 import colfume.domain.member.model.repository.ConfirmationTokenRepository;
-import colfume.common.enums.ErrorCode;
 import colfume.domain.member.service.exception.ConfirmationTokenNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

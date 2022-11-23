@@ -1,8 +1,8 @@
 package colfume.domain.member.service;
 
 import colfume.common.enums.ErrorCode;
-import colfume.domain.member.dto.request.MemberRequestDto;
 import colfume.domain.member.dto.MemberResponseDto;
+import colfume.domain.member.dto.request.MemberRequestDto;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.exception.EmailDuplicateException;
