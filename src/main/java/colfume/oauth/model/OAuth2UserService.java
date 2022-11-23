@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -39,18 +38,18 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private Member saveOrUpdate(OAuth2Provider oAuth2Provider) {
-        Optional<Member> optionalMember = memberRepository.findByEmail(oAuth2Provider.getEmail());
+        final Member[] member = {null};
+        memberRepository.findByEmail(oAuth2Provider.getEmail())
+                .ifPresentOrElse(m -> m.update(oAuth2Provider.getEmail(), oAuth2Provider.getName(), oAuth2Provider.getImageUrl()), () -> {
+                    member[0] = Member.builder()
+                            .email(oAuth2Provider.getEmail())
+                            .name(oAuth2Provider.getName())
+                            .imageUrl(oAuth2Provider.getImageUrl())
+                            .role(Role.USER)
+                            .build();
+                    memberRepository.save(member[0]);
+                });
 
-        if (optionalMember.isEmpty()) {
-            Member member = Member.builder()
-                    .email(oAuth2Provider.getEmail())
-                    .name(oAuth2Provider.getName())
-                    .imageUrl(oAuth2Provider.getImageUrl())
-                    .role(Role.USER)
-                    .build();
-
-            return memberRepository.save(member);
-        }
-        return optionalMember.get().update(oAuth2Provider.getEmail(), oAuth2Provider.getName(), oAuth2Provider.getImageUrl());
+        return member[0];
     }
 }
