@@ -9,7 +9,6 @@ import colfume.domain.member.dto.request.LoginRequestDto;
 import colfume.domain.member.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +23,7 @@ import java.util.Optional;
 import static colfume.oauth.handler.OAuth2AuthorizationRequestRepository.REFRESH_TOKEN;
 
 @RestController
-@RequestMapping("/api/members")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthApiController {
 
@@ -38,7 +37,7 @@ public class AuthApiController {
         return Response.success(tokenResponseDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/token/reissue")
+    @PostMapping("/token")
     public Response tokenReissue(HttpServletRequest request, HttpServletResponse response) {
         Optional<Cookie> cookie = CookieUtils.getCookie(request, REFRESH_TOKEN);
 
@@ -46,6 +45,7 @@ public class AuthApiController {
             ErrorResponseDto error = new ErrorResponseDto(ErrorCode.COOKIE_NOT_FOUND);
             return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
         }
+
         String refreshToken = cookie.get().getValue();
         TokenResponseDto tokenResponseDto = authService.tokenReissue(refreshToken);
         addTokenOnResponseAndCookie(request, response, tokenResponseDto);
