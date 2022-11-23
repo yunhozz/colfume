@@ -19,7 +19,7 @@ public class MemberConverter implements EntityConverter<Member, MemberRequestDto
                 .password(encoder.encode(memberRequestDto.getPassword()))
                 .name(memberRequestDto.getName())
                 .imageUrl(memberRequestDto.getImageUrl())
-                .role(Role.USER)
+                .role(Role.GUEST)
                 .build();
     }
 

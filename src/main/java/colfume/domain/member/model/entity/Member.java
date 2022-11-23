@@ -82,5 +82,6 @@ public class Member extends BaseTime {
 
     public void emailVerify() {
         isEmailVerified = true;
+        role = Role.USER;
     }
 }

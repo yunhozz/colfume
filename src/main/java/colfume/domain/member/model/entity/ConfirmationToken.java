@@ -40,7 +40,8 @@ public class ConfirmationToken extends BaseTime {
         this.expirationDate = expirationDate;
     }
 
-    public void useToken() {
+    public void useTokenAndVerify() {
         isExpired = true;
+        user.emailVerify();
     }
 }
