@@ -1,7 +1,6 @@
 package colfume.oauth.model;
 
 import colfume.domain.member.model.entity.Member;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,7 +10,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
-@Getter
 public class UserPrincipal implements UserDetails, OAuth2User {
 
     private final Long id;
@@ -53,6 +51,11 @@ public class UserPrincipal implements UserDetails, OAuth2User {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
