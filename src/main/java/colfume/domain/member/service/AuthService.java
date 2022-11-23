@@ -33,10 +33,10 @@ public class AuthService {
             throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
         }
 
-        TokenResponseDto tokenDto = jwtProvider.createTokenDto(email, member.getRole().getAuthority());
-        userRefreshTokenRepository.save(new UserRefreshToken(member.getId(), tokenDto.getRefreshToken()));
+        TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(email, member.getRole().getAuthority());
+        userRefreshTokenRepository.save(new UserRefreshToken(member.getId(), tokenResponseDto.getRefreshToken()));
 
-        return tokenDto;
+        return tokenResponseDto;
     }
 
     // jwt token 재발급
