@@ -1,4 +1,4 @@
-package colfume.domain.chat.dto.response;
+package colfume.domain.chat.dto;
 
 import colfume.domain.chat.model.entity.Chatroom;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package colfume.domain.bookmark.dto.query;
+package colfume.domain.bookmark.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;

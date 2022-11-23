@@ -1,7 +1,7 @@
 package colfume.domain.bookmark.service;
 
 import colfume.common.enums.ErrorCode;
-import colfume.domain.bookmark.model.entity.Bookmark;
+import colfume.domain.bookmark.model.Bookmark;
 import colfume.domain.bookmark.model.repository.BookmarkRepository;
 import colfume.domain.bookmark.service.exception.BookmarkAlreadyCreatedException;
 import colfume.domain.bookmark.service.exception.BookmarkNotFoundException;
@@ -9,7 +9,7 @@ import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
-import colfume.domain.perfume.service.exception.PerfumeNotFoundException;
+import colfume.domain.perfume.service.PerfumeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

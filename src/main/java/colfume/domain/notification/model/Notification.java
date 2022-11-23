@@ -1,4 +1,4 @@
-package colfume.domain.notification.model.entity;
+package colfume.domain.notification.model;
 
 import colfume.domain.BaseTime;
 import colfume.domain.member.model.entity.Member;

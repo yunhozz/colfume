@@ -1,9 +1,9 @@
 package colfume.domain.notification.service;
 
-import colfume.domain.notification.dto.request.NotificationRequestDto;
+import colfume.domain.notification.dto.NotificationRequestDto;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
-import colfume.domain.notification.model.entity.Notification;
+import colfume.domain.notification.model.Notification;
 import colfume.domain.notification.model.repository.NotificationRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

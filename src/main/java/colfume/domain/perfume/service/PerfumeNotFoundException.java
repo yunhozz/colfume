@@ -1,4 +1,4 @@
-package colfume.domain.perfume.service.exception;
+package colfume.domain.perfume.service;
 
 import colfume.common.enums.ErrorCode;
 import lombok.Getter;

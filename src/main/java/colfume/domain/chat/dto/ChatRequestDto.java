@@ -1,4 +1,4 @@
-package colfume.domain.chat.dto.request;
+package colfume.domain.chat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

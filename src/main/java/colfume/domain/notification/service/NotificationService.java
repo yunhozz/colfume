@@ -1,13 +1,12 @@
 package colfume.domain.notification.service;
 
-import colfume.common.converter.entity.NotificationConverter;
 import colfume.common.enums.ErrorCode;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.exception.MemberNotFoundException;
-import colfume.domain.notification.dto.request.NotificationRequestDto;
-import colfume.domain.notification.dto.response.NotificationResponseDto;
-import colfume.domain.notification.model.entity.Notification;
+import colfume.domain.notification.dto.NotificationRequestDto;
+import colfume.domain.notification.dto.NotificationResponseDto;
+import colfume.domain.notification.model.Notification;
 import colfume.domain.notification.model.repository.EmitterRepository;
 import colfume.domain.notification.model.repository.NotificationRepository;
 import colfume.domain.notification.service.exception.NotificationNotFoundException;

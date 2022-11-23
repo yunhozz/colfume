@@ -1,6 +1,5 @@
 package colfume.domain.perfume.model.entity;
 
-import colfume.common.converter.enums.ColorTypeConverter;
 import colfume.common.enums.ColorType;
 import colfume.domain.BaseTime;
 import lombok.AccessLevel;

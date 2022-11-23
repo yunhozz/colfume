@@ -1,4 +1,4 @@
-package colfume.domain.member.dto.response;
+package colfume.domain.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

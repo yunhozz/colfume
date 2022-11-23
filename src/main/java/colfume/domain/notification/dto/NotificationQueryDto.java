@@ -1,4 +1,4 @@
-package colfume.domain.notification.dto.query;
+package colfume.domain.notification.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;

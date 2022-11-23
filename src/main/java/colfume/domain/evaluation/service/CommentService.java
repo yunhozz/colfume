@@ -1,7 +1,7 @@
 package colfume.domain.evaluation.service;
 
 import colfume.domain.evaluation.dto.request.CommentRequestDto;
-import colfume.common.converter.entity.CommentConverter;
+import colfume.domain.evaluation.service.converter.CommentConverter;
 import colfume.common.enums.ErrorCode;
 import colfume.domain.evaluation.model.entity.Comment;
 import colfume.domain.evaluation.model.entity.Evaluation;

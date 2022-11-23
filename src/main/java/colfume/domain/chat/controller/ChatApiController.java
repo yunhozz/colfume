@@ -1,6 +1,6 @@
 package colfume.domain.chat.controller;
 
-import colfume.domain.chat.dto.request.ChatRequestDto;
+import colfume.domain.chat.dto.ChatRequestDto;
 import colfume.oauth.model.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;

@@ -1,6 +1,6 @@
 package colfume.domain.bookmark.model.repository;
 
-import colfume.domain.bookmark.model.entity.Bookmark;
+import colfume.domain.bookmark.model.Bookmark;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.perfume.model.entity.Perfume;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package colfume.domain.bookmark.model.entity;
+package colfume.domain.bookmark.model;
 
 import colfume.domain.BaseTime;
 import colfume.domain.member.model.entity.Member;

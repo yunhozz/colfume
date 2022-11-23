@@ -1,7 +1,7 @@
 package colfume.domain.notification.controller;
 
 import colfume.common.dto.Response;
-import colfume.domain.notification.dto.request.NotificationRequestDto;
+import colfume.domain.notification.dto.NotificationRequestDto;
 import colfume.domain.notification.model.repository.NotificationRepository;
 import colfume.domain.notification.service.NotificationService;
 import colfume.oauth.model.UserPrincipal;

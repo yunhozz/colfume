@@ -1,20 +1,15 @@
-package colfume.domain.bookmark.dto.response;
+package colfume.domain.bookmark.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookmarkResponseDto {
+public class BookmarkRequestDto {
 
-    private Long id;
     private Long userId;
     private Long perfumeId;
     private String redirectUrl;
-    private Boolean isDeleted;
-    private LocalDateTime createdDate;
 }

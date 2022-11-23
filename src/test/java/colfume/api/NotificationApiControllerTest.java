@@ -4,7 +4,7 @@ import colfume.common.dto.TokenResponseDto;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.AuthService;
-import colfume.domain.notification.dto.request.NotificationRequestDto;
+import colfume.domain.notification.dto.NotificationRequestDto;
 import colfume.domain.notification.service.NotificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;

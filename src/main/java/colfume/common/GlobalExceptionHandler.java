@@ -23,7 +23,7 @@ import colfume.domain.member.service.exception.RefreshTokenNotCorrespondExceptio
 import colfume.domain.member.service.exception.RefreshTokenNotFoundException;
 import colfume.domain.notification.service.exception.NotificationNotFoundException;
 import colfume.domain.notification.service.exception.NotificationSendFailException;
-import colfume.domain.perfume.service.exception.PerfumeNotFoundException;
+import colfume.domain.perfume.service.PerfumeNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;

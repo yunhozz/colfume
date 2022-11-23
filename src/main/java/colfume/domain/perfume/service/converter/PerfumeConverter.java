@@ -1,5 +1,6 @@
-package colfume.common.converter.entity;
+package colfume.domain.perfume.service.converter;
 
+import colfume.common.EntityConverter;
 import colfume.domain.perfume.dto.request.PerfumeRequestDto;
 import colfume.domain.perfume.model.entity.Color;
 import colfume.domain.perfume.model.entity.Hashtag;

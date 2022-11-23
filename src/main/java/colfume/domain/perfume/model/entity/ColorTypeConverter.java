@@ -1,4 +1,4 @@
-package colfume.common.converter.enums;
+package colfume.domain.perfume.model.entity;
 
 import colfume.common.enums.ColorType;
 

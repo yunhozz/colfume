@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static colfume.domain.bookmark.model.entity.QBookmark.bookmark;
+import static colfume.domain.bookmark.model.QBookmark.bookmark;
 import static colfume.domain.member.model.entity.QMember.member;
 import static colfume.domain.perfume.model.entity.QColor.color;
 import static colfume.domain.perfume.model.entity.QHashtag.hashtag;

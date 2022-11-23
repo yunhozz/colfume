@@ -1,4 +1,4 @@
-package colfume.common.converter.entity;
+package colfume.common;
 
 public interface EntityConverter<E, RQ, RS> {
 

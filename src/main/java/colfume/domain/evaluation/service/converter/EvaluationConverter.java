@@ -1,8 +1,9 @@
-package colfume.common.converter.entity;
+package colfume.domain.evaluation.service.converter;
 
+import colfume.common.EntityConverter;
 import colfume.domain.evaluation.dto.request.EvaluationRequestDto;
-import colfume.domain.evaluation.model.entity.Evaluation;
 import colfume.domain.evaluation.dto.response.EvaluationResponseDto;
+import colfume.domain.evaluation.model.entity.Evaluation;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.perfume.model.entity.Perfume;
 import org.springframework.stereotype.Component;

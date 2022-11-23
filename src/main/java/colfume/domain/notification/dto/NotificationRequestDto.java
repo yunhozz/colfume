@@ -1,4 +1,4 @@
-package colfume.domain.notification.dto.request;
+package colfume.domain.notification.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
