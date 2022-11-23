@@ -5,7 +5,6 @@ import colfume.common.enums.ErrorCode;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.exception.EmailNotFoundException;
-import colfume.domain.member.service.exception.EmailNotVerifiedException;
 import colfume.domain.member.service.exception.PasswordMismatchException;
 import colfume.domain.member.service.exception.RefreshTokenNotCorrespondException;
 import colfume.domain.member.service.exception.RefreshTokenNotFoundException;
@@ -33,9 +32,7 @@ public class AuthService {
         if (member.isPasswordNotEqualsWith(password)) {
             throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
         }
-        if (member.isEmailNotVerified()) {
-            throw new EmailNotVerifiedException(ErrorCode.EMAIL_NOT_VERIFIED);
-        }
+
         TokenResponseDto tokenDto = jwtProvider.createTokenDto(email, member.getRole().getAuthority());
         userRefreshTokenRepository.save(new UserRefreshToken(member.getId(), tokenDto.getRefreshToken()));
 
@@ -53,6 +50,7 @@ public class AuthService {
         if (userRefreshToken.isRefreshTokenNotEqualsWith(refreshToken)) {
             throw new RefreshTokenNotCorrespondException(ErrorCode.REFRESH_TOKEN_NOT_CORRESPOND);
         }
+
         TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(userPrincipal.getEmail(), userPrincipal.getRole());
         userRefreshToken.updateRefreshToken(tokenResponseDto.getRefreshToken());
 
