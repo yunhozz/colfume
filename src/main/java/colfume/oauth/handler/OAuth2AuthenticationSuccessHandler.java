@@ -1,9 +1,9 @@
 package colfume.oauth.handler;
 
-import colfume.common.util.CookieUtils;
 import colfume.common.dto.TokenResponseDto;
-import colfume.oauth.model.UserPrincipal;
+import colfume.common.util.CookieUtils;
 import colfume.oauth.jwt.JwtProvider;
+import colfume.oauth.model.UserPrincipal;
 import colfume.oauth.model.UserRefreshToken;
 import colfume.oauth.model.UserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Optional;
 
 import static colfume.oauth.handler.OAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 import static colfume.oauth.handler.OAuth2AuthorizationRequestRepository.REFRESH_TOKEN;
@@ -48,14 +47,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        final String[] targetUri = {null};
-        CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+        String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
-                .ifPresentOrElse(redirectUri -> {
-                    throw new IllegalStateException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
-                }, () -> {
-                    targetUri[0] = getDefaultTargetUrl();
-                });
+                .orElse(getDefaultTargetUrl());
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(userPrincipal.getEmail(), userPrincipal.getRole());
@@ -67,7 +61,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         HttpSession session = request.getSession();
         session.setAttribute("token", tokenResponseDto.getAccessToken());
 
-        return UriComponentsBuilder.fromUriString(targetUri[0])
+        return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", tokenResponseDto.getAccessToken())
                 .build().toUriString();
     }
@@ -79,16 +73,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Transactional
     private void saveOrUpdateRefreshToken(UserPrincipal userPrincipal, TokenResponseDto tokenResponseDto) {
-        Optional<UserRefreshToken> optionalUserRefreshToken = userRefreshTokenRepository.findByUserId(userPrincipal.getId());
-
-        if (optionalUserRefreshToken.isEmpty()) {
-            UserRefreshToken userRefreshToken = new UserRefreshToken(userPrincipal.getId(), tokenResponseDto.getRefreshToken());
-            userRefreshTokenRepository.save(userRefreshToken);
-
-        } else {
-            UserRefreshToken userRefreshToken = optionalUserRefreshToken.get();
-            userRefreshToken.updateRefreshToken(tokenResponseDto.getRefreshToken());
-        }
+        userRefreshTokenRepository.findByUserId(userPrincipal.getId())
+                .ifPresentOrElse(userRefreshToken -> userRefreshToken.updateRefreshToken(tokenResponseDto.getRefreshToken()), () -> {
+                    UserRefreshToken userRefreshToken = new UserRefreshToken(userPrincipal.getId(), tokenResponseDto.getRefreshToken());
+                    userRefreshTokenRepository.save(userRefreshToken);
+                });
     }
 
     private void addTokenOnResponseAndCookie(HttpServletRequest request, HttpServletResponse response, TokenResponseDto tokenResponseDto) {
