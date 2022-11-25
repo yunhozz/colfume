@@ -8,8 +8,9 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorCode {
 
     // global
-    NOT_FOUND(404, "PAGE NOT FOUND"),
-    INTER_SERVER_ERROR(500, "INTER SERVER ERROR"),
+    INTER_SERVER_ERROR(500, "내부 서버 에러가 발생했습니다."),
+    FORBIDDEN(403, "접근이 거부된 사용자입니다."),
+    UNAUTHORIZED(401, "사용자에 대한 권한이 없습니다."),
     NOT_VALID(400, "입력값이 올바르지 않습니다."),
     ALREADY_DELETED(400, "이미 삭제된 데이터입니다."),
     NOT_AUTHENTICATED(401, "수정 또는 삭제 권한이 없습니다."),

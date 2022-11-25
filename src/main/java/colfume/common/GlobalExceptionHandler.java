@@ -40,14 +40,6 @@ import static colfume.common.dto.ErrorResponseDto.NotValidResponseDto;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public Response handleException(Exception e) {
-        log.error("handleException", e);
-        ErrorResponseDto error = new ErrorResponseDto(ErrorCode.INTER_SERVER_ERROR);
-
-        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
-    }
-
     @ExceptionHandler(RuntimeException.class)
     public Response handleRuntimeException(RuntimeException e) {
         log.error("handleRuntimeException", e);
@@ -59,7 +51,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public Response handleIllegalStateException(IllegalStateException e) {
         log.error("handleIllegalStateException", e);
-        return Response.failure(-1000, e.getMessage(), HttpStatus.BAD_REQUEST);
+        ErrorResponseDto error = new ErrorResponseDto(ErrorCode.NOT_VALID);
+
+        return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
