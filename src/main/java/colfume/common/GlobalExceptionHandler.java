@@ -25,27 +25,19 @@ public class GlobalExceptionHandler {
     public Response handleRuntimeException(RuntimeException e) {
         // Security 와 관련된 Exception 발생 이전에 RuntimeException 이 먼저 발생하므로 제외
         if (e instanceof AccessDeniedException) {
-            log.error("handleAccessDeniedException", e);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(ErrorCode.FORBIDDEN);
-            return Response.failure(errorResponseDto, HttpStatus.valueOf(errorResponseDto.getStatus()));
+            return failure(e, ErrorCode.FORBIDDEN);
         }
 
         if (e instanceof AuthenticationException) {
-            log.error("handleAuthenticationException", e);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(ErrorCode.UNAUTHORIZED);
-            return Response.failure(errorResponseDto, HttpStatus.valueOf(errorResponseDto.getStatus()));
+            return failure(e, ErrorCode.UNAUTHORIZED);
         }
 
-        log.error("handleRuntimeException", e);
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(ErrorCode.INTER_SERVER_ERROR);
-        return Response.failure(errorResponseDto, HttpStatus.valueOf(errorResponseDto.getStatus()));
+        return failure(e, ErrorCode.INTER_SERVER_ERROR);
     }
 
     @ExceptionHandler(IllegalStateException.class)
     public Response handleIllegalStateException(IllegalStateException e) {
-        log.error("handleIllegalStateException", e);
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(ErrorCode.NOT_VALID);
-        return Response.failure(errorResponseDto, HttpStatus.valueOf(errorResponseDto.getStatus()));
+        return failure(e, ErrorCode.NOT_VALID);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -72,8 +64,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ColfumeException.class)
     public Response handleColfumeException(ColfumeException e) {
-        log.error("handleColfumeException", e);
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getErrorCode());
+        return failure(e, e.getErrorCode());
+    }
+
+    private Response failure(Exception e, ErrorCode errorCode) {
+        log.error(String.format("handle%s", e.getClass().getSimpleName()));
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(errorCode);
         return Response.failure(errorResponseDto, HttpStatus.valueOf(errorResponseDto.getStatus()));
     }
 }
