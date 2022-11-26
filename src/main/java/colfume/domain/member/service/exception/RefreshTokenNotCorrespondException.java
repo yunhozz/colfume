@@ -1,14 +1,11 @@
 package colfume.domain.member.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class RefreshTokenNotCorrespondException extends RuntimeException {
+public class RefreshTokenNotCorrespondException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public RefreshTokenNotCorrespondException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public RefreshTokenNotCorrespondException() {
+        super(ErrorCode.REFRESH_TOKEN_NOT_CORRESPOND);
     }
 }

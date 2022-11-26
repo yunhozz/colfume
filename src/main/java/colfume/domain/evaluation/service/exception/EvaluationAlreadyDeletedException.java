@@ -1,14 +1,11 @@
 package colfume.domain.evaluation.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class EvaluationAlreadyDeletedException extends RuntimeException {
+public class EvaluationAlreadyDeletedException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public EvaluationAlreadyDeletedException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public EvaluationAlreadyDeletedException() {
+        super(ErrorCode.EVALUATION_ALREADY_DELETED);
     }
 }

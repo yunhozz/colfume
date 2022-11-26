@@ -1,6 +1,5 @@
 package colfume.domain.chat.service;
 
-import colfume.common.enums.ErrorCode;
 import colfume.domain.chat.dto.ChatroomResponseDto;
 import colfume.domain.chat.model.entity.Chat;
 import colfume.domain.chat.model.entity.Chatroom;
@@ -36,18 +35,22 @@ public class ChatroomService {
     @Transactional
     public void updateTitle(Long chatroomId, Long userId, String title) {
         Chatroom chatroom = findChatroom(chatroomId);
+
         if (!chatroom.getMember().getId().equals(userId)) {
-            throw new ChatroomPermissionException(ErrorCode.CHATROOM_NOT_PERMISSION);
+            throw new ChatroomPermissionException();
         }
+
         chatroom.updateTitle(title);
     }
 
     @Transactional
     public void deleteChatroom(Long chatroomId, Long userId) {
         Chatroom chatroom = findChatroom(chatroomId);
+
         if (!chatroom.getMember().getId().equals(userId)) {
-            throw new ChatroomPermissionException(ErrorCode.CHATROOM_NOT_PERMISSION);
+            throw new ChatroomPermissionException();
         }
+
         List<Chat> chats = chatRepository.findByChatroom(chatroom);
         chats.forEach(chatRepository::delete);
         chatroomRepository.delete(chatroom);
@@ -67,6 +70,6 @@ public class ChatroomService {
 
     private Chatroom findChatroom(Long chatroomId) {
         return chatroomRepository.findById(chatroomId)
-                .orElseThrow(() -> new ChatroomNotFoundException(ErrorCode.CHATROOM_NOT_FOUND));
+                .orElseThrow(ChatroomNotFoundException::new);
     }
 }

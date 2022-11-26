@@ -1,14 +1,11 @@
 package colfume.domain.member.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class MemberNotFoundException extends RuntimeException {
+public class MemberNotFoundException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public MemberNotFoundException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public MemberNotFoundException() {
+        super(ErrorCode.MEMBER_NOT_FOUND);
     }
 }

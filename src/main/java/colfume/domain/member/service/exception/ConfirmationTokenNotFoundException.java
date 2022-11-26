@@ -1,14 +1,11 @@
 package colfume.domain.member.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class ConfirmationTokenNotFoundException extends RuntimeException {
+public class ConfirmationTokenNotFoundException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public ConfirmationTokenNotFoundException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public ConfirmationTokenNotFoundException() {
+        super(ErrorCode.CONFIRMATION_TOKEN_NOT_FOUND);
     }
 }

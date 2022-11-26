@@ -1,6 +1,5 @@
 package colfume.domain.evaluation.service;
 
-import colfume.common.enums.ErrorCode;
 import colfume.domain.evaluation.dto.request.EvaluationRequestDto;
 import colfume.domain.evaluation.model.entity.Evaluation;
 import colfume.domain.evaluation.model.repository.EvaluationRepository;
@@ -33,8 +32,7 @@ public class EvaluationService {
     @Transactional
     public Long createEvaluation(EvaluationRequestDto evaluationRequestDto, Long writerId, Long perfumeId) {
         Member writer = memberRepository.getReferenceById(writerId);
-        Perfume perfume = perfumeRepository.findById(perfumeId)
-                .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
+        Perfume perfume = perfumeRepository.findById(perfumeId).orElseThrow(PerfumeNotFoundException::new);
         final Long[] id = {null};
 
         evaluationRepository.findByWriterAndPerfume(writer, perfume)
@@ -42,7 +40,7 @@ public class EvaluationService {
                     if (evaluation.isDeleted()) {
                         id[0] = saveEvaluation(writer, perfume, evaluationRequestDto);
 
-                    } else throw new EvaluationAlreadyExistException(ErrorCode.EVALUATION_ALREADY_EXIST);
+                    } else throw new EvaluationAlreadyExistException();
 
                 }, () -> {
                     id[0] = saveEvaluation(writer, perfume, evaluationRequestDto);
@@ -88,10 +86,10 @@ public class EvaluationService {
 
     private Evaluation validateAuthorization(Long evaluationId, Long userId) {
         Evaluation evaluation = evaluationRepository.findWithPerfumeByIdAndUserId(evaluationId, userId)
-                .orElseThrow(() -> new CrudNotAuthenticationException(ErrorCode.NOT_AUTHENTICATED));
+                .orElseThrow(CrudNotAuthenticationException::new);
 
         if (evaluation.isDeleted()) {
-            throw new EvaluationAlreadyDeletedException(ErrorCode.EVALUATION_ALREADY_DELETED);
+            throw new EvaluationAlreadyDeletedException();
         }
 
         return evaluation;

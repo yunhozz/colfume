@@ -1,14 +1,11 @@
 package colfume.domain.member.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class PasswordMismatchException extends RuntimeException {
+public class PasswordMismatchException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public PasswordMismatchException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public PasswordMismatchException() {
+        super(ErrorCode.PASSWORD_MISMATCH);
     }
 }

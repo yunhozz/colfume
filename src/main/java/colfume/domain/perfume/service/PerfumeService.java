@@ -1,6 +1,5 @@
 package colfume.domain.perfume.service;
 
-import colfume.common.enums.ErrorCode;
 import colfume.domain.perfume.dto.request.PerfumeRequestDto;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
@@ -42,6 +41,6 @@ public class PerfumeService {
 
     private Perfume findPerfume(Long perfumeId) {
         return perfumeRepository.findById(perfumeId)
-                .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
+                .orElseThrow(PerfumeNotFoundException::new);
     }
 }

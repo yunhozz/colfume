@@ -1,6 +1,5 @@
 package colfume.domain.member.service;
 
-import colfume.common.enums.ErrorCode;
 import colfume.domain.member.model.entity.ConfirmationToken;
 import colfume.domain.member.model.entity.MailCode;
 import colfume.domain.member.model.repository.ConfirmationTokenRepository;
@@ -56,10 +55,10 @@ public class MailService {
     @Transactional
     public void confirmCode(String email, String code) {
         MailCode mailCode = mailCodeRepository.findByEmail(email)
-                .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
+                .orElseThrow(EmailNotFoundException::new);
 
         if (mailCode.isCodeNotEqualsWith(code)) {
-            throw new EmailNotVerifiedException(ErrorCode.EMAIL_NOT_VERIFIED);
+            throw new EmailNotVerifiedException();
         }
 
         mailCode.verify(); // 코드 검증 성공
@@ -136,6 +135,6 @@ public class MailService {
 
     private ConfirmationToken findByIdAndExpirationDateAfterAndExpired(Long confirmationTokenId) {
         return confirmationTokenRepository.findByIdAndExpirationDateAfterAndIsExpired(confirmationTokenId, LocalDateTime.now(), false)
-                .orElseThrow(() -> new ConfirmationTokenNotFoundException(ErrorCode.CONFIRMATION_TOKEN_NOT_FOUND));
+                .orElseThrow(ConfirmationTokenNotFoundException::new);
     }
 }

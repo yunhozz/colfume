@@ -1,14 +1,11 @@
 package colfume.domain.bookmark.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class BookmarkNotFoundException extends RuntimeException {
+public class BookmarkNotFoundException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public BookmarkNotFoundException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public BookmarkNotFoundException() {
+        super(ErrorCode.BOOKMARK_NOT_FOUND);
     }
 }

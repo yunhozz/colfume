@@ -1,14 +1,11 @@
 package colfume.domain.chat.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class ChatroomPermissionException extends RuntimeException {
+public class ChatroomPermissionException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public ChatroomPermissionException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public ChatroomPermissionException() {
+        super(ErrorCode.CHATROOM_NOT_PERMISSION);
     }
 }

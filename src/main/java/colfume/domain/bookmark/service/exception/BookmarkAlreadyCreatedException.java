@@ -1,14 +1,11 @@
 package colfume.domain.bookmark.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class BookmarkAlreadyCreatedException extends RuntimeException {
+public class BookmarkAlreadyCreatedException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public BookmarkAlreadyCreatedException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public BookmarkAlreadyCreatedException() {
+        super(ErrorCode.BOOKMARK_ALREADY_CREATED);
     }
 }

@@ -1,14 +1,11 @@
 package colfume.domain.notification.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class NotificationSendFailException extends RuntimeException {
+public class NotificationSendFailException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public NotificationSendFailException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public NotificationSendFailException() {
+        super(ErrorCode.NOTIFICATION_SEND_FAIL);
     }
 }

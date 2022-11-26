@@ -1,6 +1,5 @@
 package colfume.domain.bookmark.service;
 
-import colfume.common.enums.ErrorCode;
 import colfume.domain.bookmark.model.Bookmark;
 import colfume.domain.bookmark.model.repository.BookmarkRepository;
 import colfume.domain.bookmark.service.exception.BookmarkAlreadyCreatedException;
@@ -29,8 +28,7 @@ public class BookmarkService {
     @Transactional
     public Long makeBookmark(Long userId, Long perfumeId, String redirectUrl) {
         Member member = memberRepository.getReferenceById(userId);
-        Perfume perfume = perfumeRepository.findById(perfumeId)
-                .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
+        Perfume perfume = perfumeRepository.findById(perfumeId).orElseThrow(PerfumeNotFoundException::new);
         final Long[] id = {null};
 
         bookmarkRepository.findByMemberAndPerfume(member, perfume)
@@ -39,7 +37,7 @@ public class BookmarkService {
                         bookmark.create();
                         id[0] = bookmark.getId();
 
-                    } else throw new BookmarkAlreadyCreatedException(ErrorCode.BOOKMARK_ALREADY_CREATED);
+                    } else throw new BookmarkAlreadyCreatedException();
 
                 }, () -> {
                     Bookmark bookmark = new Bookmark(member, perfume, redirectUrl);
@@ -52,14 +50,13 @@ public class BookmarkService {
 
     @Transactional
     public void deleteBookmark(Long bookmarkId) {
-        Bookmark bookmark = bookmarkRepository.findWithPerfumeById(bookmarkId)
-                .orElseThrow(() -> new BookmarkNotFoundException(ErrorCode.BOOKMARK_NOT_FOUND));
+        Bookmark bookmark = bookmarkRepository.findWithPerfumeById(bookmarkId).orElseThrow(BookmarkNotFoundException::new);
         bookmark.delete(); // perfume.subtractLikes()
     }
 
     @Transactional(readOnly = true)
     public Long findPerfumeIdByBookmarkId(Long bookmarkId) {
         return bookmarkRepository.findPerfumeIdById(bookmarkId)
-                .orElseThrow(() -> new PerfumeNotFoundException(ErrorCode.PERFUME_NOT_FOUND));
+                .orElseThrow(PerfumeNotFoundException::new);
     }
 }

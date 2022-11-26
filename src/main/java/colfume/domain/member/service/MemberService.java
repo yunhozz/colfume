@@ -1,6 +1,5 @@
 package colfume.domain.member.service;
 
-import colfume.common.enums.ErrorCode;
 import colfume.domain.member.dto.MemberResponseDto;
 import colfume.domain.member.dto.request.MemberRequestDto;
 import colfume.domain.member.model.entity.Member;
@@ -26,8 +25,9 @@ public class MemberService {
     @Transactional
     public Long join(MemberRequestDto memberRequestDto) {
         if (memberRepository.findAll().stream().anyMatch(m -> m.isEmailEqualsWith(memberRequestDto.getEmail()))) {
-            throw new EmailDuplicateException(ErrorCode.EMAIL_DUPLICATE);
+            throw new EmailDuplicateException();
         }
+
         Member member = converter.convertToEntity(memberRequestDto);
         return memberRepository.save(member).getId();
     }
@@ -35,13 +35,15 @@ public class MemberService {
     @Transactional
     public void updatePassword(Long userId, String password, String newPw) {
         if (password.equals(newPw)) {
-            throw new PasswordSameException(ErrorCode.PASSWORD_SAME);
+            throw new PasswordSameException();
         }
+
         Member member = findMember(userId);
 
         if (member.isPasswordNotEqualsWith(password)) {
-            throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
+            throw new PasswordMismatchException();
         }
+
         member.updatePassword(newPw);
     }
 
@@ -72,6 +74,6 @@ public class MemberService {
 
     private Member findMember(Long userId) {
         return memberRepository.findById(userId)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(MemberNotFoundException::new);
     }
 }

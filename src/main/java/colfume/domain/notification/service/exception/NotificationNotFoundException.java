@@ -1,14 +1,11 @@
 package colfume.domain.notification.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class NotificationNotFoundException extends RuntimeException {
+public class NotificationNotFoundException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public NotificationNotFoundException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public NotificationNotFoundException() {
+        super(ErrorCode.NOTIFICATION_NOT_FOUND);
     }
 }

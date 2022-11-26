@@ -1,7 +1,6 @@
 package colfume.domain.member.service;
 
 import colfume.common.dto.TokenResponseDto;
-import colfume.common.enums.ErrorCode;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.exception.EmailNotFoundException;
@@ -30,7 +29,7 @@ public class AuthService {
         Member member = findMemberByEmail(email);
 
         if (member.isPasswordNotEqualsWith(password)) {
-            throw new PasswordMismatchException(ErrorCode.PASSWORD_MISMATCH);
+            throw new PasswordMismatchException();
         }
 
         TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(email, member.getRole().getAuthority());
@@ -44,11 +43,10 @@ public class AuthService {
     public TokenResponseDto tokenReissue(String refreshToken) {
         Authentication authentication = jwtProvider.getAuthentication(refreshToken);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(userPrincipal.getId())
-                .orElseThrow(() -> new RefreshTokenNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
+        UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(userPrincipal.getId()).orElseThrow(RefreshTokenNotFoundException::new);
 
         if (userRefreshToken.isRefreshTokenNotEqualsWith(refreshToken)) {
-            throw new RefreshTokenNotCorrespondException(ErrorCode.REFRESH_TOKEN_NOT_CORRESPOND);
+            throw new RefreshTokenNotCorrespondException();
         }
 
         TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(userPrincipal.getEmail(), userPrincipal.getRole());
@@ -59,6 +57,6 @@ public class AuthService {
 
     private Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
+                .orElseThrow(EmailNotFoundException::new);
     }
 }

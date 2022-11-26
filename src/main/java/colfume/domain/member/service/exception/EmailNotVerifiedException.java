@@ -1,14 +1,11 @@
 package colfume.domain.member.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class EmailNotVerifiedException extends RuntimeException {
+public class EmailNotVerifiedException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public EmailNotVerifiedException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public EmailNotVerifiedException() {
+        super(ErrorCode.EMAIL_NOT_VERIFIED);
     }
 }

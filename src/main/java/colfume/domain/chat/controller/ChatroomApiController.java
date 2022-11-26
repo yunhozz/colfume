@@ -26,18 +26,20 @@ public class ChatroomApiController {
     @PostMapping
     public Response createChatroom(@AuthenticationPrincipal UserPrincipal user, @RequestParam(required = false) String title) {
         if (!StringUtils.hasText(title)) {
-            ErrorResponseDto error = new ErrorResponseDto(ErrorCode.CHATROOM_TITLE_NOT_INSERTED);
-            return Response.failure(-1000, error, HttpStatus.BAD_REQUEST);
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(ErrorCode.CHATROOM_TITLE_NOT_INSERTED);
+            return Response.failure(errorResponseDto, HttpStatus.valueOf(errorResponseDto.getStatus()));
         }
+
         return Response.success(chatroomService.makeChatroom(user.getId(), title), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
     public Response updateChatroomTitle(@AuthenticationPrincipal UserPrincipal user, @PathVariable String id, @RequestParam(required = false) String title) {
         if (!StringUtils.hasText(title)) {
-            ErrorResponseDto error = new ErrorResponseDto(ErrorCode.CHATROOM_TITLE_NOT_INSERTED);
-            return Response.failure(-1000, error, HttpStatus.BAD_REQUEST);
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(ErrorCode.CHATROOM_TITLE_NOT_INSERTED);
+            return Response.failure(errorResponseDto, HttpStatus.valueOf(errorResponseDto.getStatus()));
         }
+
         chatroomService.updateTitle(Long.valueOf(id), user.getId(), title);
         return Response.success(HttpStatus.CREATED);
     }

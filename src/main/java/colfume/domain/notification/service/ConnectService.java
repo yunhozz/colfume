@@ -1,6 +1,5 @@
 package colfume.domain.notification.service;
 
-import colfume.common.enums.ErrorCode;
 import colfume.domain.notification.model.repository.EmitterRepository;
 import colfume.domain.notification.service.exception.NotificationSendFailException;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +56,7 @@ public class ConnectService {
 
         } catch (IOException e) {
             emitterRepository.deleteById(emitterId);
-            throw new NotificationSendFailException(ErrorCode.NOTIFICATION_SEND_FAIL);
+            throw new NotificationSendFailException();
         }
     }
 }

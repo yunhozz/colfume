@@ -1,6 +1,5 @@
 package colfume.oauth.model;
 
-import colfume.common.enums.ErrorCode;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.exception.EmailNotFoundException;
@@ -20,9 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
-
+        Member member = memberRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
         return new UserPrincipal(member);
     }
 }

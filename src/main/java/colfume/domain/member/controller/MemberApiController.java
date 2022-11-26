@@ -58,9 +58,10 @@ public class MemberApiController {
     @PatchMapping("/name")
     public Response updateInfo(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam(required = false) String name, @RequestParam(required = false) String imageUrl) {
         if (!StringUtils.hasText(name)) {
-            ErrorResponseDto error = new ErrorResponseDto(ErrorCode.NAME_NOT_INSERTED);
-            return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(ErrorCode.NAME_NOT_INSERTED);
+            return Response.failure(errorResponseDto, HttpStatus.valueOf(errorResponseDto.getStatus()));
         }
+
         memberService.updateInfo(userPrincipal.getId(), name, imageUrl);
         return Response.success(HttpStatus.CREATED);
     }

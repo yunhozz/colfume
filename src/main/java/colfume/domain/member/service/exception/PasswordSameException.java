@@ -1,14 +1,11 @@
 package colfume.domain.member.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class PasswordSameException extends RuntimeException {
+public class PasswordSameException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public PasswordSameException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public PasswordSameException() {
+        super(ErrorCode.PASSWORD_SAME);
     }
 }

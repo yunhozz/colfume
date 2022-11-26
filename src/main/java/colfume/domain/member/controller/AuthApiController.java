@@ -42,8 +42,8 @@ public class AuthApiController {
         Optional<Cookie> cookie = CookieUtils.getCookie(request, REFRESH_TOKEN);
 
         if (cookie.isEmpty()) {
-            ErrorResponseDto error = new ErrorResponseDto(ErrorCode.COOKIE_NOT_FOUND);
-            return Response.failure(-1000, error, HttpStatus.valueOf(error.getStatus()));
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(ErrorCode.COOKIE_NOT_FOUND);
+            return Response.failure(errorResponseDto, HttpStatus.valueOf(errorResponseDto.getStatus()));
         }
 
         String refreshToken = cookie.get().getValue();

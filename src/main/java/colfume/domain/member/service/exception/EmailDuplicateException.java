@@ -1,14 +1,11 @@
 package colfume.domain.member.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class EmailDuplicateException extends RuntimeException {
+public class EmailDuplicateException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public EmailDuplicateException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public EmailDuplicateException() {
+        super(ErrorCode.EMAIL_DUPLICATE);
     }
 }

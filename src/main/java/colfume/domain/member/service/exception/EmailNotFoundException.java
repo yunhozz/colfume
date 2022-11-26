@@ -1,14 +1,11 @@
 package colfume.domain.member.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class EmailNotFoundException extends RuntimeException {
+public class EmailNotFoundException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public EmailNotFoundException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public EmailNotFoundException() {
+        super(ErrorCode.EMAIL_NOT_FOUND);
     }
 }

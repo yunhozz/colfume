@@ -1,14 +1,11 @@
 package colfume.domain.evaluation.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class EvaluationNotFoundException extends RuntimeException {
+public class EvaluationNotFoundException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public EvaluationNotFoundException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public EvaluationNotFoundException() {
+        super(ErrorCode.EVALUATION_NOT_FOUND);
     }
 }

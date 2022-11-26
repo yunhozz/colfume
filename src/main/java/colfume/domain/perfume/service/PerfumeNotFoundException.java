@@ -1,14 +1,11 @@
 package colfume.domain.perfume.service;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class PerfumeNotFoundException extends RuntimeException {
+public class PerfumeNotFoundException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public PerfumeNotFoundException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public PerfumeNotFoundException() {
+        super(ErrorCode.PERFUME_NOT_FOUND);
     }
 }

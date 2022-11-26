@@ -1,6 +1,5 @@
 package colfume.domain.evaluation.service;
 
-import colfume.common.enums.ErrorCode;
 import colfume.domain.evaluation.dto.request.CommentRequestDto;
 import colfume.domain.evaluation.dto.response.CommentResponseDto;
 import colfume.domain.evaluation.model.entity.Comment;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,11 +32,10 @@ public class CommentService {
     @Transactional
     public Long createComment(CommentRequestDto commentRequestDto, Long writerId, Long evaluationId) {
         Member writer = memberRepository.getReferenceById(writerId);
-        Evaluation evaluation = evaluationRepository.findById(evaluationId)
-                .orElseThrow(() -> new EvaluationNotFoundException(ErrorCode.EVALUATION_NOT_FOUND));
+        Evaluation evaluation = evaluationRepository.findById(evaluationId).orElseThrow(EvaluationNotFoundException::new);
 
         if (evaluation.isDeleted()) {
-            throw new EvaluationAlreadyDeletedException(ErrorCode.ALREADY_DELETED);
+            throw new EvaluationAlreadyDeletedException();
         }
 
         converter.setEntitiesForParent(writer, evaluation);
@@ -50,8 +47,7 @@ public class CommentService {
     @Transactional
     public Long createChildComment(CommentRequestDto commentRequestDto, Long parentId, Long writerId) {
         Member writer = memberRepository.getReferenceById(writerId);
-        Comment parent = commentRepository.findWithEvaluationById(parentId)
-                .orElseThrow(() -> new CommentNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
+        Comment parent = commentRepository.findWithEvaluationById(parentId).orElseThrow(CommentNotFoundException::new);
 
         converter.setEntitiesForChild(writer, parent);
         Comment child = converter.convertToChildEntity(commentRequestDto);
@@ -80,11 +76,7 @@ public class CommentService {
     }
 
     private Comment validateAuthorization(Long commentId, Long userId) {
-        Optional<Comment> optionalComment = commentRepository.findByIdAndUserId(commentId, userId);
-
-        if (optionalComment.isEmpty()) {
-            throw new CrudNotAuthenticationException(ErrorCode.NOT_AUTHENTICATED);
-        }
-        return optionalComment.get();
+        return commentRepository.findByIdAndUserId(commentId, userId)
+                .orElseThrow(CrudNotAuthenticationException::new);
     }
 }

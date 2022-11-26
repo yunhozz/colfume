@@ -1,6 +1,5 @@
 package colfume.domain.notification.service;
 
-import colfume.common.enums.ErrorCode;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.member.model.repository.MemberRepository;
 import colfume.domain.member.service.exception.MemberNotFoundException;
@@ -33,8 +32,7 @@ public class NotificationService {
     @Transactional
     public Long sendNotification(NotificationRequestDto notificationRequestDto, Long senderId, Long receiverId) {
         Member sender = memberRepository.getReferenceById(senderId);
-        Member receiver = memberRepository.findById(receiverId)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+        Member receiver = memberRepository.findById(receiverId).orElseThrow(MemberNotFoundException::new);
 
         converter.setEntities(sender, receiver);
         Notification notification = converter.convertToEntity(notificationRequestDto);
@@ -65,14 +63,14 @@ public class NotificationService {
     @Transactional(readOnly = true)
     public NotificationResponseDto findNotificationDto(Long notificationId) {
         Notification notification = notificationRepository.findWithSenderAndReceiverById(notificationId)
-                .orElseThrow(() -> new NotificationNotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND));
+                .orElseThrow(NotificationNotFoundException::new);
 
         return converter.convertToDto(notification);
     }
 
     private Notification findNotification(Long notificationId) {
         return notificationRepository.findById(notificationId)
-                .orElseThrow(() -> new NotificationNotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND));
+                .orElseThrow(NotificationNotFoundException::new);
     }
 
     private void sendToClient(SseEmitter emitter, String emitterId, Object data) {
@@ -87,7 +85,7 @@ public class NotificationService {
 
         } catch (IOException e) {
             emitterRepository.deleteById(emitterId);
-            throw new NotificationSendFailException(ErrorCode.NOTIFICATION_SEND_FAIL);
+            throw new NotificationSendFailException();
         }
     }
 }

@@ -1,14 +1,11 @@
 package colfume.domain.evaluation.service.exception;
 
+import colfume.common.ColfumeException;
 import colfume.common.enums.ErrorCode;
-import lombok.Getter;
 
-@Getter
-public class CrudNotAuthenticationException extends RuntimeException {
+public class CrudNotAuthenticationException extends ColfumeException {
 
-    private final ErrorCode errorCode;
-
-    public CrudNotAuthenticationException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public CrudNotAuthenticationException() {
+        super(ErrorCode.NOT_AUTHENTICATED);
     }
 }
