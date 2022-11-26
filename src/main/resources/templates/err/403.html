@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DEMO</title>
+</head>
+<body>
+<h2>접근이 거부되었습니다. 관리자에게 문의해주세요.</h2>
+사용자 이메일 : <span th:text="${email}">email</span><br>
+사용자 이름 : <span th:text="${name}">name</span>
+<script th:inline="javascript">
+window.onload = function(){
+/*<![CDATA[*/
+    var nextPage = [[@{__${nextPage}__}]], msg = [[${msg}]];
+    if(nextPage) {
+        alert(msg);
+        location.href = nextPage;
+    } else {
+        location.href = [[@{/login}]];
+    }
+/*]]>*/
+};
+</script>
+</body>
+</html>

@@ -1,11 +1,11 @@
 package colfume.oauth.jwt;
 
-import colfume.common.dto.ErrorResponseDto;
-import colfume.common.enums.ErrorCode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import colfume.oauth.model.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
@@ -22,12 +22,21 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
+        log.error("handleAccessDeniedException", e);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        response.sendError(HttpServletResponse.SC_FORBIDDEN); // 403
+        response.setCharacterEncoding("UTF-8");
 
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(ErrorCode.FORBIDDEN);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String error = objectMapper.writeValueAsString(errorResponseDto);
-        log.error("error = " + error);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+        if (userPrincipal != null) {
+            request.setAttribute("email", userPrincipal.getUsername());
+            request.setAttribute("name", userPrincipal.getName());
+            request.setAttribute("nextPage", "/");
+            request.setAttribute("msg", e.getMessage());
+        }
+
+        request.getRequestDispatcher("/err/403").forward(request, response);
     }
 }
