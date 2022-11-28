@@ -1,6 +1,6 @@
 package colfume.domain.bookmark.model;
 
-import colfume.domain.BaseTime;
+import colfume.domain.BaseEntity;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.perfume.model.entity.Perfume;
 import lombok.AccessLevel;
@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Bookmark extends BaseTime {
+public class Bookmark extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

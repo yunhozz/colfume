@@ -1,6 +1,6 @@
 package colfume.domain.member.model.entity;
 
-import colfume.domain.BaseTime;
+import colfume.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ConfirmationToken extends BaseTime {
+public class ConfirmationToken extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

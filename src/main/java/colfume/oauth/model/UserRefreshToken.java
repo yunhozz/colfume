@@ -1,6 +1,6 @@
 package colfume.oauth.model;
 
-import colfume.domain.BaseTime;
+import colfume.domain.BaseEntity;
 import colfume.domain.member.model.entity.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserRefreshToken extends BaseTime {
+public class UserRefreshToken extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

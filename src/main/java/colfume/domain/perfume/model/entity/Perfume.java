@@ -1,6 +1,6 @@
 package colfume.domain.perfume.model.entity;
 
-import colfume.domain.BaseTime;
+import colfume.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Perfume extends BaseTime {
+public class Perfume extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

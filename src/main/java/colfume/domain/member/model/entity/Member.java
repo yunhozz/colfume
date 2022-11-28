@@ -1,7 +1,7 @@
 package colfume.domain.member.model.entity;
 
 import colfume.common.enums.Role;
-import colfume.domain.BaseTime;
+import colfume.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseTime {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -83,5 +83,10 @@ public class Member extends BaseTime {
     public void emailVerify() {
         isEmailVerified = true;
         role = Role.USER;
+    }
+
+    // initDb 테스트용
+    public void updateRole(Role role) {
+        this.role = role;
     }
 }

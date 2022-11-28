@@ -1,6 +1,6 @@
 package colfume.domain.chat.model.entity;
 
-import colfume.domain.BaseTime;
+import colfume.domain.BaseEntity;
 import colfume.domain.member.model.entity.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Chatroom extends BaseTime {
+public class Chatroom extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
