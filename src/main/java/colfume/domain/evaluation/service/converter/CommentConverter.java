@@ -6,23 +6,41 @@ import colfume.domain.evaluation.dto.response.CommentResponseDto;
 import colfume.domain.evaluation.model.entity.Comment;
 import colfume.domain.evaluation.model.entity.Evaluation;
 import colfume.domain.member.model.entity.Member;
-import org.springframework.stereotype.Component;
+import lombok.NoArgsConstructor;
 
 import java.util.stream.Collectors;
 
-@Component
+@NoArgsConstructor
 public class CommentConverter implements EntityConverter<Comment, CommentRequestDto, CommentResponseDto> {
 
     private Member writer;
     private Evaluation evaluation;
     private Comment parent;
 
+    public CommentConverter(Member writer, Evaluation evaluation) {
+        this.writer = writer;
+        this.evaluation = evaluation;
+    }
+
+    public CommentConverter(Member writer, Comment parent) {
+        this.writer = writer;
+        this.parent = parent;
+    }
+
     @Override
     public Comment convertToEntity(CommentRequestDto commentRequestDto) {
+        if (writer == null || evaluation == null) {
+            throw new IllegalStateException("연관된 엔티티가 생성되지 않았습니다.");
+        }
+
         return Comment.createParent(writer, evaluation, commentRequestDto.getContent());
     }
 
     public Comment convertToChildEntity(CommentRequestDto commentRequestDto) {
+        if (writer == null || parent == null) {
+            throw new IllegalStateException("연관된 엔티티가 생성되지 않았습니다.");
+        }
+
         return Comment.createChild(parent, writer, parent.getEvaluation(), commentRequestDto.getContent());
     }
 
@@ -39,15 +57,5 @@ public class CommentConverter implements EntityConverter<Comment, CommentRequest
                         .map(CommentResponseDto.CommentChildResponseDto::new)
                         .collect(Collectors.toList())
         );
-    }
-
-    public void setEntitiesForParent(Member writer, Evaluation evaluation) {
-        this.writer = writer;
-        this.evaluation = evaluation;
-    }
-
-    public void setEntitiesForChild(Member writer, Comment parent) {
-        this.writer = writer;
-        this.parent = parent;
     }
 }

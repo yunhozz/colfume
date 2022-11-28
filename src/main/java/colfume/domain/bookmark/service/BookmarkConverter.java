@@ -1,15 +1,14 @@
 package colfume.domain.bookmark.service;
 
 import colfume.common.EntityConverter;
+import colfume.domain.bookmark.dto.BookmarkRequestDto;
 import colfume.domain.bookmark.dto.BookmarkResponseDto;
 import colfume.domain.bookmark.model.Bookmark;
-import org.springframework.stereotype.Component;
 
-@Component
-public class BookmarkConverter implements EntityConverter<Bookmark, Object, BookmarkResponseDto> {
+public class BookmarkConverter implements EntityConverter<Bookmark, BookmarkRequestDto, BookmarkResponseDto> {
 
     @Override
-    public Bookmark convertToEntity(Object object) {
+    public Bookmark convertToEntity(BookmarkRequestDto bookmarkRequestDto) {
         return null;
     }
 

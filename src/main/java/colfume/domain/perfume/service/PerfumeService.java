@@ -13,11 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerfumeService {
 
     private final PerfumeRepository perfumeRepository;
-    private final PerfumeConverter converter;
 
     @Transactional
     public Long createPerfume(PerfumeRequestDto perfumeRequestDto) {
+        PerfumeConverter converter = new PerfumeConverter();
         Perfume perfume = converter.convertToEntity(perfumeRequestDto);
+
         return perfumeRepository.save(perfume).getId(); // auto persist : hashtags, colors
     }
 

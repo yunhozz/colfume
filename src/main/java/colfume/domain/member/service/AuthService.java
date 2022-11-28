@@ -43,7 +43,8 @@ public class AuthService {
     public TokenResponseDto tokenReissue(String refreshToken) {
         Authentication authentication = jwtProvider.getAuthentication(refreshToken);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(userPrincipal.getId()).orElseThrow(RefreshTokenNotFoundException::new);
+        UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(userPrincipal.getId())
+                .orElseThrow(RefreshTokenNotFoundException::new);
 
         if (userRefreshToken.isRefreshTokenNotEqualsWith(refreshToken)) {
             throw new RefreshTokenNotCorrespondException();

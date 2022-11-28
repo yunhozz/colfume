@@ -6,9 +6,7 @@ import colfume.domain.member.dto.MemberResponseDto;
 import colfume.domain.member.dto.request.MemberRequestDto;
 import colfume.domain.member.model.entity.Member;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
 
-@Component
 public class MemberConverter implements EntityConverter<Member, MemberRequestDto, MemberResponseDto> {
 
     @Override

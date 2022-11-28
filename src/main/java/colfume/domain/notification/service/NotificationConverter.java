@@ -5,16 +5,25 @@ import colfume.domain.member.model.entity.Member;
 import colfume.domain.notification.dto.NotificationRequestDto;
 import colfume.domain.notification.dto.NotificationResponseDto;
 import colfume.domain.notification.model.Notification;
-import org.springframework.stereotype.Component;
+import lombok.NoArgsConstructor;
 
-@Component
+@NoArgsConstructor
 public class NotificationConverter implements EntityConverter<Notification, NotificationRequestDto, NotificationResponseDto> {
 
     private Member sender;
     private Member receiver;
 
+    public NotificationConverter(Member sender, Member receiver) {
+        this.sender = sender;
+        this.receiver = receiver;
+    }
+
     @Override
     public Notification convertToEntity(NotificationRequestDto notificationRequestDto) {
+        if (sender == null || receiver == null) {
+            throw new IllegalStateException("연관된 엔티티가 생성되지 않았습니다.");
+        }
+
         return Notification.builder()
                 .sender(sender)
                 .receiver(receiver)
@@ -34,10 +43,5 @@ public class NotificationConverter implements EntityConverter<Notification, Noti
                 notification.isChecked(),
                 notification.getCreatedDate()
         );
-    }
-
-    public void setEntities(Member sender, Member receiver) {
-        this.sender = sender;
-        this.receiver = receiver;
     }
 }

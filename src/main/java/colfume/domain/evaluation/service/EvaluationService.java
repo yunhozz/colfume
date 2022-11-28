@@ -23,7 +23,6 @@ public class EvaluationService {
     private final EvaluationRepository evaluationRepository;
     private final MemberRepository memberRepository;
     private final PerfumeRepository perfumeRepository;
-    private final EvaluationConverter converter;
 
     /**
      * 향수에 대한 평가가 이미 존재할 때 : 삭제된 상태면 create 가능, 아니면 예외 발생
@@ -42,12 +41,9 @@ public class EvaluationService {
 
                     } else throw new EvaluationAlreadyExistException();
 
-                }, () -> {
-                    id[0] = saveEvaluation(writer, perfume, evaluationRequestDto);
-                });
+                }, () -> id[0] = saveEvaluation(writer, perfume, evaluationRequestDto));
 
         perfume.updateScoreForAdd(evaluationRequestDto.getScore());
-
         return id[0];
     }
 
@@ -77,7 +73,7 @@ public class EvaluationService {
     }
 
     private Long saveEvaluation(Member writer, Perfume perfume, EvaluationRequestDto evaluationRequestDto) {
-        converter.setEntities(writer, perfume);
+        EvaluationConverter converter = new EvaluationConverter(writer, perfume);
         Evaluation evaluation = converter.convertToEntity(evaluationRequestDto);
         evaluationRepository.save(evaluation);
 

@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final MemberConverter converter;
 
     @Transactional
     public Long join(MemberRequestDto memberRequestDto) {
@@ -28,7 +27,9 @@ public class MemberService {
             throw new EmailDuplicateException();
         }
 
+        MemberConverter converter = new MemberConverter();
         Member member = converter.convertToEntity(memberRequestDto);
+
         return memberRepository.save(member).getId();
     }
 
@@ -62,11 +63,14 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberResponseDto findMemberDto(Long userId) {
         Member member = findMember(userId);
+        MemberConverter converter = new MemberConverter();
+
         return converter.convertToDto(member);
     }
 
     @Transactional(readOnly = true)
     public List<MemberResponseDto> findMemberDtoList() {
+        MemberConverter converter = new MemberConverter();
         return memberRepository.findAll().stream()
                 .map(converter::convertToDto)
                 .collect(Collectors.toList());

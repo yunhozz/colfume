@@ -27,18 +27,18 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final EvaluationRepository evaluationRepository;
     private final MemberRepository memberRepository;
-    private final CommentConverter converter;
 
     @Transactional
     public Long createComment(CommentRequestDto commentRequestDto, Long writerId, Long evaluationId) {
         Member writer = memberRepository.getReferenceById(writerId);
-        Evaluation evaluation = evaluationRepository.findById(evaluationId).orElseThrow(EvaluationNotFoundException::new);
+        Evaluation evaluation = evaluationRepository.findById(evaluationId)
+                .orElseThrow(EvaluationNotFoundException::new);
 
         if (evaluation.isDeleted()) {
             throw new EvaluationAlreadyDeletedException();
         }
 
-        converter.setEntitiesForParent(writer, evaluation);
+        CommentConverter converter = new CommentConverter(writer, evaluation);
         Comment comment = converter.convertToEntity(commentRequestDto);
 
         return commentRepository.save(comment).getId();
@@ -47,9 +47,10 @@ public class CommentService {
     @Transactional
     public Long createChildComment(CommentRequestDto commentRequestDto, Long parentId, Long writerId) {
         Member writer = memberRepository.getReferenceById(writerId);
-        Comment parent = commentRepository.findWithEvaluationById(parentId).orElseThrow(CommentNotFoundException::new);
+        Comment parent = commentRepository.findWithEvaluationById(parentId)
+                .orElseThrow(CommentNotFoundException::new);
 
-        converter.setEntitiesForChild(writer, parent);
+        CommentConverter converter = new CommentConverter(writer, parent);
         Comment child = converter.convertToChildEntity(commentRequestDto);
 
         return commentRepository.save(child).getId();
@@ -70,6 +71,7 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentResponseDto> findDtoListByEvaluationId(Long evaluationId) {
+        CommentConverter converter = new CommentConverter();
         return commentRepository.findListByEvaluationId(evaluationId).stream()
                 .map(converter::convertToDto)
                 .collect(Collectors.toList());

@@ -27,14 +27,14 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final EmitterRepository emitterRepository;
     private final MemberRepository memberRepository;
-    private final NotificationConverter converter;
 
     @Transactional
     public Long sendNotification(NotificationRequestDto notificationRequestDto, Long senderId, Long receiverId) {
         Member sender = memberRepository.getReferenceById(senderId);
-        Member receiver = memberRepository.findById(receiverId).orElseThrow(MemberNotFoundException::new);
+        Member receiver = memberRepository.findById(receiverId)
+                .orElseThrow(MemberNotFoundException::new);
 
-        converter.setEntities(sender, receiver);
+        NotificationConverter converter = new NotificationConverter(sender, receiver);
         Notification notification = converter.convertToEntity(notificationRequestDto);
 
         Map<String, SseEmitter> emitters = emitterRepository.findEmittersWithUserId(String.valueOf(receiverId));
@@ -64,6 +64,7 @@ public class NotificationService {
     public NotificationResponseDto findNotificationDto(Long notificationId) {
         Notification notification = notificationRepository.findWithSenderAndReceiverById(notificationId)
                 .orElseThrow(NotificationNotFoundException::new);
+        NotificationConverter converter = new NotificationConverter();
 
         return converter.convertToDto(notification);
     }

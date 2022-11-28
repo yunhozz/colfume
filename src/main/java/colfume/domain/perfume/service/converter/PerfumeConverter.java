@@ -11,14 +11,12 @@ import colfume.domain.perfume.model.entity.Mood;
 import colfume.domain.perfume.model.entity.Note;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.entity.Style;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
 public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequestDto, PerfumeResponseDto> {
 
     @Override
