@@ -1,7 +1,7 @@
 package colfume.common;
 
-public interface EntityConverter<E, RQ, RS> {
+public interface EntityConverter<E, Q, S> {
 
-    E convertToEntity(RQ requestDto);
-    RS convertToDto(E entity);
+    E convertToEntity(Q requestDto);
+    S convertToDto(E entity);
 }
