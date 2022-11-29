@@ -33,7 +33,7 @@ public class BookmarkService {
         Bookmark bookmark = new Bookmark(member, perfume, redirectUrl);
         perfume.addLikes();
 
-        return bookmark.getId();
+        return bookmarkRepository.save(bookmark).getId();
     }
 
     @Transactional
