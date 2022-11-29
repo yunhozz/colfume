@@ -15,6 +15,5 @@ public class BookmarkResponseDto {
     private Long userId;
     private Long perfumeId;
     private String redirectUrl;
-    private Boolean isDeleted;
     private LocalDateTime createdDate;
 }

@@ -30,7 +30,7 @@ public class BookmarkRepositoryImpl implements BookmarkRepositoryCustom {
                 .from(bookmark)
                 .join(bookmark.member, member)
                 .join(bookmark.perfume, perfume)
-                .where(member.id.eq(userId), bookmark.isDeleted.isFalse())
+                .where(member.id.eq(userId))
                 .orderBy(bookmark.lastModifiedDate.desc())
                 .fetch();
     }

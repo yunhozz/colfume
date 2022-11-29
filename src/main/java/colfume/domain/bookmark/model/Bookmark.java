@@ -31,31 +31,13 @@ public class Bookmark extends BaseEntity {
 
     private String redirectUrl;
 
-    private boolean isDeleted;
-
     public Bookmark(Member member, Perfume perfume, String redirectUrl) {
         this.member = member;
         this.perfume = perfume;
         this.redirectUrl = redirectUrl;
     }
 
-    public void create() {
-        if (isDeleted) {
-            isDeleted = false;
-            perfume.addLikes();
-
-        } else {
-            throw new IllegalStateException("이미 생성한 북마크입니다.");
-        }
-    }
-
-    public void delete() {
-        if (!isDeleted) {
-            isDeleted = true;
-            perfume.subtractLikes();
-
-        } else {
-            throw new IllegalStateException("이미 삭제된 북마크입니다.");
-        }
+    public void subtractPerfumeLikes() {
+        perfume.subtractLikes();
     }
 }

@@ -7,8 +7,8 @@ import colfume.oauth.model.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +45,7 @@ public class BookmarkApiController {
         return Response.success(bookmarkService.makeBookmark(userPrincipal.getId(), Long.valueOf(perfumeId), redirectUrl), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{id}")
+    @DeleteMapping("/{id}")
     public Response deleteBookmark(@PathVariable String id) {
         bookmarkService.deleteBookmark(Long.valueOf(id));
         return Response.success(HttpStatus.CREATED);

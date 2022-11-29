@@ -22,7 +22,6 @@ public class BookmarkConverter implements EntityConverter<Bookmark, BookmarkRequ
                 bookmark.getMember().getId(),
                 bookmark.getPerfume().getId(),
                 bookmark.getRedirectUrl(),
-                bookmark.isDeleted(),
                 bookmark.getCreatedDate()
         );
     }
