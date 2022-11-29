@@ -66,8 +66,8 @@ public class Member extends BaseEntity {
         return !encoder.matches(password, this.password);
     }
 
-    public boolean isEmailNotVerified() {
-        return !isEmailVerified;
+    public boolean isUserIdNotEqualsWith(Long userId) {
+        return !id.equals(userId);
     }
 
     public void updateInfo(String name, String imageUrl) {

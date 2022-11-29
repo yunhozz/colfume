@@ -34,6 +34,10 @@ public class Chatroom extends BaseEntity {
         this.title = title;
     }
 
+    public boolean isMemberNotEqualsWith(Long userId) {
+        return member.isUserIdNotEqualsWith(userId);
+    }
+
     public void updateTitle(String title) {
         this.title = title;
     }

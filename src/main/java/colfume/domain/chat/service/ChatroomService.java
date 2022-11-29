@@ -36,7 +36,7 @@ public class ChatroomService {
     public void updateTitle(Long chatroomId, Long userId, String title) {
         Chatroom chatroom = findChatroom(chatroomId);
 
-        if (!chatroom.getMember().getId().equals(userId)) {
+        if (chatroom.isMemberNotEqualsWith(userId)) {
             throw new ChatroomPermissionException();
         }
 
@@ -47,7 +47,7 @@ public class ChatroomService {
     public void deleteChatroom(Long chatroomId, Long userId) {
         Chatroom chatroom = findChatroom(chatroomId);
 
-        if (!chatroom.getMember().getId().equals(userId)) {
+        if (chatroom.isMemberNotEqualsWith(userId)) {
             throw new ChatroomPermissionException();
         }
 
