@@ -40,13 +40,14 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     private Member saveOrUpdate(OAuth2Provider oAuth2Provider) {
         final Member[] member = {null};
         memberRepository.findByEmail(oAuth2Provider.getEmail())
-                .ifPresentOrElse(m -> m.update(oAuth2Provider.getEmail(), oAuth2Provider.getName(), oAuth2Provider.getImageUrl()), () -> {
+                .ifPresentOrElse(m -> member[0] = m.update(oAuth2Provider.getEmail(), oAuth2Provider.getName(), oAuth2Provider.getImageUrl()), () -> {
                     member[0] = Member.builder()
                             .email(oAuth2Provider.getEmail())
                             .name(oAuth2Provider.getName())
                             .imageUrl(oAuth2Provider.getImageUrl())
                             .role(Role.USER)
                             .build();
+
                     memberRepository.save(member[0]);
                 });
 
