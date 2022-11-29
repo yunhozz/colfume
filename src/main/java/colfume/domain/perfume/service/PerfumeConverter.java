@@ -1,4 +1,4 @@
-package colfume.domain.perfume.service.converter;
+package colfume.domain.perfume.service;
 
 import colfume.common.EntityConverter;
 import colfume.domain.perfume.dto.request.PerfumeRequestDto;
@@ -11,12 +11,15 @@ import colfume.domain.perfume.model.entity.Mood;
 import colfume.domain.perfume.model.entity.Note;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.entity.Style;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PerfumeConverter implements EntityConverter<Perfume, PerfumeRequestDto, PerfumeResponseDto> {
 
     @Override

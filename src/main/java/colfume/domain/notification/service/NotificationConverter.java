@@ -5,15 +5,16 @@ import colfume.domain.member.model.entity.Member;
 import colfume.domain.notification.dto.NotificationRequestDto;
 import colfume.domain.notification.dto.NotificationResponseDto;
 import colfume.domain.notification.model.Notification;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class NotificationConverter implements EntityConverter<Notification, NotificationRequestDto, NotificationResponseDto> {
 
     private Member sender;
     private Member receiver;
 
-    public NotificationConverter(Member sender, Member receiver) {
+    protected NotificationConverter(Member sender, Member receiver) {
         this.sender = sender;
         this.receiver = receiver;
     }

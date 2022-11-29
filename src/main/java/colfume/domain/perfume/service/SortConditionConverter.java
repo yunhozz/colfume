@@ -1,4 +1,4 @@
-package colfume.domain.perfume.service.converter;
+package colfume.domain.perfume.service;
 
 import colfume.common.enums.SortCondition;
 

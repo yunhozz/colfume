@@ -3,7 +3,6 @@ package colfume.domain.perfume.service;
 import colfume.domain.perfume.dto.request.PerfumeRequestDto;
 import colfume.domain.perfume.model.entity.Perfume;
 import colfume.domain.perfume.model.repository.PerfumeRepository;
-import colfume.domain.perfume.service.converter.PerfumeConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

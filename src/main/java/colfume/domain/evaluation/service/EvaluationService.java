@@ -3,7 +3,6 @@ package colfume.domain.evaluation.service;
 import colfume.domain.evaluation.dto.request.EvaluationRequestDto;
 import colfume.domain.evaluation.model.entity.Evaluation;
 import colfume.domain.evaluation.model.repository.EvaluationRepository;
-import colfume.domain.evaluation.service.converter.EvaluationConverter;
 import colfume.domain.evaluation.service.exception.CrudNotAuthenticationException;
 import colfume.domain.evaluation.service.exception.EvaluationAlreadyDeletedException;
 import colfume.domain.evaluation.service.exception.EvaluationAlreadyExistException;

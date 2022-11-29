@@ -1,4 +1,4 @@
-package colfume.domain.evaluation.service.converter;
+package colfume.domain.evaluation.service;
 
 import colfume.common.EntityConverter;
 import colfume.domain.evaluation.dto.request.EvaluationRequestDto;
@@ -6,15 +6,16 @@ import colfume.domain.evaluation.dto.response.EvaluationResponseDto;
 import colfume.domain.evaluation.model.entity.Evaluation;
 import colfume.domain.member.model.entity.Member;
 import colfume.domain.perfume.model.entity.Perfume;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EvaluationConverter implements EntityConverter<Evaluation, EvaluationRequestDto, EvaluationResponseDto> {
 
     private Member writer;
     private Perfume perfume;
 
-    public EvaluationConverter(Member writer, Perfume perfume) {
+    protected EvaluationConverter(Member writer, Perfume perfume) {
         this.writer = writer;
         this.perfume = perfume;
     }

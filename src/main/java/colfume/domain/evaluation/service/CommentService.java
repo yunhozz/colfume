@@ -6,7 +6,6 @@ import colfume.domain.evaluation.model.entity.Comment;
 import colfume.domain.evaluation.model.entity.Evaluation;
 import colfume.domain.evaluation.model.repository.CommentRepository;
 import colfume.domain.evaluation.model.repository.EvaluationRepository;
-import colfume.domain.evaluation.service.converter.CommentConverter;
 import colfume.domain.evaluation.service.exception.CommentNotFoundException;
 import colfume.domain.evaluation.service.exception.CrudNotAuthenticationException;
 import colfume.domain.evaluation.service.exception.EvaluationAlreadyDeletedException;
