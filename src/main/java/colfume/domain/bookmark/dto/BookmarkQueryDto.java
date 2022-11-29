@@ -10,6 +10,7 @@ public class BookmarkQueryDto {
 
     // bookmark
     private Long id;
+    private String redirectUrl;
 
     // perfume
     private Long perfumeId;
@@ -17,8 +18,9 @@ public class BookmarkQueryDto {
     private String imageUrl;
 
     @QueryProjection
-    public BookmarkQueryDto(Long id, Long perfumeId, String name, String imageUrl) {
+    public BookmarkQueryDto(Long id, String redirectUrl, Long perfumeId, String name, String imageUrl) {
         this.id = id;
+        this.redirectUrl = redirectUrl;
         this.perfumeId = perfumeId;
         this.name = name;
         this.imageUrl = imageUrl;

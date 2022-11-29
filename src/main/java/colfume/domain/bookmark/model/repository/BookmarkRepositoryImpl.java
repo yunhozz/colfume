@@ -23,6 +23,7 @@ public class BookmarkRepositoryImpl implements BookmarkRepositoryCustom {
         return queryFactory
                 .select(new QBookmarkQueryDto(
                         bookmark.id,
+                        bookmark.redirectUrl,
                         perfume.id,
                         perfume.name,
                         perfume.imageUrl
