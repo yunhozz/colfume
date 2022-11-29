@@ -344,7 +344,7 @@ public class PerfumeRepositoryImpl implements PerfumeRepositoryCustom {
 
     private BooleanExpression isBookmarkExist(Long userId) {
         return new CaseBuilder()
-                .when(bookmark.isNotNull().and(member.id.eq(userId)).and(bookmark.isDeleted.isFalse()))
+                .when(bookmark.isNotNull().and(member.id.eq(userId)))
                 .then(true)
                 .otherwise(false);
     }
